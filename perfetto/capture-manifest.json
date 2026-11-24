@@ -1,0 +1,122 @@
+[
+  {
+    "phase": "prefill",
+    "side": "before",
+    "rank": 0,
+    "trace": "rank0-before.trace.json.gz",
+    "source_sha256": "e7a0e9067401e1deb52ac42a1f2bf7e2d027b355a0322c739cf1862228d02674",
+    "screenshot": "prefill-before.png",
+    "screenshot_sha256": "25f2bf4046e16362f21b87e2614194eaac4bef0bfe4f69e0116f425091dd24a5",
+    "window_start_ns": "4635122885262156",
+    "window_end_ns": "4635122891262156",
+    "selected": {
+      "name": "void aiter::ob::radix_topk_one_block_kernel<float, int, 11, 1024, false, false, (aiter::ob::Phase)1, true, false, false>(float const*, int const*, long, int const*, int const*, int, float*, int*, bool, char*, int)",
+      "ts_ns": 4635122886262156,
+      "dur_ns": 4887456,
+      "pid": 2,
+      "tid": 3,
+      "correlation": 435,
+      "grid": [
+        8192,
+        1,
+        1
+      ]
+    },
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ]
+  },
+  {
+    "phase": "decode",
+    "side": "before",
+    "rank": 0,
+    "trace": "rank0-before.trace.json.gz",
+    "source_sha256": "e7a0e9067401e1deb52ac42a1f2bf7e2d027b355a0322c739cf1862228d02674",
+    "screenshot": "decode-before.png",
+    "screenshot_sha256": "2a96c9154eb7bf1127a12552fc4797d0bee1f04ab7c382bbce13c12323a362e4",
+    "window_start_ns": "4635123508072716",
+    "window_end_ns": "4635123508312716",
+    "selected": {
+      "layer": 20,
+      "physical_cols": 102400,
+      "scope": "inferred",
+      "kind": "hip_radix",
+      "name": "void aiter::ob::radix_topk_one_block_kernel<float, int, 11, 1024, false, false, (aiter::ob::Phase)1, true, false, false>(float const*, int const*, long, int const*, int const*, int, float*, int*, bool, char*, int)",
+      "ts_ns": 4635123508117716,
+      "dur_ns": 101759,
+      "pid": 2,
+      "tid": 3,
+      "correlation": 6253,
+      "grid": null
+    },
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ]
+  },
+  {
+    "phase": "prefill",
+    "side": "after",
+    "rank": 0,
+    "trace": "rank0-after.trace.json.gz",
+    "source_sha256": "79d5adf0f9d9e29b66afd170e0a5f997691c0adb044c2211b91321011c991fb3",
+    "screenshot": "prefill-after.png",
+    "screenshot_sha256": "c51ee99c70ffe358e429cefe3c733c88392e99b3f47455e8eb5f940d04d07af4",
+    "window_start_ns": "4635417096235593",
+    "window_end_ns": "4635417102235593",
+    "selected": {
+      "name": "void aiter::ob::radix_topk_one_block_kernel<float, int, 11, 1024, false, false, (aiter::ob::Phase)1, true, false, false>(float const*, int const*, long, int const*, int const*, int, float*, int*, bool, char*, int)",
+      "ts_ns": 4635417097235593,
+      "dur_ns": 4910534,
+      "pid": 2,
+      "tid": 3,
+      "correlation": 435,
+      "grid": [
+        8192,
+        1,
+        1
+      ]
+    },
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ]
+  },
+  {
+    "phase": "decode",
+    "side": "after",
+    "rank": 0,
+    "trace": "rank0-after.trace.json.gz",
+    "source_sha256": "79d5adf0f9d9e29b66afd170e0a5f997691c0adb044c2211b91321011c991fb3",
+    "screenshot": "decode-after.png",
+    "screenshot_sha256": "9b65518bbb286038f474999b796e4e28ef7088d6c20648c0dcebc17cf42a48bb",
+    "window_start_ns": "4635417716984717",
+    "window_end_ns": "4635417717224717",
+    "selected": {
+      "layer": 20,
+      "physical_cols": 102400,
+      "scope": "inferred",
+      "kind": "ballot_split",
+      "name": "void topk_ballot_split_kernel<512, 8, false>(float const*, int const*, int*, float*, int, int, int, int, RowState*, SliceHead*, HIP_vector_type<unsigned int, 2u>*)",
+      "ts_ns": 4635417717029717,
+      "dur_ns": 42319,
+      "pid": 2,
+      "tid": 3,
+      "correlation": 6235,
+      "grid": null
+    },
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ]
+  }
+]
