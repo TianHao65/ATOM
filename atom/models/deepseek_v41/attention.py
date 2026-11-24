@@ -34,6 +34,7 @@ from atom.model_ops.attentions.deepseek_v41.packed_attention import (
 )
 from atom.model_ops.attentions.deepseek_v41.score_planner import score_layout
 from atom.model_ops.blockscale_kernels.quantization import AMAX_FLOOR
+from atom.model_ops.deepseek_v41.ballot_topk import try_ballot_topk
 from atom.model_ops.deepseek_v41.compressor import Compressor
 from atom.model_ops.deepseek_v41.paged_scoring import (
     quantize_query_fp4,
@@ -179,6 +180,14 @@ class Indexer(nn.Module):
                 query, weights, cache, step, weight_scale=self.weights_scale
             )
             return
+        ballot_topk = (
+            try_ballot_topk
+            if envs.ATOM_DSV41_BALLOT_TOPK_LIB
+            and step.decode
+            and not step.tentative
+            and step.scheduled_bs == step.running_tokens == step.max_q_len == 1
+            else None
+        )
         self._publish(
             *score_topk_paged(
                 query,
@@ -187,6 +196,7 @@ class Indexer(nn.Module):
                 topk=self.topk,
                 weights_scale=self.weights_scale,
                 workspace=cache.workspace,
+                decode_topk=ballot_topk,
                 **self._bounds(cache, step),
             ),
             step,

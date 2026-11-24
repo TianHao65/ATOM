@@ -649,6 +649,8 @@ environment_variables: dict[str, Callable[[], Any]] = {
     "ATOM_DSV41_SIDE_STREAMS": lambda: int(os.getenv("ATOM_DSV41_SIDE_STREAMS", "0")),
     # Convert native V4.1 Group32 Dense and shared weights at load on gfx942.
     "ATOM_DSV41_NATIVE_FP8_PTPC": lambda: _flag_env("ATOM_DSV41_NATIVE_FP8_PTPC"),
+    # Optional gfx942 shared library for the V4.1 C1 Decode Ballot top-k.
+    "ATOM_DSV41_BALLOT_TOPK_LIB": lambda: os.getenv("ATOM_DSV41_BALLOT_TOPK_LIB"),
     # Direct NVFP4 CSA / MXFP8 SWA attention; off retains the BF16 adapter.
     "ATOM_DSV41_A8W4_ATTN": lambda: os.getenv("ATOM_DSV41_A8W4_ATTN", "auto")
     .strip()

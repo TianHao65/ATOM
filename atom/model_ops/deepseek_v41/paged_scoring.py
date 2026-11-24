@@ -75,6 +75,7 @@ def score_topk_paged(
     block_size=8,
     candidate_count=0,
     workspace=None,
+    decode_topk=None,
 ):
     """`(selected, candidate blocks)` for a whole forward's FP8 query rows:
     `query` rotated, quantized here, its scale folded into the head weights.
@@ -98,6 +99,7 @@ def score_topk_paged(
         block_size=block_size,
         candidate_count=candidate_count,
         workspace=workspace,
+        decode_topk=decode_topk,
     )
 
 
@@ -116,6 +118,7 @@ def score_topk_quantized(
     weight_scale=1.0,
     ragged=None,
     packed=None,
+    decode_topk=None,
 ):
     """`score_topk_paged` past its query quantization, in `units`' format.
     FP8: `query` [rows, heads, dim] e4m3 and `scaled` [rows, heads] fp32, the
@@ -178,6 +181,7 @@ def score_topk_quantized(
         topk=topk,
         weight_scale=weight_scale,
         stable=True,
+        decode_topk=decode_topk,
         on_band=(
             None
             if not candidate_count

@@ -60,6 +60,7 @@ def score_topk(
     out: torch.Tensor | None = None,
     keys=None,
     request_local: bool = True,
+    decode_topk=None,
 ) -> torch.Tensor:
     """`[rows.out_rows, topk]` int32 of `rows`' query rows against `cache`,
     each band scored into the plane the rows were cut to (`rows.workspace`).
@@ -76,6 +77,9 @@ def score_topk(
     its successors' candidate blocks) does it there. `keys`: FP8 concat rows'
     `(values, scales)` already gathered end to end (DCP's all-gathered
     shards); gathered here from `cache` otherwise.
+
+    `decode_topk(logits, lengths, out)` can fill a stable FP8 C1 paged row in
+    place. Returning false delegates selection to the default implementation.
 
     A striped split (`RowSplit.striped`) scores this rank's rows of `query`
     and `weights` into its slot and returns the gathered slots rank-major:
@@ -99,7 +103,16 @@ def score_topk(
         )
     else:
         _score_paged(
-            query, weights, cache, rows, topk, weight_scale, stable, on_band, mine
+            query,
+            weights,
+            cache,
+            rows,
+            topk,
+            weight_scale,
+            stable,
+            on_band,
+            mine,
+            decode_topk,
         )
     _gather_split(out, split)
     return out
@@ -141,7 +154,9 @@ def _gather_split(out, split):
     )
 
 
-def _score_paged(query, weights, cache, rows, topk, weight_scale, stable, on_band, out):
+def _score_paged(
+    query, weights, cache, rows, topk, weight_scale, stable, on_band, out, decode_topk
+):
     """Paged rows, band by band into the plane, each band top-k'd at once."""
     workspace = rows.workspace
     # Without a workspace (rows cut to the logits budget alone), one band's
@@ -203,11 +218,21 @@ def _score_paged(query, weights, cache, rows, topk, weight_scale, stable, on_ban
         if on_band is not None:
             on_band(scores, span)
         if offsets is None:
+            lengths, selected = rows.row_ends[items], out[span]
+            if (
+                decode_topk is not None
+                and stable
+                and topk == 512
+                and group == count == 1
+                and not cache.fp4
+                and decode_topk(scores, lengths, selected)
+            ):
+                continue
             top_k_per_row_decode(
                 scores,
                 group,
-                rows.row_ends[items],
-                out[span],
+                lengths,
+                selected,
                 count,
                 scores.stride(0),
                 scores.stride(1),
