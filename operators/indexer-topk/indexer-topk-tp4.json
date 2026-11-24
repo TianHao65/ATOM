@@ -1,0 +1,178 @@
+{
+  "atom_commit": "e309e005dfa83dd323dfb959b040d0af8bb6bceb",
+  "aiter_base": "ad0d5e208eb2d49ab658c3c161aa5c3502dfc2a1",
+  "aiter_silo": "7f36447ac7a235d15d8de7b4598c2c167d85da67",
+  "model": "DeepSeek-V4.1-Flash-1017",
+  "precision": "FP32 logits produced by an FP8 paged MQA scorer with synthetic cache",
+  "batch": 1,
+  "next_n": 1,
+  "k": 512,
+  "index_page_rows": 8,
+  "stable": true,
+  "gpu": "AMD Instinct MI308X",
+  "architecture": "gfx942:sramecc+:xnack-",
+  "torch": "2.10.0+rocm7.2.4.git3d3aa833",
+  "rounds": 8,
+  "replays_per_round": 200,
+  "cases": [
+    {
+      "physical_columns": 16384,
+      "live_columns": 16384,
+      "calls_per_decode_step": 4,
+      "matches_stable_reference": {
+        "fp8_indexer": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "ties8": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "zeros": {
+          "atom_original": true,
+          "aiter_silo": true
+        }
+      },
+      "round_us": {
+        "atom_original": [
+          27.777504920959473,
+          26.747705936431885,
+          26.870501041412354,
+          26.760504245758057,
+          26.73530101776123,
+          26.789705753326416,
+          26.773695945739746,
+          26.741299629211426
+        ],
+        "aiter_silo": [
+          16.466059684753418,
+          16.326464414596558,
+          16.496260166168213,
+          16.287665367126465,
+          16.330859661102295,
+          16.290465593338013,
+          16.30166530609131,
+          16.285264492034912
+        ]
+      },
+      "p50_us": {
+        "atom_original": 26.7671000957489,
+        "aiter_silo": 16.314064860343933,
+        "bobo_sgl": null
+      },
+      "speedup_over_atom": 1.6407376288428337
+    },
+    {
+      "physical_columns": 51200,
+      "live_columns": 50000,
+      "calls_per_decode_step": 3,
+      "matches_stable_reference": {
+        "fp8_indexer": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "ties8": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "zeros": {
+          "atom_original": true,
+          "aiter_silo": true
+        }
+      },
+      "round_us": {
+        "atom_original": [
+          46.52537822723389,
+          46.53458118438721,
+          46.58717632293701,
+          46.527180671691895,
+          46.54277801513672,
+          46.53977870941162,
+          46.5241813659668,
+          46.54518127441406
+        ],
+        "aiter_silo": [
+          22.91508913040161,
+          22.89928913116455,
+          22.902684211730957,
+          22.896084785461426,
+          23.038289546966553,
+          22.907888889312744,
+          22.89088010787964,
+          22.895684242248535
+        ]
+      },
+      "p50_us": {
+        "atom_original": 46.537179946899414,
+        "aiter_silo": 22.900986671447754,
+        "bobo_sgl": null
+      },
+      "speedup_over_atom": 2.032103708654638
+    },
+    {
+      "physical_columns": 102400,
+      "live_columns": 100000,
+      "calls_per_decode_step": 1,
+      "matches_stable_reference": {
+        "fp8_indexer": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "ties8": {
+          "atom_original": true,
+          "aiter_silo": true
+        },
+        "zeros": {
+          "atom_original": true,
+          "aiter_silo": true
+        }
+      },
+      "round_us": {
+        "atom_original": [
+          78.97090435028076,
+          78.45150470733643,
+          78.5246992111206,
+          78.45349788665771,
+          78.45810413360596,
+          78.47010135650635,
+          78.46350193023682,
+          78.49289894104004
+        ],
+        "aiter_silo": [
+          27.489705085754395,
+          27.21930503845215,
+          27.244300842285156,
+          27.21590518951416,
+          27.246904373168945,
+          27.24250555038452,
+          27.242305278778076,
+          27.26130962371826
+        ]
+      },
+      "p50_us": {
+        "atom_original": 78.46680164337158,
+        "aiter_silo": 27.24340319633484,
+        "bobo_sgl": null
+      },
+      "speedup_over_atom": 2.8802129116500406
+    }
+  ],
+  "weighted_p50_us": {
+    "atom_original": 325.14674186706543,
+    "aiter_silo": 161.20262265205383
+  },
+  "run_id": "3b99acaab8",
+  "site": "PTL52",
+  "gpu_index": 6,
+  "bobo_sgl": null,
+  "baseline_image": "sha256:cfd987217fc428c50a2d11eddcd23952f926a77bbbe5532bccdf43636c4361dc",
+  "ballot_library_sha256": "8ffe36042da91cdad68062b800facd364a825556f30aaea107d10ecd757f6694",
+  "driver_sha256": "701d50029011176d0fad3c0674ee8e593a19155a1e5d630b464f62397c035409",
+  "ownership_samples": 107,
+  "foreign_gpu_use_in_timing": false,
+  "gpu_use_before_percent": 0,
+  "gpu_use_after_percent": 0,
+  "gpu_vram_before_bytes": 297611264,
+  "gpu_vram_after_bytes": 297611264,
+  "timed_update_percent": -50.421578353702
+}

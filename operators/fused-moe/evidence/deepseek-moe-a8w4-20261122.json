@@ -1,0 +1,346 @@
+{
+  "date": "2026-11-22",
+  "hardware": "MI308X (gfx942)",
+  "atom_base_commit": "5f6bdb75c19a0e4bc57512ef425973d53f0f54f4",
+  "atom_overlay_fingerprint_sha256": "b0bc85189be6d8fecc22d2c3ff4890cbd23cf12e32e51b5e1e8361f407a0e17f",
+  "tensor_parallel_size": 4,
+  "moe_dimensions": {
+    "hidden_size": 5120,
+    "global_intermediate_size": 2304,
+    "logical_local_intermediate_size": 576,
+    "routed_experts": 384,
+    "fused_shared_experts": 0,
+    "top_k": 6,
+    "swiglu_limit": 10.0
+  },
+  "post_router_microbenchmarks": [
+    {
+      "run_id": "smoke_a8w4-5b3515ce",
+      "original_log_sha256": "52376f9fe0db1a1342a73392b3cba168d6a0e77d779d09779d6dc5ad20595c7e",
+      "shape": {
+        "tokens": 1,
+        "experts": 384,
+        "hidden": 5120,
+        "intermediate": 576,
+        "padded": 640
+      },
+      "top_k": 6,
+      "checkpoint_layer": 20,
+      "seed": 42117,
+      "timing": {
+        "scope": "post-topk routing, both GEMMs, clamp, activation quantization, combine",
+        "mode": "graph",
+        "groups": 7,
+        "repeat": 12,
+        "results": {
+          "rebased-c1": {
+            "samples_us": [
+              89.67312177022298,
+              89.69952000512018,
+              89.64451154073079,
+              89.59090047412448,
+              89.64257770114475,
+              89.58117829428778,
+              89.70924218495686
+            ],
+            "median_us": 89.64451154073079
+          },
+          "fp8-mfma-c1": {
+            "samples_us": [
+              144.41751109229193,
+              144.49640115102133,
+              144.38723193274603,
+              144.48306295606824,
+              144.42112710740832,
+              144.35500568813748,
+              144.36140325334338
+            ],
+            "median_us": 144.41751109229193
+          },
+          "runtime-a8w4": {
+            "samples_us": [
+              292.1116881900364,
+              292.3858695560032,
+              292.119476530287,
+              292.0597394307454,
+              292.04474555121527,
+              291.99197557237414,
+              291.8825149536133
+            ],
+            "median_us": 292.0597394307454
+          },
+          "a16w4": {
+            "samples_us": [
+              129.50744893815784,
+              129.38996156056723,
+              129.43161858452692,
+              129.32050228118896,
+              129.32884693145752,
+              129.28244802686902,
+              129.4699642393324
+            ],
+            "median_us": 129.38996156056723
+          },
+          "w8": {
+            "samples_us": [
+              29.92123034265306,
+              29.82233961423238,
+              29.822617769241333,
+              29.833730724122788,
+              29.814839363098145,
+              29.825117852952744,
+              29.833174414104885
+            ],
+            "median_us": 29.825117852952744
+          }
+        }
+      },
+      "route_sets": 12,
+      "correctness": {
+        "rebased-c1": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "normalized_rmse": 0.0,
+            "cosine": 1.0
+          }
+        },
+        "fp8-mfma-c1": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.22528076171875,
+            "normalized_rmse": 0.0023202900774776936,
+            "cosine": 0.9999973177909851
+          }
+        },
+        "runtime-a8w4": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.22528076171875,
+            "normalized_rmse": 0.0023202900774776936,
+            "cosine": 0.9999973177909851
+          }
+        },
+        "a16w4": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.25185394287109375,
+            "normalized_rmse": 0.0023269185330718756,
+            "cosine": 0.9999972581863403
+          },
+          "gateup": {
+            "finite": true,
+            "max_abs": 0.0,
+            "normalized_rmse": 0.0,
+            "cosine": 0.9999998807907104
+          },
+          "activation": {
+            "finite": true,
+            "max_abs": 0.0,
+            "normalized_rmse": 0.0,
+            "cosine": 0.9999999403953552
+          }
+        }
+      }
+    },
+    {
+      "run_id": "smoke_a8w4-5ffab425",
+      "original_log_sha256": "e503acbd0517dfacb0b02556cf6be8175f82cdd74b622c4bdfc6483e1ee24e4e",
+      "shape": {
+        "tokens": 1,
+        "experts": 384,
+        "hidden": 5120,
+        "intermediate": 576,
+        "padded": 640
+      },
+      "top_k": 6,
+      "checkpoint_layer": 20,
+      "seed": 42117,
+      "timing": {
+        "scope": "post-topk routing, both GEMMs, clamp, activation quantization, combine",
+        "mode": "graph",
+        "groups": 7,
+        "repeat": 12,
+        "results": {
+          "rebased-c1": {
+            "samples_us": [
+              90.45980374018352,
+              90.44590923521254,
+              90.4456377029419,
+              90.4381341404385,
+              90.4489623175727,
+              90.46646621492174,
+              90.43508105807834
+            ],
+            "median_us": 90.44590923521254
+          },
+          "preshuffled-c1": {
+            "samples_us": [
+              142.1700053744846,
+              142.2852807574802,
+              142.24722650316028,
+              142.19082726372613,
+              142.20833778381348,
+              142.23221937815347,
+              142.2555579079522
+            ],
+            "median_us": 142.23221937815347
+          },
+          "w8": {
+            "samples_us": [
+              29.79067299101088,
+              29.797616932127212,
+              29.777894417444866,
+              29.800110393100315,
+              29.816508293151855,
+              29.783729049894546,
+              29.759006367789375
+            ],
+            "median_us": 29.79067299101088
+          }
+        }
+      },
+      "route_sets": 12,
+      "correctness": {
+        "rebased-c1": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "normalized_rmse": 0.0,
+            "cosine": 1.0
+          }
+        },
+        "preshuffled-c1": {
+          "output": {
+            "finite": true,
+            "max_abs": 0.0,
+            "normalized_rmse": 0.0,
+            "cosine": 1.0
+          }
+        }
+      }
+    },
+    {
+      "run_id": "smoke_a8w4-669266e0",
+      "original_log_sha256": "d3cca3a9d64d74b11f738d1d7b699dcddc26fbe1b56b4cfd733fa368849a3449",
+      "shape": {
+        "tokens": 8192,
+        "experts": 384,
+        "hidden": 5120,
+        "intermediate": 576,
+        "padded": 640
+      },
+      "top_k": 6,
+      "checkpoint_layer": null,
+      "seed": 42117,
+      "timing": {
+        "scope": "post-topk routing, both GEMMs, clamp, activation quantization, combine",
+        "mode": "graph",
+        "groups": 7,
+        "repeat": 8,
+        "results": {
+          "runtime-a8w4": {
+            "samples_us": [
+              38290.6494140625,
+              38288.94805908203,
+              39482.460021972656,
+              38269.03533935547,
+              38267.34924316406,
+              38272.39227294922,
+              38279.6630859375
+            ],
+            "median_us": 38279.6630859375
+          },
+          "a16w4": {
+            "samples_us": [
+              36695.735931396484,
+              36684.288024902344,
+              36673.56872558594,
+              36678.79867553711,
+              37512.6838684082,
+              36681.190490722656,
+              36688.072204589844
+            ],
+            "median_us": 36684.288024902344
+          },
+          "w8": {
+            "samples_us": [
+              3980.9908866882324,
+              3979.0656566619873,
+              3980.005979537964,
+              3983.6606979370117,
+              3981.4109802246094,
+              3980.1907539367676,
+              3980.401039123535
+            ],
+            "median_us": 3980.401039123535
+          }
+        }
+      },
+      "route_sets": 1,
+      "correctness": {}
+    }
+  ],
+  "profile": {
+    "scope": "Rank 0 summed expert GEMM duration. One M=2048 prefill and median of 16 M=1 decode steps. Marker identified by each kernel\u2019s HIP launch correlation.",
+    "arms": {
+      "ptpc": {
+        "rank0_original_trace_sha256": "5796b3da1890feb8ec153cbc7480847907cba82899e350377a907078068cbbc2",
+        "prefill": {
+          "gateup_ms": 28.976311,
+          "down_ms": 16.360772,
+          "gateup_and_down_ms": 45.337083
+        },
+        "decode": {
+          "gateup_ms": 1.304626,
+          "down_ms": 0.866544,
+          "gateup_and_down_ms": 2.171547
+        }
+      },
+      "a8w4": {
+        "rank0_original_trace_sha256": "1976a301a08168125df59860075f48d130dedf50bf9a18c7f5f61b17c5dc4585",
+        "prefill": {
+          "gateup_ms": 203.207927,
+          "down_ms": 134.922811,
+          "gateup_and_down_ms": 338.130738
+        },
+        "decode": {
+          "gateup_ms": 10.371221,
+          "down_ms": 2.08649,
+          "gateup_and_down_ms": 12.457584
+        }
+      }
+    }
+  },
+  "end_to_end": {
+    "scope": "Seven matched C1 requests, uncached 2048 input tokens, 16 output tokens. Samples had no recorded GPU overlap.",
+    "run_id": "ptl52-20261122-163738-887e0d",
+    "arms": {
+      "ptpc": {
+        "samples_s": [
+          1.6007879665121436,
+          1.601088484749198,
+          1.6012662583962083,
+          1.6004516845569015,
+          1.6009604316204786,
+          2.7836640598252416,
+          1.6072617881000042
+        ],
+        "median_s": 1.601088484749198
+      },
+      "a8w4": {
+        "samples_s": [
+          2.0399638544768095,
+          2.041175019927323,
+          2.045309633947909,
+          2.033970224671066,
+          2.0409476701170206,
+          2.0413725497201085,
+          2.0406845966354012
+        ],
+        "median_s": 2.0409476701170206
+      }
+    },
+    "candidate_to_baseline_ratio_of_medians": 1.2747250945576092
+  }
+}
