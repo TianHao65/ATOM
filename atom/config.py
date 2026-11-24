@@ -3511,6 +3511,11 @@ class Config:
         # cache key moves.
         if getattr(text_config, "fp4ptpc", False):
             factors.append("fp4ptpc")
+        elif (
+            getattr(text_config, "model_type", None) == "deepseek_v41_text"
+            and envs.ATOM_DSV41_NATIVE_FP8_PTPC
+        ):
+            factors.append("native_fp8_ptpc")
         # Vocab-embedding replication (ATOM_REPLICATE_VOCAB_EMBED) changes both the
         # embed weight shape ([vocab] vs [vocab/tp]) and the embed op (local
         # F.embedding vs masked-embedding + all-reduce), so it alters the compiled

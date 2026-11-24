@@ -6,6 +6,7 @@ tensor, including explicit draft/vision exclusions and host-owned Engram tables.
 """
 
 import json
+import logging
 import struct
 import warnings
 from contextlib import ExitStack
@@ -19,6 +20,8 @@ from safetensors import safe_open
 from atom.model_ops.engram.tables import HostEmbeddingTable
 
 from .config import AttentionMode, build_attention_topology
+
+logger = logging.getLogger(__name__)
 
 # safetensors dtype names a shared read-only tensor can have (`shared_tensor`).
 _SAFETENSORS_DTYPES = {
@@ -375,6 +378,48 @@ def build_weight_manifest(
             )
         )
     return tuple(result)
+
+
+def requantize_native_fp8_ptpc(weight, scale):
+    """Convert a complete Group32 FP8 matrix using FP4PTPC's row scale."""
+    from atom.model_ops.blockscale import dequantize_fp8_weight
+
+    values = dequantize_fp8_weight(weight, scale, dtype=torch.float32)
+    limit = torch.finfo(torch.float8_e4m3fn).max
+    amax = values.abs().amax(dim=1, keepdim=True)
+    row_scale = torch.where(amax > 0, (amax / limit).log2().ceil().exp2(), 1.0)
+    return (values / row_scale).to(torch.float8_e4m3fn), row_scale
+
+
+def native_fp8_ptpc_weights_iterator(
+    runtime_config, source_iterator, model_name_or_path, disable_mmap, wants
+):
+    """Yield PTPC tensors to the existing loader before TP slices the weights."""
+    pending = {}
+    targets = {
+        name.removesuffix(".weight_scale")
+        for name in checkpoint_schema(runtime_config)
+        if name.endswith(".weight_scale")
+    }
+    converted = set()
+    for name, tensor in source_iterator(model_name_or_path, disable_mmap, wants):
+        prefix, _, suffix = name.rpartition(".")
+        if prefix not in targets:
+            yield name, tensor
+            continue
+        pair = pending.setdefault(prefix, {})
+        if suffix not in ("weight", "scale") or suffix in pair or prefix in converted:
+            raise ValueError(f"Unexpected native FP8 PTPC tensor: {name}")
+        pair[suffix] = tensor
+        if len(pair) == 2:
+            weight, scale = requantize_native_fp8_ptpc(**pending.pop(prefix))
+            converted.add(prefix)
+            yield prefix + ".weight", weight
+            yield prefix + ".weight_scale", scale
+    if converted != targets:
+        missing = sorted(targets - converted)[:8]
+        raise ValueError(f"Incomplete native FP8 PTPC weights: {missing}")
+    logger.info("V4.1 native FP8 PTPC converted %d projections", len(converted))
 
 
 class CheckpointReader:

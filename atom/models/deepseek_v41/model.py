@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: MIT
 """Full-layer eager text backbone. Checkpoint I/O and request preparation live outside."""
 
+from copy import copy
 from dataclasses import replace
+from functools import partial
 from types import SimpleNamespace
 from typing import ClassVar
 
@@ -35,6 +37,7 @@ from .attention import Attention
 from .config import build_attention_topology
 from .layers import converted_linear_config, converted_linear_spec
 from .moe import MoE
+from .weights import native_fp8_ptpc_weights_iterator
 
 
 class Block(nn.Module):
@@ -258,6 +261,18 @@ class DeepseekV41ForCausalLM(nn.Module):
         if not 1 <= max_length <= config.max_position_embeddings:
             raise ValueError("Invalid offline context capacity")
         self.config, self.max_length = config, max_length
+        runtime_config = config
+        if envs.ATOM_DSV41_NATIVE_FP8_PTPC and not config.fp4ptpc:
+            from aiter.jit.utils.chip_info import get_gfx_runtime
+
+            if get_gfx_runtime() != "gfx942":
+                raise ValueError("Native V4.1 FP8 PTPC is supported on gfx942")
+            # Preserve the native checkpoint schema for Engram and draft loading.
+            runtime_config = copy(config)
+            runtime_config.fp4ptpc = True
+            self.checkpoint_weights_iterator = partial(
+                native_fp8_ptpc_weights_iterator, runtime_config
+            )
         self.topology = build_attention_topology(config)[: config.num_hidden_layers]
         self.embed = VocabParallelEmbedding(config.vocab_size, config.hidden_size)
         # One shared configuration owns all expert source/online quantization
@@ -267,7 +282,7 @@ class DeepseekV41ForCausalLM(nn.Module):
         self.moe_quant_config = make_v4_quant_config(
             config,
             online_quant_config=online_quant_config,
-            shared_expert_spec=converted_linear_spec(config),
+            shared_expert_spec=converted_linear_spec(runtime_config),
             online_routed_experts=True,
         )
         # A stream earns a hardware queue only where two branches are live at
@@ -291,7 +306,7 @@ class DeepseekV41ForCausalLM(nn.Module):
         self.index_stream = torch.cuda.Stream() if level == 2 else None
         self.layers = nn.ModuleList(
             self.block_cls(
-                config,
+                runtime_config,
                 spec,
                 prefix=f"layers.{spec.layer_id}",
                 moe_quant_config=self.moe_quant_config,

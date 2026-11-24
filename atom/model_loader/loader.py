@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import time
+from functools import partial
 
 import safetensors
 import safetensors.torch
@@ -329,6 +330,9 @@ def load_model(
     # with the same meta-backed streaming parameters as the target. `spec_decode`
     # only changes checkpoint-name selection; it must not disable materialization.
     online_quant_streamer = OnlineQuantStreamer.maybe_create(model, load_dummy)
+    weights_iterator = safetensors_weights_iterator
+    if not load_dummy and hasattr(model, "checkpoint_weights_iterator"):
+        weights_iterator = partial(model.checkpoint_weights_iterator, weights_iterator)
 
     loaded_weights_record = load_weights_into_model(
         model=model,
@@ -342,7 +346,7 @@ def load_model(
         default_weight_loader=default_weight_loader,
         fuse_shared_expert=_fuse_shared_expert,
         is_rank0=_is_rank0,
-        weights_iterator=safetensors_weights_iterator,
+        weights_iterator=weights_iterator,
         online_quant_streamer=online_quant_streamer,
     )
 
