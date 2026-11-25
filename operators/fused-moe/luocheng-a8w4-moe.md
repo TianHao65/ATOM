@@ -156,11 +156,15 @@ had zero observed foreign GPU processes across 111 samples.
 All three variants returned 8/8 timed responses, with zero observed foreign
 GPU process samples on the selected cards. In both paired comparisons
 with A8W4, two of eight output text hashes matched across starts. All eight
-graph sizes captured successfully after the shared down GEMM alignment fix.
+graph sizes captured successfully after the shared down GEMM alignment
+fix. An isolated shared-down check with real layer-20 weights passed
+11 M values at each of K640 and K768. Graph outputs equaled eager
+bitwise, and the maximum NRMSE against FP32 was 0.00916%. This check
+recorded correctness only. [Validation samples](evidence/routed-moe.json)
+
 The split FP8 arm reused the candidate's compiled shared GEMM binaries
 from the same pinned AITER and image and performed its ordinary warmup.
-The original arm's on-disk
-quantization ledger was ephemeral. Its server log confirms all 40 expert
-layers converted on all four ranks, and the native trace shows a seven-slot
-batch-one gate/up grid. Task serving containers and their client port
-were released and the selected GPUs returned to idle.
+The original arm's quantization ledger was ephemeral. Its server log
+confirms all 40 expert layers converted on all four ranks, and the native
+trace shows a seven-slot batch-one gate/up grid. Task serving containers and
+their client port were released and the selected GPUs returned to idle.
