@@ -1,0 +1,1187 @@
+{
+  "method": [
+    "Read complete original Kineto files. Join kernels to uniquely correlated HIP launches within the original CPU forward annotation.",
+    "Measure elapsed C1 main-stream GPU annotation spans and separately sum GPU-event durations.",
+    "Identify standalone FP8 shared Down by the CKTile FlatmmKernel signature in each forward.",
+    "Direct dispatch records include grid/block sizes. Graph replay often omits launch geometry."
+  ],
+  "candidate": {
+    "trace": "mixed.trace.json.gz",
+    "sha256": "6040e86474c5cfcea17de521a1c63e02a7d1e98468f06318bfe7eb3763be9d4a",
+    "rank": 0,
+    "world_size": 4,
+    "unmatched_expert_kernels": 0,
+    "scopes": {
+      "decode[bs=1 tok=1 d=1]": {
+        "forwards": 24,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967,
+            967
+          ],
+          "calls_per_forward_p50": 967.0,
+          "summed_gpu_work_us_p50": 7978.642
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "calls_per_forward_p50": 80.0,
+          "summed_gpu_work_us_p50": 1122.145
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 623.643,
+            "symbols": {
+              "a8w4_gateup_decode_0": 960
+            },
+            "representative": {
+              "annotation": "decode[bs=1 tok=1 d=1]",
+              "symbol": "a8w4_gateup_decode_0",
+              "start_ns": 4718169491811360,
+              "duration_ns": 15879,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 6771,
+              "grid": null,
+              "block": null
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 498.743,
+            "symbols": {
+              "a8w4_down_decode_0": 960
+            },
+            "representative": {
+              "annotation": "decode[bs=1 tok=1 d=1]",
+              "symbol": "a8w4_down_decode_0",
+              "start_ns": 4718169491827240,
+              "duration_ns": 13359,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 6771,
+              "grid": null,
+              "block": null
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "calls_per_forward_p50": 0.0,
+          "summed_gpu_work_us_p50": 0.0,
+          "gpu_stream_event_counts": [],
+          "representative": null
+        },
+        "main_stream": {
+          "stream": [
+            2,
+            3
+          ],
+          "native_gpu_annotation_span_us_p50": 7993.03,
+          "calls_per_forward": [
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959,
+            959
+          ],
+          "calls_per_forward_p50": 959.0,
+          "summed_gpu_work_us_p50": 7935.91
+        }
+      },
+      "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]": {
+        "forwards": 1,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            1731
+          ],
+          "calls_per_forward_p50": 1731,
+          "summed_gpu_work_us_p50": 143825.263
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            80
+          ],
+          "calls_per_forward_p50": 80,
+          "summed_gpu_work_us_p50": 33239.278
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              40
+            ],
+            "calls_per_forward_p50": 40,
+            "summed_gpu_work_us_p50": 20389.626,
+            "symbols": {
+              "a8w4_gateup_stream_0": 39,
+              "a8w4_gateup_decode_0": 1
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+              "symbol": "a8w4_gateup_stream_0",
+              "start_ns": 4718169350023376,
+              "duration_ns": 894923,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 3243,
+              "grid": null,
+              "block": null
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              40
+            ],
+            "calls_per_forward_p50": 40,
+            "summed_gpu_work_us_p50": 12849.652,
+            "symbols": {
+              "a8w4_down_prefill_0": 20,
+              "a8w4_down_stream_0": 19,
+              "a8w4_down_decode_0": 1
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+              "symbol": "a8w4_down_prefill_0",
+              "start_ns": 4718169350927020,
+              "duration_ns": 639001,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 3243,
+              "grid": null,
+              "block": null
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            39
+          ],
+          "calls_per_forward_p50": 39,
+          "summed_gpu_work_us_p50": 1696.966,
+          "gpu_stream_event_counts": [
+            {
+              "stream": [
+                2,
+                3
+              ],
+              "events": 39
+            }
+          ],
+          "representative": {
+            "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+            "symbol": "_ZN7ck_tile6kentryILi1ENS_12FlatmmKernelINS_33GemmSpatiallyLocalTilePartitionerINS_13TileGemmShapeINS_8sequenceIJLi128ELi128ELi128EEEENS4_IJLi1ELi4ELi1EEEENS4_IJLi16ELi16ELi64EEEELb0ELb0EEELi8ELi4EEENS_30FlatmmPipelineAGmemBGmemCRegV1INS_21FlatmmPipelineProblemIDB8_SC_fS8_NS_23TileGemmUniversalTraitsILb0ELb0ELb0ELb0ENS_13tensor_layout4gemm8RowMajorENSF_11ColumnMajorESG_Lb0ELb0ELb0ELi1ELb1ELi16ELNS_21DataCachePrefetchKindE0ELSI_0ELb0ELb0EEELNS_21GemmPipelineSchedulerE0ELb1ELNS_10TailNumberE0ELNS_25amd_buffer_coherence_enumE0ELb0ESC_EENS_35UniversalFlatmmPipelineAgBgCrPolicyEEENS_16CShuffleEpilogueINS_23CShuffleEpilogueProblemISC_SC_NS_5tupleIJEEEfDF16bST_SG_NS_12element_wise11PassThroughELi128ELi128ELi1ELi4ELi16ELi16ELi64ELb0ELi1ELb0ELi1ELi1ELb0EvvLb0EfDF16bLb0EEEvEEEEJNS_16FlatmmKernelArgsINS_18FlatmmScalePointerILi1ELi0EfEES11_Li0EEEEEEvDpT1_",
+            "start_ns": 4718169351728983,
+            "duration_ns": 68999,
+            "stream": [
+              2,
+              3
+            ],
+            "correlation": 3243,
+            "grid": null,
+            "block": null
+          }
+        }
+      },
+      "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]": {
+        "forwards": 1,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            960
+          ],
+          "calls_per_forward_p50": 960,
+          "summed_gpu_work_us_p50": 436637.134
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            40
+          ],
+          "calls_per_forward_p50": 40,
+          "summed_gpu_work_us_p50": 61193.818
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              20
+            ],
+            "calls_per_forward_p50": 20,
+            "summed_gpu_work_us_p50": 28954.043,
+            "symbols": {
+              "a8w4_gateup_prefill_0": 20
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+              "symbol": "a8w4_gateup_prefill_0",
+              "start_ns": 4718168921427801,
+              "duration_ns": 1577444,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 237,
+              "grid": [
+                9,
+                1152,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ]
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              20
+            ],
+            "calls_per_forward_p50": 20,
+            "summed_gpu_work_us_p50": 32239.775,
+            "symbols": {
+              "a8w4_down_prefill_0": 20
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+              "symbol": "a8w4_down_prefill_0",
+              "start_ns": 4718168923054166,
+              "duration_ns": 1716286,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 239,
+              "grid": [
+                2,
+                1152,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ]
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            20
+          ],
+          "calls_per_forward_p50": 20,
+          "summed_gpu_work_us_p50": 5231.479,
+          "gpu_stream_event_counts": [
+            {
+              "stream": [
+                2,
+                3
+              ],
+              "events": 20
+            }
+          ],
+          "representative": {
+            "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+            "symbol": "_ZN7ck_tile6kentryILi1ENS_12FlatmmKernelINS_33GemmSpatiallyLocalTilePartitionerINS_13TileGemmShapeINS_8sequenceIJLi128ELi128ELi128EEEENS4_IJLi1ELi4ELi1EEEENS4_IJLi16ELi16ELi64EEEELb0ELb0EEELi8ELi4EEENS_30FlatmmPipelineAGmemBGmemCRegV1INS_21FlatmmPipelineProblemIDB8_SC_fS8_NS_23TileGemmUniversalTraitsILb0ELb0ELb0ELb0ENS_13tensor_layout4gemm8RowMajorENSF_11ColumnMajorESG_Lb0ELb0ELb0ELi1ELb1ELi16ELNS_21DataCachePrefetchKindE0ELSI_0ELb0ELb0EEELNS_21GemmPipelineSchedulerE0ELb1ELNS_10TailNumberE0ELNS_25amd_buffer_coherence_enumE0ELb0ESC_EENS_35UniversalFlatmmPipelineAgBgCrPolicyEEENS_16CShuffleEpilogueINS_23CShuffleEpilogueProblemISC_SC_NS_5tupleIJEEEfDF16bST_SG_NS_12element_wise11PassThroughELi128ELi128ELi1ELi4ELi16ELi16ELi64ELb0ELi1ELb0ELi1ELi1ELb0EvvLb0EfDF16bLb0EEEvEEEEJNS_16FlatmmKernelArgsINS_18FlatmmScalePointerILi1ELi0EfEES11_Li0EEEEEEvDpT1_",
+            "start_ns": 4718168925351695,
+            "duration_ns": 265800,
+            "stream": [
+              2,
+              3
+            ],
+            "correlation": 264,
+            "grid": [
+              2560,
+              1,
+              1
+            ],
+            "block": [
+              256,
+              1,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "direct_dispatch_geometry": [
+      {
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "symbol": "a8w4_gateup_prefill_0",
+        "start_ns": 4718168921427801,
+        "duration_ns": 1577444,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 237,
+        "grid": [
+          9,
+          1152,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "symbol": "a8w4_down_prefill_0",
+        "start_ns": 4718168923054166,
+        "duration_ns": 1716286,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 239,
+        "grid": [
+          2,
+          1152,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_gateup_stream_0",
+        "start_ns": 4718169474556589,
+        "duration_ns": 151919,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 4134,
+        "grid": [
+          9,
+          408,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_down_stream_0",
+        "start_ns": 4718169474713499,
+        "duration_ns": 91000,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 4136,
+        "grid": [
+          20,
+          408,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_gateup_decode_0",
+        "start_ns": 4718169491252719,
+        "duration_ns": 16599,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 6692,
+        "grid": [
+          36,
+          7,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_down_decode_0",
+        "start_ns": 4718169491269319,
+        "duration_ns": 13999,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 6693,
+        "grid": [
+          320,
+          1,
+          1
+        ],
+        "block": [
+          448,
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "baseline": {
+    "trace": "split.trace.json.gz",
+    "sha256": "bf8c91ffb23d93ce5178148fe43dd4012ec33fe68b2f5c14fe42ddadcc347c71",
+    "rank": 0,
+    "world_size": 4,
+    "unmatched_expert_kernels": 0,
+    "scopes": {
+      "decode[bs=1 tok=1 d=1]": {
+        "forwards": 24,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287,
+            1287
+          ],
+          "calls_per_forward_p50": 1287.0,
+          "summed_gpu_work_us_p50": 10016.567
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80
+          ],
+          "calls_per_forward_p50": 80.0,
+          "summed_gpu_work_us_p50": 874.8435
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 521.7225,
+            "symbols": {
+              "a8w4_gateup_decode_0": 960
+            },
+            "representative": {
+              "annotation": "decode[bs=1 tok=1 d=1]",
+              "symbol": "a8w4_gateup_decode_0",
+              "start_ns": 4718477252159032,
+              "duration_ns": 13839,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 6610,
+              "grid": null,
+              "block": null
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 353.6005,
+            "symbols": {
+              "a8w4_down_decode_0": 960
+            },
+            "representative": {
+              "annotation": "decode[bs=1 tok=1 d=1]",
+              "symbol": "a8w4_down_decode_0",
+              "start_ns": 4718477252172872,
+              "duration_ns": 9399,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 6610,
+              "grid": null,
+              "block": null
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40
+          ],
+          "calls_per_forward_p50": 40.0,
+          "summed_gpu_work_us_p50": 562.4215,
+          "gpu_stream_event_counts": [
+            {
+              "stream": [
+                2,
+                26
+              ],
+              "events": 960
+            }
+          ],
+          "representative": {
+            "annotation": "decode[bs=1 tok=1 d=1]",
+            "symbol": "_ZN7ck_tile6kentryILi1ENS_12FlatmmKernelINS_33GemmSpatiallyLocalTilePartitionerINS_13TileGemmShapeINS_8sequenceIJLi128ELi128ELi128EEEENS4_IJLi1ELi4ELi1EEEENS4_IJLi16ELi16ELi64EEEELb0ELb0EEELi8ELi4EEENS_30FlatmmPipelineAGmemBGmemCRegV1INS_21FlatmmPipelineProblemIDB8_SC_fS8_NS_23TileGemmUniversalTraitsILb1ELb0ELb0ELb0ENS_13tensor_layout4gemm8RowMajorENSF_11ColumnMajorESG_Lb0ELb0ELb0ELi1ELb1ELi16ELNS_21DataCachePrefetchKindE0ELSI_0ELb0ELb0EEELNS_21GemmPipelineSchedulerE0ELb1ELNS_10TailNumberE0ELNS_25amd_buffer_coherence_enumE0ELb0ESC_EENS_35UniversalFlatmmPipelineAgBgCrPolicyEEENS_16CShuffleEpilogueINS_23CShuffleEpilogueProblemISC_SC_NS_5tupleIJEEEfDF16bST_SG_NS_12element_wise11PassThroughELi128ELi128ELi1ELi4ELi16ELi16ELi64ELb0ELi1ELb0ELi1ELi1ELb0EvvLb0EfDF16bLb0EEEvEEEEJNS_16FlatmmKernelArgsINS_18FlatmmScalePointerILi1ELi0EfEES11_Li0EEEEEEvDpT1_",
+            "start_ns": 4718477252180432,
+            "duration_ns": 13879,
+            "stream": [
+              2,
+              26
+            ],
+            "correlation": 6610,
+            "grid": null,
+            "block": null
+          }
+        },
+        "main_stream": {
+          "stream": [
+            2,
+            3
+          ],
+          "native_gpu_annotation_span_us_p50": 9237.732,
+          "calls_per_forward": [
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999,
+            999
+          ],
+          "calls_per_forward_p50": 999.0,
+          "summed_gpu_work_us_p50": 7943.6665
+        }
+      },
+      "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]": {
+        "forwards": 1,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            1426
+          ],
+          "calls_per_forward_p50": 1426,
+          "summed_gpu_work_us_p50": 145192.927
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            80
+          ],
+          "calls_per_forward_p50": 80,
+          "summed_gpu_work_us_p50": 33121.432
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              40
+            ],
+            "calls_per_forward_p50": 40,
+            "summed_gpu_work_us_p50": 20305.147,
+            "symbols": {
+              "a8w4_gateup_stream_0": 39,
+              "a8w4_gateup_decode_0": 1
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+              "symbol": "a8w4_gateup_stream_0",
+              "start_ns": 4718477113200247,
+              "duration_ns": 894562,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 3087,
+              "grid": null,
+              "block": null
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              40
+            ],
+            "calls_per_forward_p50": 40,
+            "summed_gpu_work_us_p50": 12816.285,
+            "symbols": {
+              "a8w4_down_prefill_0": 20,
+              "a8w4_down_stream_0": 19,
+              "a8w4_down_decode_0": 1
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+              "symbol": "a8w4_down_prefill_0",
+              "start_ns": 4718477114105410,
+              "duration_ns": 638561,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 3087,
+              "grid": null,
+              "block": null
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            40
+          ],
+          "calls_per_forward_p50": 40,
+          "summed_gpu_work_us_p50": 4112.534,
+          "gpu_stream_event_counts": [
+            {
+              "stream": [
+                2,
+                3
+              ],
+              "events": 20
+            },
+            {
+              "stream": [
+                2,
+                11
+              ],
+              "events": 20
+            }
+          ],
+          "representative": {
+            "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+            "symbol": "_ZN7ck_tile6kentryILi1ENS_12FlatmmKernelINS_33GemmSpatiallyLocalTilePartitionerINS_13TileGemmShapeINS_8sequenceIJLi128ELi128ELi128EEEENS4_IJLi1ELi4ELi1EEEENS4_IJLi16ELi16ELi64EEEELb0ELb0EEELi8ELi4EEENS_30FlatmmPipelineAGmemBGmemCRegV1INS_21FlatmmPipelineProblemIDB8_SC_fS8_NS_23TileGemmUniversalTraitsILb0ELb0ELb0ELb0ENS_13tensor_layout4gemm8RowMajorENSF_11ColumnMajorESG_Lb0ELb0ELb0ELi1ELb1ELi16ELNS_21DataCachePrefetchKindE0ELSI_0ELb0ELb0EEELNS_21GemmPipelineSchedulerE0ELb1ELNS_10TailNumberE0ELNS_25amd_buffer_coherence_enumE0ELb0ESC_EENS_35UniversalFlatmmPipelineAgBgCrPolicyEEENS_16CShuffleEpilogueINS_23CShuffleEpilogueProblemISC_SC_NS_5tupleIJEEEfDF16bST_SG_NS_12element_wise11PassThroughELi128ELi128ELi1ELi4ELi16ELi16ELi64ELb0ELi1ELb0ELi1ELi1ELb0EvvLb0EfDF16bLb0EEEvEEEEJNS_16FlatmmKernelArgsINS_18FlatmmScalePointerILi1ELi0EfEES11_Li0EEEEEEvDpT1_",
+            "start_ns": 4718477113014367,
+            "duration_ns": 71719,
+            "stream": [
+              2,
+              3
+            ],
+            "correlation": 3087,
+            "grid": null,
+            "block": null
+          }
+        }
+      },
+      "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]": {
+        "forwards": 1,
+        "all_stream_kernels": {
+          "calls_per_forward": [
+            800
+          ],
+          "calls_per_forward_p50": 800,
+          "summed_gpu_work_us_p50": 432571.33
+        },
+        "a8w4_gateup_and_down": {
+          "calls_per_forward": [
+            40
+          ],
+          "calls_per_forward_p50": 40,
+          "summed_gpu_work_us_p50": 60913.238
+        },
+        "stages": {
+          "gateup": {
+            "calls_per_forward": [
+              20
+            ],
+            "calls_per_forward_p50": 20,
+            "summed_gpu_work_us_p50": 28908.717,
+            "symbols": {
+              "a8w4_gateup_prefill_0": 20
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+              "symbol": "a8w4_gateup_prefill_0",
+              "start_ns": 4718476689141844,
+              "duration_ns": 1573605,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 259,
+              "grid": [
+                9,
+                1152,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ]
+            }
+          },
+          "down": {
+            "calls_per_forward": [
+              20
+            ],
+            "calls_per_forward_p50": 20,
+            "summed_gpu_work_us_p50": 32004.521,
+            "symbols": {
+              "a8w4_down_prefill_0": 20
+            },
+            "representative": {
+              "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+              "symbol": "a8w4_down_prefill_0",
+              "start_ns": 4718476690762610,
+              "duration_ns": 1708844,
+              "stream": [
+                2,
+                3
+              ],
+              "correlation": 261,
+              "grid": [
+                2,
+                1152,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ]
+            }
+          }
+        },
+        "shared_cktile_down": {
+          "calls_per_forward": [
+            20
+          ],
+          "calls_per_forward_p50": 20,
+          "summed_gpu_work_us_p50": 4893.835,
+          "gpu_stream_event_counts": [
+            {
+              "stream": [
+                2,
+                3
+              ],
+              "events": 20
+            }
+          ],
+          "representative": {
+            "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+            "symbol": "_ZN7ck_tile6kentryILi1ENS_12FlatmmKernelINS_33GemmSpatiallyLocalTilePartitionerINS_13TileGemmShapeINS_8sequenceIJLi128ELi128ELi128EEEENS4_IJLi1ELi4ELi1EEEENS4_IJLi16ELi16ELi64EEEELb0ELb0EEELi8ELi4EEENS_30FlatmmPipelineAGmemBGmemCRegV1INS_21FlatmmPipelineProblemIDB8_SC_fS8_NS_23TileGemmUniversalTraitsILb0ELb0ELb0ELb0ENS_13tensor_layout4gemm8RowMajorENSF_11ColumnMajorESG_Lb0ELb0ELb0ELi1ELb1ELi16ELNS_21DataCachePrefetchKindE0ELSI_0ELb0ELb0EEELNS_21GemmPipelineSchedulerE0ELb1ELNS_10TailNumberE0ELNS_25amd_buffer_coherence_enumE0ELb0ESC_EENS_35UniversalFlatmmPipelineAgBgCrPolicyEEENS_16CShuffleEpilogueINS_23CShuffleEpilogueProblemISC_SC_NS_5tupleIJEEEfDF16bST_SG_NS_12element_wise11PassThroughELi128ELi128ELi1ELi4ELi16ELi16ELi64ELb0ELi1ELb0ELi1ELi1ELb0EvvLb0EfDF16bLb0EEEvEEEEJNS_16FlatmmKernelArgsINS_18FlatmmScalePointerILi1ELi0EfEES11_Li0EEEEEEvDpT1_",
+            "start_ns": 4718476688619523,
+            "duration_ns": 246600,
+            "stream": [
+              2,
+              3
+            ],
+            "correlation": 244,
+            "grid": [
+              2560,
+              1,
+              1
+            ],
+            "block": [
+              256,
+              1,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "direct_dispatch_geometry": [
+      {
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "symbol": "a8w4_gateup_prefill_0",
+        "start_ns": 4718476689141844,
+        "duration_ns": 1573605,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 259,
+        "grid": [
+          9,
+          1152,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "symbol": "a8w4_down_prefill_0",
+        "start_ns": 4718476690762610,
+        "duration_ns": 1708844,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 261,
+        "grid": [
+          2,
+          1152,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_gateup_stream_0",
+        "start_ns": 4718477236507983,
+        "duration_ns": 151720,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 3979,
+        "grid": [
+          9,
+          408,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_down_stream_0",
+        "start_ns": 4718477236665864,
+        "duration_ns": 88879,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 3981,
+        "grid": [
+          20,
+          408,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_gateup_decode_0",
+        "start_ns": 4718477251561310,
+        "duration_ns": 13959,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 6501,
+        "grid": [
+          36,
+          6,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "symbol": "a8w4_down_decode_0",
+        "start_ns": 4718477251575270,
+        "duration_ns": 9719,
+        "stream": [
+          2,
+          3
+        ],
+        "correlation": 6502,
+        "grid": [
+          320,
+          1,
+          1
+        ],
+        "block": [
+          384,
+          1,
+          1
+        ]
+      }
+    ]
+  }
+}
