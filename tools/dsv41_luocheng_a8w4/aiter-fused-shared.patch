@@ -1,0 +1,75 @@
+--- a/aiter/fused_moe.py
++++ b/aiter/fused_moe.py
+@@ -1195,0 +1196,37 @@
++@dataclass(frozen=True)
++class _RuntimeA8W4SharedWeights:
++    decode: object
++    gate_up: torch.Tensor
++    gate_up_scale: torch.Tensor
++    down: torch.Tensor
++    down_scale: torch.Tensor
++
++
++def prepare_runtime_a8w4_shared_weights(w1, w1_scale, w2, w2_scale):
++    """Prepare the original FP8 PTPC shared slot for both serving paths."""
++    from aiter.ops.shuffle import shuffle_weight
++    from pyhip.ops.moe.flydsl.moe_a8w4 import prepare_a8w4_shared_weights
++
++    return _RuntimeA8W4SharedWeights(
++        decode=prepare_a8w4_shared_weights(w1, w1_scale, w2, w2_scale),
++        gate_up=shuffle_weight(w1, layout=(16, 16)),
++        gate_up_scale=w1_scale.reshape(-1, 1).contiguous(),
++        down=shuffle_weight(w2, layout=(16, 16), pad_k_to=128),
++        down_scale=w2_scale.reshape(-1, 1).contiguous(),
++    )
++
++
++def _run_runtime_a8w4_shared(hidden_states, weights, swiglu_limit):
++    quantize = get_quant(QuantType.per_Token)
++    x_fp8, x_scale = quantize(hidden_states, quant_dtype=dtypes.fp8)
++    gate_up = aiter.gemm_a8w8_bpreshuffle(
++        x_fp8, weights.gate_up, x_scale, weights.gate_up_scale, dtype=torch.bfloat16
++    )
++    inter = hidden_states.new_empty((hidden_states.shape[0], gate_up.shape[1] // 2))
++    aiter.silu_and_mul(inter, gate_up, swiglu_limit)
++    inter_fp8, inter_scale = quantize(inter, quant_dtype=dtypes.fp8)
++    return aiter.gemm_a8w8_bpreshuffle(
++        inter_fp8, weights.down, inter_scale, weights.down_scale, dtype=torch.bfloat16
++    )
++
++
+@@ -1245,0 +1283 @@
++    runtime_a8w4_shared_weights=None,
+@@ -1274,0 +1313,2 @@
++    An optional prepared FP8 shared slot occupies the final route column.
++    Single-row calls fuse that slot into the routed kernels.
+@@ -1297,0 +1338,22 @@
++        swiglu_limit = swiglu_limit or 0.0
++        shared = runtime_a8w4_shared_weights
++        if shared is not None:
++            if hidden_states.shape[0] == 1:
++                return fused_moe_a8w4(
++                    hidden_states, runtime_a8w4_weights, topk_weight, topk_ids,
++                    output=output, swiglu_limit=swiglu_limit, shared_weights=shared.decode,
++                )
++            routed = fused_moe_a8w4(
++                hidden_states, runtime_a8w4_weights,
++                topk_weight[:, :-1].contiguous(), topk_ids[:, :-1].contiguous(),
++                output=output, swiglu_limit=swiglu_limit,
++            )
++            shared_output = _run_runtime_a8w4_shared(hidden_states, shared, swiglu_limit)
++            shared_live = (topk_ids[:, 0] >= 0) & (
++                topk_ids[:, -1] == runtime_a8w4_weights.experts
++            )
++            shared_gate = torch.where(
++                shared_live, topk_weight[:, -1], 0
++            ).to(routed.dtype)
++            return routed.addcmul_(shared_output, shared_gate[:, None])
++
+@@ -1304,2 +1366,4 @@
+-            swiglu_limit=swiglu_limit or 0.0,
+-        )
++            swiglu_limit=swiglu_limit,
++        )
++    if runtime_a8w4_shared_weights is not None:
++        raise ValueError("The prepared shared slot requires runtime A8W4 routed weights")

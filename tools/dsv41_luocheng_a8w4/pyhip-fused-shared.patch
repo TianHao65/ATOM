@@ -1,0 +1,397 @@
+diff --git a/src/pyhip/ops/moe/flydsl/moe_a8w4.py b/src/pyhip/ops/moe/flydsl/moe_a8w4.py
+index 5077fce..18e2147 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_a8w4.py
++++ b/src/pyhip/ops/moe/flydsl/moe_a8w4.py
+@@ -126,0 +127,47 @@ class A8W4Weights:
++@dataclass(frozen=True)
++class A8W4SharedWeights:
++    """One FP8 PTPC expert in the decode kernels' private weight layout."""
++
++    w1: torch.Tensor
++    w1_scale: torch.Tensor
++    w2: torch.Tensor
++    w2_scale: torch.Tensor
++    hidden: int
++    inter: int
++
++
++def prepare_a8w4_shared_weights(w1, w1_scale, w2, w2_scale):
++    """Preshuffle one shared expert's unshuffled FNUZ weights without requantizing.
++
++    Gate/up is ``[2I, H]`` with the gate rows first and down is ``[H, I]``.
++    Both use FP32 per-output-channel scales and have no intermediate padding.
++    """
++    hidden, inter = w2.shape
++    if (
++        w1.shape != (2 * inter, hidden)
++        or hidden % 512
++        or inter % 64
++        or any(w.dtype != torch.float8_e4m3fnuz for w in (w1, w2))
++    ):
++        raise ValueError("Expected unshuffled FNUZ shared weights [2I,H] and [H,I]")
++
++    def pack(weight, scale):
++        rows, cols = weight.shape
++        if (
++            scale.dtype != torch.float32
++            or scale.shape not in ((rows,), (rows, 1))
++            or weight.device != w2.device
++            or scale.device != w2.device
++        ):
++            raise ValueError("Expected one FP32 scale per FP8 output channel")
++        # The FP4 layout holds eight packed bytes at each of these lane offsets.
++        # This format holds the same sixteen logical weights as FP8 bytes.
++        values = weight.contiguous().view(torch.uint8)
++        values = values.view(rows // 16, 16, cols // 64, 4, 16)
++        return values.permute(0, 2, 3, 1, 4).contiguous(), scale.reshape(rows).contiguous()
++
++    q1, s1 = pack(w1, w1_scale)
++    q2, s2 = pack(w2, w2_scale)
++    return A8W4SharedWeights(q1, s1, q2, s2, hidden, inter)
++
++
+@@ -245 +292 @@ def _decode_fits(H, I, topk, paired):
+-def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq, swiglu_limit):
++def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq, swiglu_limit, shared_expert_id=None):
+@@ -250 +297 @@ def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq, swiglu_limit):
+-                                       SWIGLU_LIMIT=swiglu_limit)
++                                       SWIGLU_LIMIT=swiglu_limit, SHARED_EXPERT_ID=shared_expert_id)
+@@ -254 +301,2 @@ def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq, swiglu_limit):
+-    return gateup, compile_a8w4_down_decode(N=H, K=I, TOPK=topk, WAVES=_decode_waves(topk, False))
++    return gateup, compile_a8w4_down_decode(N=H, K=I, TOPK=topk, WAVES=_decode_waves(topk, False),
++                                           SHARED_EXPERT_ID=shared_expert_id)
+@@ -376,0 +425,18 @@ def _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output, swi
++def _fused_moe_decode_mixed(x, weights, shared, topk_weight, topk_ids, output, swiglu_limit):
++    topk = topk_ids.shape[1]
++    H, I = shared.hidden, shared.inter
++    if H != weights.hidden or I != weights.inter_padded or I != weights.inter:
++        raise ValueError("The routed and shared experts require the same unpadded rank-local shape")
++    if not 2 <= topk <= 16 or not _decode_fits(H, I, topk, False):
++        raise ValueError(f"Unsupported mixed decode shape H={H}, I={I}, top-k={topk}")
++    ids = topk_ids.to(torch.int32).contiguous()
++    routing = topk_weight.to(torch.float32).contiguous()
++    gateup, down = _decode_kernels(2 * I, H, I, topk, False, False, swiglu_limit, weights.experts)
++    mid = torch.empty((1, topk, I), dtype=torch.float32, device=x.device)
++    _launch("a8w4_gateup_decode_mixed", gateup, x, routing, ids, weights.w1,
++            weights.w1_delta, weights.w1_scale, mid, mid, mid, 1, shared.w1, shared.w1_scale)
++    _launch("a8w4_down_decode_mixed", down, mid, routing, ids, routing, weights.w2,
++            weights.w2_delta, weights.w2_scale, output, 1, shared.w2, shared.w2_scale)
++    return output
++
++
+@@ -610 +676 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-                   block_m=None, block_n=None, tile_k=None, swiglu_limit=0.0):
++                   block_m=None, block_n=None, tile_k=None, swiglu_limit=0.0, shared_weights=None):
+@@ -630,0 +697,6 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
++
++    At M=1, ``shared_weights`` may hold an additional FP8 PTPC expert from
++    ``prepare_a8w4_shared_weights``. Its route ID is ``weights.experts``.
++    The two decode stages execute the FP8 and MXFP4 routes together. Put a
++    routed expert ID in the first column for a live row. A negative first
++    ID masks the entire row, including the fixed shared slot.
+@@ -645,0 +718,5 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
++    if shared_weights is not None:
++        if M != 1 or any(tile is not None for tile in (block_m, block_n, tile_k)):
++            raise ValueError("Mixed FP8 and MXFP4 experts require the M=1 decode path")
++        return _fused_moe_decode_mixed(hidden_states, weights, shared_weights,
++                                      topk_weight, topk_ids, output, swiglu_limit)
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
+index adc1a26..b645d3e 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
+@@ -196 +196,50 @@ def _wave_index(tid):
+-def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_LIMIT=0.0):
++def _gateup_load_routed(p_weight, p_delta, expert, rb, kb0, lane, N, K):
++    KB, KQ = K // 64, a8w4.delta_dwords(K)
++    w_buf = a8w4.expert_bytes(p_weight, expert, a8w4.weight_bytes(N, K))
++    d_buf = a8w4.expert_bytes(p_delta, expert, a8w4.delta_bytes(N, K))
++    w_voff = fx.Int32(lane * 16)
++    d_voff = fx.Int32(((lane % 32) // 16) * 64 + (lane % 8) * 8)
++    # Issue the delta before the two weight block pairs it covers.
++    raws, deltas = [], []
++    for p in range_constexpr(KB // 4):
++        if const_expr(p % 2 == 0):
++            rocdl.sched_barrier(0)
++            deltas.append(a8w4.load_dwordx2(d_buf, d_voff, fx.Int32((rb * KQ + kb0 // 4 + p // 2) * a8w4.D_BLOCK_BYTES)))
++        raws.append(_load_dwordx4(w_buf, w_voff, fx.Int32((rb * KB + kb0 + 2 * p) * a8w4.W_BLOCK_BYTES)))
++    return raws, deltas
++
++
++def _gateup_routed_mfma(raws, deltas, xq_base, lut_base, kb0, x_off, lane, pairs):
++    d_shift = fx.Uint32((lane // 32) * 8)
++    accs = [fx.full(4, 0.0, fx.Float32), fx.full(4, 0.0, fx.Float32)]
++    for p in range_constexpr(pairs):
++        xop = _lds_load(xq_base, (kb0 + 2 * p) * 64 + x_off, fx.Int64, 2, 16)
++        shift = d_shift + fx.Uint32(16 * (p % 2))
++        ops = [
++            _decode_block(Vec.from_elements([raws[p][2 * h], raws[p][2 * h + 1]], fx.Uint32),
++                          _lut_at(lut_base, deltas[p // 2][h], shift))
++            for h in range_constexpr(2)
++        ]
++        for c in range_constexpr(2):
++            for h in range_constexpr(2):
++                accs[h] = _mfma(xop[c], ops[h][c], accs[h])
++    return Vec(accs[0]), Vec(accs[1])
++
++
++def _gateup_shared_mfma(p_shared, xq_base, rb, kb0, x_off, lane, N, K):
++    KB = K // 64
++    buf = a8w4.expert_bytes(p_shared, fx.Int32(0), N * K)
++    accs = [fx.full(4, 0.0, fx.Float32), fx.full(4, 0.0, fx.Float32)]
++    for p in range_constexpr(KB // 4):
++        xop = _lds_load(xq_base, (kb0 + 2 * p) * 64 + x_off, fx.Int64, 2, 16)
++        block = fx.Int32((rb * KB + kb0 + 2 * p) * (2 * a8w4.W_BLOCK_BYTES))
++        for h in range_constexpr(2):
++            # A lane owns two adjacent rows in one of the two 64-K blocks.
++            weight = _load_dwordx4(buf, fx.Int32(lane * 32 + h * 16), block).bitcast(fx.Int64)
++            for c in range_constexpr(2):
++                accs[h] = _mfma(xop[c], weight[c], accs[h])
++    return Vec(accs[0]), Vec(accs[1])
++
++
++def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_LIMIT=0.0,
++                              SHARED_EXPERT_ID=None):
+@@ -205,0 +255 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
++    When ``SHARED_EXPERT_ID`` is set, the launcher also takes shared FP8 weight and scale after ``M``.
+@@ -210 +259,0 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-    KQ = a8w4.delta_dwords(K)
+@@ -217,2 +266 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-    W_BYTES = a8w4.weight_bytes(N, K)
+-    D_BYTES = a8w4.delta_bytes(N, K)
++    assert SHARED_EXPERT_ID is None or (PLAN is None and not PREQUANT)
+@@ -246,0 +295,2 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
++        p_shared: fx.Pointer,
++        p_shared_scale: fx.Pointer,
+@@ -263,2 +313,8 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-        route_expert = fx.Int32(fx.recast_iter(fx.Int32, fxh._as_ptr(p_ids))[route])
+-        expert = (route_expert >= 0).select(route_expert, fx.Int32(0))
++        ids = fx.recast_iter(fx.Int32, fxh._as_ptr(p_ids))
++        route_expert = fx.Int32(ids[route])
++        valid = route_expert >= 0
++        if const_expr(SHARED_EXPERT_ID is not None):
++            # ATOM can leave its fixed shared slot populated on a graph
++            # padding row. The first routed ID identifies a live token.
++            valid = valid & (route_expert <= SHARED_EXPERT_ID) & (ids[token * TOPK] >= 0)
++        expert = valid.select(route_expert, fx.Int32(0))
+@@ -289,8 +344,0 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-        w_buf = a8w4.expert_bytes(p_weight, expert, W_BYTES)
+-        d_buf = a8w4.expert_bytes(p_w_delta, expert, D_BYTES)
+-        w_voff = fx.Int32(lane * 16)
+-        d_voff = fx.Int32(((lane % 32) // 16) * 64 + (lane % 8) * 8)
+-        d_shift = fx.Uint32((lane // 32) * 8)
+-        # Each delta load (both rows, 4 blocks) right before the two block pairs it covers (the
+-        # scheduler would otherwise group it after all weight loads), so the first pairs do not wait
+-        # for every load.
+@@ -298,5 +346,2 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-        for p in range_constexpr(PAIRS):
+-            if const_expr(p % 2 == 0):
+-                rocdl.sched_barrier(0)
+-                deltas.append(a8w4.load_dwordx2(d_buf, d_voff, fx.Int32((rb * KQ + kb0 // 4 + p // 2) * a8w4.D_BLOCK_BYTES)))
+-            raws.append(_load_dwordx4(w_buf, w_voff, fx.Int32((rb * KB + kb0 + 2 * p) * a8w4.W_BLOCK_BYTES)))
++        if const_expr(SHARED_EXPERT_ID is None):
++            raws, deltas = _gateup_load_routed(p_weight, p_w_delta, expert, rb, kb0, lane, N, K)
+@@ -310 +355,4 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-            ws = fx.make_view(fxh._as_ptr(p_w_scale, fx.Float32) + fx.Int64(expert) * N, fx.make_layout(N, 1))
++            routed_id = expert
++            if const_expr(SHARED_EXPERT_ID is not None):
++                routed_id = (expert == SHARED_EXPERT_ID).select(fx.Int32(0), expert)
++            ws = fx.make_view(fxh._as_ptr(p_w_scale, fx.Float32) + fx.Int64(routed_id) * N, fx.make_layout(N, 1))
+@@ -312,0 +361,5 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
++            if const_expr(SHARED_EXPERT_ID is not None):
++                if expert == SHARED_EXPERT_ID:
++                    shared_scale = fx.recast_iter(fx.Float32, fxh._as_ptr(p_shared_scale))
++                    ws_gate = shared_scale[channel]
++                    ws_up = shared_scale[I + channel]
+@@ -339,12 +392,10 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-        accs = [fx.full(4, 0.0, fx.Float32), fx.full(4, 0.0, fx.Float32)]
+-        for p in range_constexpr(PAIRS):
+-            xop = _lds_load(xq_base, (kb0 + 2 * p) * 64 + x_off, fx.Int64, 2, 16)
+-            shift = d_shift + fx.Uint32(16 * (p % 2))
+-            ops = [
+-                _decode_block(Vec.from_elements([raws[p][2 * h], raws[p][2 * h + 1]], fx.Uint32),
+-                              _lut_at(lut_base, deltas[p // 2][h], shift))
+-                for h in range_constexpr(2)
+-            ]
+-            for c in range_constexpr(2):
+-                for h in range_constexpr(2):
+-                    accs[h] = _mfma(xop[c], ops[h][c], accs[h])
++        if const_expr(SHARED_EXPERT_ID is None):
++            a0, a1 = _gateup_routed_mfma(raws, deltas, xq_base, lut_base, kb0, x_off, lane, PAIRS)
++        else:
++            a0, a1 = fx.full(4, 0.0, fx.Float32), fx.full(4, 0.0, fx.Float32)
++            if expert == SHARED_EXPERT_ID:
++                a0, a1 = _gateup_shared_mfma(p_shared, xq_base, rb, kb0, x_off, lane, N, K)
++            else:
++                mixed_raws, mixed_deltas = _gateup_load_routed(p_weight, p_w_delta, expert, rb, kb0, lane, N, K)
++                a0, a1 = _gateup_routed_mfma(mixed_raws, mixed_deltas, xq_base, lut_base, kb0, x_off, lane, PAIRS)
++        accs = [a0, a1]
+@@ -385,0 +437,25 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
++    if SHARED_EXPERT_ID is not None:
++        @flyc.jit
++        def launch_mixed(
++            p_x: fx.Pointer,
++            p_x_scale: fx.Pointer,
++            p_ids: fx.Pointer,
++            p_weight: fx.Pointer,
++            p_w_delta: fx.Pointer,
++            p_w_scale: fx.Pointer,
++            p_out: fx.Pointer,
++            p_plan: fx.Pointer,
++            p_y: fx.Pointer,
++            M: fx.Int32,
++            p_shared: fx.Pointer,
++            p_shared_scale: fx.Pointer,
++            stream: fx.Stream,
++        ):
++            CompilationContext.get_current()
++            a8w4_gateup_decode(
++                p_x, p_x_scale, p_ids, p_weight, p_w_delta, p_w_scale, p_out, p_plan, p_y,
++                p_shared, p_shared_scale, M,
++            ).launch(grid=(NJ, M * TOPK, 1), block=(256, 1, 1), stream=stream)
++
++        return launch_mixed
++
+@@ -402 +478,2 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-            p_x, p_x_scale, p_ids, p_weight, p_w_delta, p_w_scale, p_out, p_plan, p_y, M,
++            p_x, p_x_scale, p_ids, p_weight, p_w_delta, p_w_scale, p_out, p_plan, p_y,
++            p_weight, p_w_scale, M,
+@@ -408 +485,38 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_
+-def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
++def _down_load_routed(p_weight, p_delta, expert, j, lane, N, K):
++    KB, KQ = K // 64, a8w4.delta_dwords(K)
++    w_buf = a8w4.expert_bytes(p_weight, expert, a8w4.weight_bytes(N, K))
++    d_buf = a8w4.expert_bytes(p_delta, expert, a8w4.delta_bytes(N, K))
++    w_voff = fx.Int32(lane * 8)
++    d_voff = fx.Int32((lane // 32) * 64 + (lane % 16) * 4)
++    raws, deltas = [], []
++    for i in range_constexpr(KB):
++        if const_expr(i % 4 == 0):
++            deltas.append(a8w4.load_dword(d_buf, d_voff, fx.Int32((j * KQ + i // 4) * a8w4.D_BLOCK_BYTES))[0])
++        raws.append(a8w4.load_dwordx2(w_buf, w_voff, fx.Int32((j * KB + i) * a8w4.W_BLOCK_BYTES)))
++    return raws, deltas
++
++
++def _down_routed_mfma(raws, deltas, mq_base, lut_base, base, x_off, K):
++    acc = fx.full(4, 0.0, fx.Float32)
++    for i in range_constexpr(K // 64):
++        xop = _lds_load(mq_base, base + i * 64 + x_off, fx.Int64, 2, 16)
++        ops = _decode_block(raws[i], _lut_at(lut_base, deltas[i // 4], fx.Uint32(8 * (i % 4))))
++        for c in range_constexpr(2):
++            acc = _mfma(xop[c], ops[c], acc)
++    return Vec(acc)[0]
++
++
++def _down_shared_mfma(p_shared, mq_base, base, x_off, j, lane, N, K):
++    KB = K // 64
++    buf = a8w4.expert_bytes(p_shared, fx.Int32(0), N * K)
++    acc = fx.full(4, 0.0, fx.Float32)
++    for i in range_constexpr(KB):
++        xop = _lds_load(mq_base, base + i * 64 + x_off, fx.Int64, 2, 16)
++        block = fx.Int32((j * KB + i) * (2 * a8w4.W_BLOCK_BYTES))
++        weight = _load_dwordx4(buf, fx.Int32(lane * 16), block).bitcast(fx.Int64)
++        for c in range_constexpr(2):
++            acc = _mfma(xop[c], weight[c], acc)
++    return Vec(acc)[0]
++
++
++def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None, SHARED_EXPERT_ID=None):
+@@ -414,0 +529 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
++    When ``SHARED_EXPERT_ID`` is set, the launcher also takes shared FP8 weight and scale after ``M``.
+@@ -417,2 +531,0 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-    KB = K // 64
+-    KQ = a8w4.delta_dwords(K)
+@@ -423,2 +536 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-    W_BYTES = a8w4.weight_bytes(N, K)
+-    D_BYTES = a8w4.delta_bytes(N, K)
++    assert SHARED_EXPERT_ID is None or WAVES == TOPK
+@@ -441,0 +554,2 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
++        p_shared: fx.Pointer,
++        p_shared_scale: fx.Pointer,
+@@ -458,2 +571,0 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-        w_voff = fx.Int32(lane * 8)
+-        d_voff = fx.Int32((lane // 32) * 64 + (lane % 16) * 4)
+@@ -471,2 +583,5 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-            valid[r] = valid[r] & (expert >= 0)
+-            experts.append((expert >= 0).select(expert, fx.Int32(0)))
++            expert_valid = expert >= 0
++            if const_expr(SHARED_EXPERT_ID is not None):
++                expert_valid = expert_valid & (expert <= SHARED_EXPERT_ID) & (ids[token * TOPK] >= 0)
++            valid[r] = valid[r] & expert_valid
++            experts.append(expert_valid.select(expert, fx.Int32(0)))
+@@ -483,14 +598,7 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-        for r in range_constexpr(ROUNDS):
+-            w_buf = a8w4.expert_bytes(p_weight, experts[r], W_BYTES)
+-            d_buf = a8w4.expert_bytes(p_w_delta, experts[r], D_BYTES)
+-            # Each delta dword right before the weight blocks it covers.
+-            raws.append([])
+-            deltas.append([])
+-            for i in range_constexpr(KB):
+-                if const_expr(i % 4 == 0):
+-                    deltas[r].append(
+-                        a8w4.load_dword(d_buf, d_voff, fx.Int32((j * KQ + i // 4) * a8w4.D_BLOCK_BYTES))[0]
+-                    )
+-                raws[r].append(a8w4.load_dwordx2(w_buf, w_voff, fx.Int32((j * KB + i) * a8w4.W_BLOCK_BYTES)))
+-            ws = fx.make_view(fxh._as_ptr(p_w_scale, fx.Float32) + fx.Int64(experts[r]) * N, fx.make_layout(N, 1))
+-            chan_scale.append(ws[channel])
++        if const_expr(SHARED_EXPERT_ID is None):
++            for r in range_constexpr(ROUNDS):
++                raw, delta = _down_load_routed(p_weight, p_w_delta, experts[r], j, lane, N, K)
++                raws.append(raw)
++                deltas.append(delta)
++                ws = fx.recast_iter(fx.Float32, fxh._as_ptr(p_w_scale))
++                chan_scale.append(ws[fx.Int64(experts[r]) * N + channel])
+@@ -518,7 +626,18 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-            acc = fx.full(4, 0.0, fx.Float32)
+-            for i in range_constexpr(KB):
+-                xop = _lds_load(mq_base, base + i * 64 + x_off, fx.Int64, 2, 16)
+-                ops = _decode_block(raws[r][i], _lut_at(lut_base, deltas[r][i // 4], fx.Uint32(8 * (i % 4))))
+-                for c in range_constexpr(2):
+-                    acc = _mfma(xop[c], ops[c], acc)
+-            contrib = Vec(acc)[0] * chan_scale[r] * row_scale[r] * weights[r]
++            if const_expr(SHARED_EXPERT_ID is None):
++                part = _down_routed_mfma(raws[r], deltas[r], mq_base, lut_base, base, x_off, K)
++                contrib = part * chan_scale[r] * row_scale[r] * weights[r]
++            else:
++                part, channel_scale = fx.Float32(0.0), fx.Float32(0.0)
++                expert = experts[r]
++                # All lanes in a wave process the same route. Branch before
++                # weight loads to read exactly one weight format.
++                if expert == SHARED_EXPERT_ID:
++                    ws = fx.recast_iter(fx.Float32, fxh._as_ptr(p_shared_scale))
++                    channel_scale = ws[channel]
++                    part = _down_shared_mfma(p_shared, mq_base, base, x_off, j, lane, N, K)
++                else:
++                    ws = fx.recast_iter(fx.Float32, fxh._as_ptr(p_w_scale))
++                    channel_scale = ws[fx.Int64(expert) * N + channel]
++                    raw, delta = _down_load_routed(p_weight, p_w_delta, expert, j, lane, N, K)
++                    part = _down_routed_mfma(raw, delta, mq_base, lut_base, base, x_off, K)
++                contrib = part * channel_scale * row_scale[r] * weights[r]
+@@ -537,0 +657,24 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
++    if SHARED_EXPERT_ID is not None:
++        @flyc.jit
++        def launch_mixed(
++            p_mid: fx.Pointer,
++            p_mid_scale: fx.Pointer,
++            p_ids: fx.Pointer,
++            p_topk_weight: fx.Pointer,
++            p_weight: fx.Pointer,
++            p_w_delta: fx.Pointer,
++            p_w_scale: fx.Pointer,
++            p_out: fx.Pointer,
++            M: fx.Int32,
++            p_shared: fx.Pointer,
++            p_shared_scale: fx.Pointer,
++            stream: fx.Stream,
++        ):
++            CompilationContext.get_current()
++            a8w4_down_decode(
++                p_mid, p_mid_scale, p_ids, p_topk_weight, p_weight, p_w_delta, p_w_scale,
++                p_out, p_shared, p_shared_scale, M,
++            ).launch(grid=(NB, M, 1), block=(64 * WAVES, 1, 1), stream=stream)
++
++        return launch_mixed
++
+@@ -553 +696,2 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-            p_mid, p_mid_scale, p_ids, p_topk_weight, p_weight, p_w_delta, p_w_scale, p_out, M
++            p_mid, p_mid_scale, p_ids, p_topk_weight, p_weight, p_w_delta, p_w_scale,
++            p_out, p_weight, p_w_scale, M,
