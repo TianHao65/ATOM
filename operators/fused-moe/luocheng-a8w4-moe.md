@@ -9,13 +9,16 @@ per-row E4M3FNUZ activations. The port applies the model's SwiGLU clamp before
 the gate/up product, extends the decode kernel to H=5120, and masks padding
 routes during graph replay. [ATOM port and dependency patches](https://github.com/TianHao65/ATOM/tree/d45c74a0db5ba1d24fec49113525ca30f1993821/tools/dsv41_luocheng_a8w4) · [Luocheng M13](https://github.com/luocheng25/pyhip/commit/a641da286511f3f8b703f90b3f9a1ea66b18301a)
 
-The checkpoint's shared expert already uses FP8 PTPC. Original ATOM converts
-the routed experts to FP8 PTPC during loading and fuses the shared slot.
-The runtime A8W4 port computes the shared expert through ATOM's standalone
-FP8 PTPC path and combines its output before the TP reduction. Both split
-arms pad only the shared down GEMM from logical K=576 to physical K=640
-with zeros. The routed intermediate remains 576. This handles the
-gfx942 preshuffled FP8 kernel's K alignment at graph batch 64.
+The `a8w4_fused` mode keeps the 384 routed experts in MXFP4 and the shared
+expert in FP8 PTPC. At M=1, both formats run in the same gate/up and down
+kernels, with all seven routes reduced in the down kernel.
+[Mixed-fusion results](#shared-expert-fusion-at-m1) · [Enabling mixed fusion](https://github.com/TianHao65/ATOM/tree/d4cb9b4f1b407f9a70742f02626d5b5f941c5bc2/tools/dsv41_luocheng_a8w4)
+
+At M>1, `a8w4_fused` uses separate routed and shared computations.
+The standalone shared down GEMM uses physical K=640 with zero padding
+from logical K=576 in both split modes and in the larger-M fallback.
+Original ATOM converts the routed weights to FP8 PTPC at load and
+executes the shared slot in the same FP8 kernels.
 
 ## Data
 
@@ -32,7 +35,8 @@ FlyDSL 0.5.0, and AITER `ad0d5e20`. [Checkpoint config](https://huggingface.co/g
 |---|---:|---:|---|---|
 | Original ATOM | 385 | 7 | FP8 E4M3FNUZ, per-channel scale | Fused at expert ID 384 |
 | ATOM PTPC, shared split | 384 | 6 | FP8 E4M3FNUZ, per-channel scale | Separate FP8 PTPC |
-| Luocheng A8W4 | 384 | 6 | MXFP4 E2M1, one E8M0 scale per 32 K | Separate FP8 PTPC |
+| Luocheng A8W4, shared split | 384 | 6 | MXFP4 E2M1, one E8M0 scale per 32 K | Separate FP8 PTPC |
+| Luocheng A8W4, M=1 mixed fusion | 385 | 7 | MXFP4 E2M1, one E8M0 scale per 32 K | FP8 PTPC fused at expert ID 384 |
 
 TP4 routed weight tensors before PyHIP packing are gate/up `[384,1152,2560]`
 and down `[384,5120,288]` in packed bytes. Their scale tensors are
@@ -41,6 +45,44 @@ real layer 20 TP4 rank 0 expert and router tensors with seeded BF16 inputs
 and identical post-top-k routes in both arms.
 
 ## Benchmarking and Profiling
+
+### Shared expert fusion at M1
+
+The paired serving run used PTL52 GPUs 0–3, Base TP4 C1, 100K/150, eight
+matched requests and 89,984 cached tokens per request.
+
+| P50 metric | Split A8W4, E384/K6 | Mixed fused A8W4, E385/K7 | Change |
+|---|---:|---:|---:|
+| TTFT (ms) | 620.73 | 629.97 | +1.49% |
+| TPOT (ms) | 8.39 | 7.71 | −8.19% |
+| End-to-end (ms) | 1,873.00 | 1,777.13 | −5.12% |
+
+Peak load memory was 75.71 GB per rank with split A8W4 and 76.07 GB
+with mixed fusion. The earlier original fused FP8 run recorded
+7.45 ms P50 TPOT and 134.26 GB/rank at load.
+[Matched serving measurements](evidence/fused-shared-serving.json) · [Original serving A/B](#serving-ab)
+
+The single-GPU probe used the checkpoint's layer-20 TP4 rank-0 weights
+on MI308X at M=1, H=5120, I=576 and SwiGLU clamp 10.0. The final build
+used one fixed-seed route sample and seven windows of 100 graph replays.
+Median latency was 28.91 µs for original fused FP8, 48.50 µs for split
+A8W4 and 31.17 µs for mixed fusion. Mixed fusion was 35.7% faster than
+split A8W4 and 7.8% slower than original fused FP8.
+[Probe data and ownership checks](evidence/fused-shared-probe.json) · [Probe script](evidence/bench_fused_shared.py)
+
+In the separate matched 100K/24 profile, rank 0 recorded 24 Decode
+forwards. The number of GPU kernels per step fell from 1,287 to 967.
+The 40 standalone shared CKTile Down calls per step fell to zero, and
+each arm still ran 40 Gate/Up and 40 Down kernels. The main-stream GPU
+span dropped from 9.238 to 7.993 ms P50. The M=8192 prefill chunk still
+ran 20 standalone shared Down calls in each arm. [Rank-0 audit](evidence/fused-shared-kernels/audit.json) · [Complete split trace](evidence/fused-shared-kernels/split.trace.json.gz) · [Complete mixed trace](evidence/fused-shared-kernels/mixed.trace.json.gz)
+
+The masked-row check left the prefilled shared ID in place with all
+six routed IDs masked. Eager and graph replay both returned zero.
+All eight serving request pairs had no observed GPU process overlap
+during timing. A foreign process appeared during candidate startup and
+cleared before timing. One of eight paired output text hashes matched
+across starts. The task containers and port were released.
 
 ### Routed MoE operator
 
@@ -135,50 +177,6 @@ Decode step the shared down GEMM finishes 10.520 µs after routed down.
 
 [Open decode after in Perfetto](https://ui.perfetto.dev/#!/?url=https%3A%2F%2Fraw.githubusercontent.com%2FTianHao65%2FATOM%2F77e1560fd3f781de7ad0fe740659f523700b427f%2Foperators%2Ffused-moe%2Fevidence%2Fperfetto%2Frank0-after.trace.json.gz&visStart=4714557104137475&visEnd=4714557104287475&table=slice&ts=4714557104167475&dur=12879)
 
-### Shared expert fusion at M1
-
-The `a8w4_fused` mode restores 385 slots and Top-7 for DeepSeek TP4.
-Shared ID 384 retains FP8 PTPC weights and channel scales. The two
-Luocheng Decode kernels choose MXFP4 unpack or FP8 load by expert ID,
-then reduce all seven routes in the Down kernel. The same
-`aiter.fused_moe` entry point uses separate routed and shared
-computations at M>1. [ATOM source and dependency patches](https://github.com/TianHao65/ATOM/tree/d4cb9b4f1b407f9a70742f02626d5b5f941c5bc2/tools/dsv41_luocheng_a8w4)
-
-Layer-20 TP4 rank-0 checkpoint tensors on MI308X, M=1, H=5120, I=576,
-clamp 10.0. The final guarded build used one fixed-seed route sample
-and seven windows of 100 graph replays. Medians were 28.91 µs for
-original fused FP8, 48.50 µs for split A8W4 and 31.17 µs for mixed
-fusion. Mixed fusion reduced the split latency by 35.7%. Mixed latency
-was 7.8% above the original fused FP8 time.
-[Probe data and ownership checks](evidence/fused-shared-probe.json) · [Probe script](evidence/bench_fused_shared.py)
-
-The paired serving run used PTL52 GPUs 0–3, Base TP4 C1, 100K/150, eight
-matched requests and 89,984 cached tokens per request.
-
-| P50 metric | Split A8W4, E384/K6 | Mixed fused A8W4, E385/K7 | Change |
-|---|---:|---:|---:|
-| TTFT (ms) | 620.73 | 629.97 | +1.49% |
-| TPOT (ms) | 8.39 | 7.71 | −8.19% |
-| End-to-end (ms) | 1,873.00 | 1,777.13 | −5.12% |
-
-Peak load memory was 75.71 GB per rank with split A8W4 and 76.07 GB
-with mixed fusion. The earlier original fused FP8 run above recorded
-7.45 ms P50 TPOT and 134.26 GB/rank at load. [Matched serving measurements](evidence/fused-shared-serving.json)
-
-In the separate matched 100K/24 profile, rank 0 recorded 24 Decode
-forwards. The number of GPU kernels per step fell from 1,287 to 967.
-The 40 standalone shared CKTile Down calls per step fell to zero, and
-each arm still ran 40 Gate/Up and 40 Down kernels. The main-stream GPU
-span dropped from 9.238 to 7.993 ms P50. The M=8192 prefill chunk still
-ran 20 standalone shared Down calls in each arm. [Rank-0 audit](evidence/fused-shared-kernels/audit.json) · [Complete split trace](evidence/fused-shared-kernels/split.trace.json.gz) · [Complete mixed trace](evidence/fused-shared-kernels/mixed.trace.json.gz)
-
-The masked-row check left the prefilled shared ID in place with all
-six routed IDs masked. Eager and graph replay both returned zero.
-All eight serving request pairs had no observed GPU process overlap
-during timing. A foreign process appeared during candidate startup and
-cleared before timing. One of eight paired output text hashes matched
-across starts. The task containers and port were released.
-
 ## Validation
 
 Synthetic clamp-stress tests passed for M=1, 4, 16, 128 and 4096 at the
@@ -197,9 +195,10 @@ All six timing buckets from the first PTL52 single-GPU run overlapped a
 new SGLang workload and were excluded from the table. The PTL34 repeat
 had zero observed foreign GPU processes across 111 samples.
 
-All three variants returned 8/8 timed responses, with zero observed foreign
-GPU process samples on the selected cards. In both paired comparisons
-with A8W4, two of eight output text hashes matched across starts. All eight
+In the original split experiment, all three variants returned 8/8 timed
+responses, with zero observed foreign GPU process samples on the selected
+cards. In both paired comparisons with A8W4, two of eight output text
+hashes matched across starts. All eight
 graph sizes captured successfully after the shared down GEMM alignment
 fix. An isolated shared-down check with real layer-20 weights passed
 11 M values at each of K640 and K768. Graph outputs equaled eager
