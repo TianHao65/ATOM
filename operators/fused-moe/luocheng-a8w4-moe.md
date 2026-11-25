@@ -48,26 +48,33 @@ and identical post-top-k routes in both arms.
 
 ### Shared expert fusion at M1
 
-The paired serving run used PTL52 GPUs 0–3, Base TP4 C1, 100K/150, eight
-matched requests and 89,984 cached tokens per request.
+The paired A8W4 serving run used PTL52 GPUs 0–3, Base TP4 C1, 100K/150,
+and eight requests with 89,984 cached tokens each. The original ATOM
+reference comes from an earlier run with the same hardware and workload.
+The input token hashes and cache counts match across runs.
 
-| P50 metric | Split A8W4, E384/K6 | Mixed fused A8W4, E385/K7 | Change |
-|---|---:|---:|---:|
-| TTFT (ms) | 620.73 | 629.97 | +1.49% |
-| TPOT (ms) | 8.39 | 7.71 | −8.19% |
-| End-to-end (ms) | 1,873.00 | 1,777.13 | −5.12% |
+| Metric | Original FP8, E385/K7 (earlier run) | Split A8W4, E384/K6 (paired baseline) | Mixed A8W4, E385/K7 at M=1 | Mixed vs split | Mixed vs original (cross-run) |
+|---|---:|---:|---:|---:|---:|
+| TTFT P50 (ms) | 612.90 | 620.73 | 629.97 | +1.49% | +2.79% |
+| TPOT P50 (ms) | 7.45 | 8.39 | 7.71 | −8.19% | +3.48% |
+| End-to-end P50 (ms) | 1,723.19 | 1,873.00 | 1,777.13 | −5.12% | +3.13% |
+| Output throughput (tok/s) | 82.11 | 75.82 | 79.51 | +4.87% | −3.17% |
+| Peak GPU memory at load (GB/rank) | 134.26 | 75.71 | 76.07 | +0.36 GB | −43.34% |
 
-Peak load memory was 75.71 GB per rank with split A8W4 and 76.07 GB
-with mixed fusion. The earlier original fused FP8 run recorded
-7.45 ms P50 TPOT and 134.26 GB/rank at load.
-[Matched serving measurements](evidence/fused-shared-serving.json) · [Original serving A/B](#serving-ab)
+Throughput uses total output tokens divided by benchmark elapsed time.
+Peak GPU memory is the server's logged value during model loading and
+weight post-processing. The mixed arm still runs the shared expert
+separately in the multi-row prefill chunks.
+[Paired A8W4 measurements](evidence/fused-shared-serving.json) · [Original measurements](evidence/serving.json)
 
-The single-GPU probe used the checkpoint's layer-20 TP4 rank-0 weights
-on MI308X at M=1, H=5120, I=576 and SwiGLU clamp 10.0. The final build
-used one fixed-seed route sample and seven windows of 100 graph replays.
-Median latency was 28.91 µs for original fused FP8, 48.50 µs for split
-A8W4 and 31.17 µs for mixed fusion. Mixed fusion was 35.7% faster than
-split A8W4 and 7.8% slower than original fused FP8.
+The single-GPU probe used layer-20 TP4 rank-0 weights on MI308X at M=1,
+H=5120, local I=576 and SwiGLU clamp 10.0. The original and mixed paths
+both used E385/K7 with identical expert IDs and routing weights from one
+fixed-seed input. Seven windows of 100 graph replays timed the rank-local
+MoE after routing and before the TP all-reduce. Median latency was
+28.91 µs for original fused FP8, 48.50 µs for split A8W4 and 31.17 µs for
+mixed fusion. Mixed fusion reduced latency by 35.7% versus split A8W4 and
+increased it by 7.8% versus original FP8.
 [Probe data and ownership checks](evidence/fused-shared-probe.json) · [Probe script](evidence/bench_fused_shared.py)
 
 In the separate matched 100K/24 profile, rank 0 recorded 24 Decode
@@ -83,6 +90,33 @@ All eight serving request pairs had no observed GPU process overlap
 during timing. A foreign process appeared during candidate startup and
 cleared before timing. One of eight paired output text hashes matched
 across starts. The task containers and port were released.
+
+### Original ATOM batch-1 profile
+
+The original and mixed-fusion 100K/24 captures used the same profile input
+in separate server starts. Each rank-0 capture has 24 M=1 Decode forwards
+with 40 Gate/Up and 40 Down launches per step. The kernel rows show the
+P50 of summed device-event durations per forward. The main-stream row
+measures the elapsed GPU annotation span.
+
+| Rank-0 Decode metric | Original FP8 E385/K7 (ms) | Mixed A8W4 E385/K7 (ms) | Change |
+|---|---:|---:|---:|
+| Gate/Up GPU work | 0.739 | 0.624 | −15.7% |
+| Down GPU work | 0.415 | 0.499 | +20.3% |
+| Gate/Up and Down GPU work | 1.154 | 1.122 | −2.8% |
+| Main-stream span | 8.031 | 7.993 | −0.5% |
+
+[Complete original trace](evidence/perfetto/rank0-before.trace.json.gz) · [Original stream audit and hash](evidence/decode-streams.json) · [Complete mixed trace](evidence/fused-shared-kernels/mixed.trace.json.gz) · [Mixed kernel audit and hash](evidence/fused-shared-kernels/audit.json)
+
+The original batch-1 kernels expand FP8 weights to BF16 and use BF16 MFMA.
+The mixed kernels use FP8 MFMA and quantize the input and intermediates
+within each output workgroup. The routed path also loads group scale
+deltas and unpacks MXFP4 weights through an LDS lookup table. The mixed
+Down assigns one wave to each of the seven routes in a workgroup and
+reduces their results through LDS. Across the two captures, Down work
+increased and combined MoE work decreased. The cost of each operation and
+its contribution to cross-run service TPOT remain unmeasured.
+[Original batch-1 implementation](https://github.com/ROCm/aiter/blob/ad0d5e208eb2d49ab658c3c161aa5c3502dfc2a1/aiter/ops/flydsl/kernels/moe_gemm_2stage/gfx9_fp8/common.py#L895) · [Mixed kernel implementation](https://github.com/TianHao65/ATOM/blob/d4cb9b4f1b407f9a70742f02626d5b5f941c5bc2/tools/dsv41_luocheng_a8w4/pyhip-fused-shared.patch)
 
 ### Routed MoE operator
 
