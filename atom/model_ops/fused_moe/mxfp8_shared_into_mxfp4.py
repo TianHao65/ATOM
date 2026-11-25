@@ -142,6 +142,40 @@ class Mxfp8SharedIntoMxfp4:
         self.loaded.add((name, expert_id, shard_id))
         return True
 
+    def _take_staged(self, layer) -> dict[str, torch.Tensor]:
+        if self.staged is None:
+            raise RuntimeError(f"{layer.prefix}: shared expert staging was already used.")
+        expected = {
+            (name, self.shared_lo + i, shard)
+            for i in range(self.num_shared)
+            for name, shards in _STAGED_SHARDS.items()
+            for shard in shards
+        }
+        missing = expected - self.loaded
+        if missing:
+            if self.loaded or not get_current_atom_config().load_dummy:
+                raise RuntimeError(
+                    f"{layer.prefix}: fused shared expert tensors were not "
+                    f"loaded from the checkpoint: {sorted(missing)}"
+                )
+            for tensor in self.staged.values():
+                tensor.view(torch.uint8).zero_()
+        staged, self.staged = self.staged, None
+        return staged
+
+    def take_ptpc(self, layer) -> tuple[torch.Tensor, ...]:
+        """Consume one shared FP8 expert, normalized to gfx942's FNUZ."""
+        if not self.ptpc or self.num_shared != 1:
+            raise ValueError(f"{layer.prefix}: expected one staged FP8 PTPC expert.")
+        staged = self._take_staged(layer)
+        w13, s13, _ = normalize_e4m3fn_to_e4m3fnuz(
+            staged["w13_weight"][0], staged["w13_weight_scale"][0]
+        )
+        w2, s2, _ = normalize_e4m3fn_to_e4m3fnuz(
+            staged["w2_weight"][0], staged["w2_weight_scale"][0]
+        )
+        return w13, s13.reshape(-1), w2, s2.reshape(-1)
+
     def fuse(self, layer) -> None:
         """Write the staged shared experts into their slots (re-quantized to
         MXFP4, or copied with ``ptpc``), then free the staging.
@@ -153,19 +187,7 @@ class Mxfp8SharedIntoMxfp4:
             # `--load_dummy` loads nothing; the slot keeps its dummy values.
             self.staged = None
             return
-        expected = {
-            (name, self.shared_lo + i, shard)
-            for i in range(self.num_shared)
-            for name, shards in _STAGED_SHARDS.items()
-            for shard in shards
-        }
-        missing = expected - self.loaded
-        if missing:
-            raise RuntimeError(
-                f"{layer.prefix}: fused shared expert tensors were not "
-                f"loaded from the checkpoint: {sorted(missing)}"
-            )
-        staged, self.staged = self.staged, None
+        staged = self._take_staged(layer)
         if self.ptpc:
             self._copy(layer, staged)
             return

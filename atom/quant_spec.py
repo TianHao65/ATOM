@@ -284,6 +284,26 @@ def fuses_ptpc_shared_into_online_ptpc(
     )
 
 
+def fuses_ptpc_shared_into_runtime_a8w4(
+    hf_config, shared: LayerQuantConfig, routed: LayerQuantConfig
+) -> bool:
+    """Keep FP8 PTPC shared weights separate in storage, with one dispatch slot."""
+    from atom.utils import envs
+
+    return (
+        envs.ATOM_DSV41_LUOCHENG_MOE == "a8w4_fused"
+        and getattr(hf_config, "model_type", None)
+        in {"deepseek_v41", "deepseek_v41_text"}
+        and getattr(hf_config, "fp4ptpc", False)
+        and shared.quant_type == QuantType.per_Token
+        and shared.quant_dtype == d_dtypes.get("fp8")
+        and shared.is_dynamic
+        and routed.quant_type == QuantType.per_1x32
+        and routed.quant_dtype == d_dtypes.get("fp4x2")
+        and routed.is_dynamic
+    )
+
+
 # ──────────────────────────────────────────────────────────────────────
 # Structured parsed config
 # ──────────────────────────────────────────────────────────────────────

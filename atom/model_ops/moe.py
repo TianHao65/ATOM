@@ -97,6 +97,7 @@ from atom.quant_spec import (
     LayerQuantConfig,
     fuses_mxfp8_shared_into_mxfp4,
     fuses_ptpc_shared_into_online_ptpc,
+    fuses_ptpc_shared_into_runtime_a8w4,
     should_skip_online_quant,
     should_stream_online_quant,
     validate_nvfp4_global_scales,
@@ -1461,17 +1462,27 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         self.fp8_activations = moe.mxfp4_fp8_activations
         gfx = get_gfx()
         config = get_current_atom_config()
-        model_type = getattr(getattr(config, "hf_config", None), "model_type", None)
+        hf_config = getattr(config, "hf_config", None)
+        model_type = getattr(hf_config, "model_type", None)
+        mode = envs.ATOM_DSV41_LUOCHENG_MOE
         self.use_luocheng_a8w4 = (
-            envs.ATOM_DSV41_LUOCHENG_MOE == "a8w4"
+            mode in {"a8w4", "a8w4_fused"}
             and model_type in {"deepseek_v41", "deepseek_v41_text"}
         )
+        self.use_luocheng_fused_shared = self.use_luocheng_a8w4 and mode == "a8w4_fused"
         if self.use_luocheng_a8w4 and (
             gfx != "gfx942" or moe.use_ep or getattr(config, "eplb_enable", False)
         ):
             raise ValueError("Luocheng A8W4 requires gfx942 with tensor parallelism")
         if self.use_luocheng_a8w4 and getattr(config, "online_quant_config", None):
             raise ValueError("Luocheng A8W4 loads MXFP4 expert weights from the checkpoint")
+        if self.use_luocheng_fused_shared and (
+            not getattr(hf_config, "fp4ptpc", False)
+            or moe.tp_size != 4
+            or moe.dp_size != 1
+            or moe.moe_parallel_config.pcp_merge
+        ):
+            raise ValueError("Mixed shared-expert A8W4 requires DeepSeek FP4PTPC TP4 DP1")
         self.is_gfx1250 = gfx == "gfx1250"
         # aiter's gfx1250 fused_moe rejects the separated gate/up layout for every
         # G1U1 MoE, so on gfx1250 GU interleave is required, not opt-in.
@@ -1732,7 +1743,7 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
             from pyhip.ops.moe.flydsl.moe_a8w4 import prepare_a8w4_weights
 
             if (
-                layer.num_fused_shared_experts
+                layer.num_fused_shared_experts != int(self.use_luocheng_fused_shared)
                 or layer.w13_bias is not None
                 or layer.w2_bias is not None
                 or self.static_input_scales
@@ -1742,11 +1753,28 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
                 raise ValueError(
                     "Luocheng A8W4 expects SiLU routed experts with dynamic activations"
                 )
+            if self.use_luocheng_fused_shared:
+                from aiter.fused_moe import prepare_runtime_a8w4_shared_weights
+
+                if (
+                    layer.hidden_size,
+                    layer.intermediate_size_per_partition,
+                    self.num_experts,
+                    layer.top_k,
+                    layer.swiglu_limit,
+                ) != (5120, 576, 385, 6, 10.0):
+                    raise ValueError(
+                        "Mixed shared-expert A8W4 requires H5120 I576 E385 K7 clamp10"
+                    )
+                layer.luocheng_a8w4_shared_weights = prepare_runtime_a8w4_shared_weights(
+                    *layer.shared_mxfp8_into_mxfp4.take_ptpc(layer)
+                )
+            routed = self.num_experts - layer.num_fused_shared_experts
             layer.luocheng_a8w4_weights = prepare_a8w4_weights(
-                layer.w13_weight,
-                layer.w13_weight_scale,
-                layer.w2_weight,
-                layer.w2_weight_scale,
+                layer.w13_weight[:routed],
+                layer.w13_weight_scale[:routed],
+                layer.w2_weight[:routed],
+                layer.w2_weight_scale[:routed],
             )
             for parameter in (
                 layer.w13_weight,
@@ -1761,7 +1789,7 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
                 self.hidden_size,
                 self.intermediate_size,
                 self.num_experts,
-                layer.top_k,
+                layer.top_k + layer.num_fused_shared_experts,
                 layer.swiglu_limit,
             )
             return
@@ -2181,6 +2209,11 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         shared_ready: torch.cuda.Event | None = None,
     ) -> torch.Tensor:
         if self.use_luocheng_a8w4:
+            runtime_weights = {"runtime_a8w4_weights": layer.luocheng_a8w4_weights}
+            if self.use_luocheng_fused_shared:
+                runtime_weights["runtime_a8w4_shared_weights"] = (
+                    layer.luocheng_a8w4_shared_weights
+                )
             return fused_moe(
                 x.contiguous(),
                 None,
@@ -2190,7 +2223,7 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
                 activation=activation,
                 quant_type=QuantType.per_1x32,
                 swiglu_limit=layer.swiglu_limit,
-                runtime_a8w4_weights=layer.luocheng_a8w4_weights,
+                **runtime_weights,
             )
 
         # ATOM_USE_TRITON_MOE_DECODE splits the two kernels by phase: the weights
@@ -3671,6 +3704,9 @@ class FusedMoE(torch.nn.Module):
             fuses_ptpc_shared_into_online_ptpc(
                 quant_config, prefix, shared_spec, layer_quant_config
             )
+            or fuses_ptpc_shared_into_runtime_a8w4(
+                getattr(atom_config, "hf_config", None), shared_spec, layer_quant_config
+            )
         )
         stage_shared = stage_shared_ptpc or bool(
             shared_spec is not None
@@ -3994,7 +4030,9 @@ class FusedMoE(torch.nn.Module):
 
     def process_weights_after_loading(self):
         self._online_quant()
-        if self.shared_mxfp8_into_mxfp4 is not None:
+        if self.shared_mxfp8_into_mxfp4 is not None and not getattr(
+            self.quant_method, "use_luocheng_fused_shared", False
+        ):
             self.shared_mxfp8_into_mxfp4.fuse(self)
         self._validate_moe_backend()
 
