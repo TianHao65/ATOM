@@ -1,0 +1,202 @@
+diff --git a/src/pyhip/ops/moe/flydsl/moe_a8w4.py b/src/pyhip/ops/moe/flydsl/moe_a8w4.py
+index d8672b3..5077fce 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_a8w4.py
++++ b/src/pyhip/ops/moe/flydsl/moe_a8w4.py
+@@ -205 +205 @@ def prepare_a8w4_weights(w1, w1_scale, w2, w2_scale):
+-def _gateup_kernel(N, K, topk, block_m, block_n, tile_k, experts):
++def _gateup_kernel(N, K, topk, block_m, block_n, tile_k, experts, swiglu_limit):
+@@ -209 +209,2 @@ def _gateup_kernel(N, K, topk, block_m, block_n, tile_k, experts):
+-                              BLOCK_TILE_SIZE_N=block_n, TILE_K=tile_k, E=experts)
++                              BLOCK_TILE_SIZE_N=block_n, TILE_K=tile_k, E=experts,
++                              SWIGLU_LIMIT=swiglu_limit)
+@@ -244 +245 @@ def _decode_fits(H, I, topk, paired):
+-def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq):
++def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq, swiglu_limit):
+@@ -248 +249,2 @@ def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq):
+-    gateup = compile_a8w4_gateup_decode(N=N1, K=H, TOPK=topk, PREQUANT=gateup_pq)
++    gateup = compile_a8w4_gateup_decode(N=N1, K=H, TOPK=topk, PREQUANT=gateup_pq,
++                                       SWIGLU_LIMIT=swiglu_limit)
+@@ -256 +258 @@ def _decode_kernels(N1, H, I, topk, gateup_pq, down_pq):
+-def _gateup_plan_kernel(N1, H, topk, gateup_pq, group):
++def _gateup_plan_kernel(N1, H, topk, gateup_pq, group, swiglu_limit):
+@@ -259 +261,2 @@ def _gateup_plan_kernel(N1, H, topk, gateup_pq, group):
+-    return compile_a8w4_gateup_decode(N=N1, K=H, TOPK=topk, PREQUANT=gateup_pq, PLAN=(group, DECODE_MAX_M, H))
++    return compile_a8w4_gateup_decode(N=N1, K=H, TOPK=topk, PREQUANT=gateup_pq,
++                                     PLAN=(group, DECODE_MAX_M, H), SWIGLU_LIMIT=swiglu_limit)
+@@ -263 +266 @@ def _gateup_plan_kernel(N1, H, topk, gateup_pq, group):
+-def _gateup_dd_kernel(N1, H, topk, group, waves):
++def _gateup_dd_kernel(N1, H, topk, group, waves, swiglu_limit):
+@@ -266 +269,2 @@ def _gateup_dd_kernel(N1, H, topk, group, waves):
+-    return compile_a8w4_gateup_decode_dd(N=N1, K=H, TOPK=topk, GROUP=group, WAVES=waves)
++    return compile_a8w4_gateup_decode_dd(N=N1, K=H, TOPK=topk, GROUP=group, WAVES=waves,
++                                        SWIGLU_LIMIT=swiglu_limit)
+@@ -300 +304 @@ def _overlaps(a, b):
+-def _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output, down_cb):
++def _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output, down_cb, swiglu_limit):
+@@ -320 +324 @@ def _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output,
+-                _gateup_plan_kernel(2 * I, H, topk, gateup_pq, group), xq, xs, topk_ids, weights.w1,
++                _gateup_plan_kernel(2 * I, H, topk, gateup_pq, group, swiglu_limit), xq, xs, topk_ids, weights.w1,
+@@ -330,2 +334,2 @@ def _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output,
+-        _launch("a8w4_gateup_decode_dd", _gateup_dd_kernel(2 * I, H, topk, group, waves), xq, xs, topk_ids, plan,
+-                weights.w1, weights.w1_delta, weights.w1_scale, mid, M)
++        _launch("a8w4_gateup_decode_dd", _gateup_dd_kernel(2 * I, H, topk, group, waves, swiglu_limit),
++                xq, xs, topk_ids, plan, weights.w1, weights.w1_delta, weights.w1_scale, mid, M)
+@@ -339 +343 @@ def _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output,
+-def _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output):
++def _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output, swiglu_limit):
+@@ -349 +353 @@ def _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output):
+-        return _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output, down_cb)
++        return _fused_moe_decode_dd(hidden_states, weights, topk_weight, topk_ids, output, down_cb, swiglu_limit)
+@@ -356 +360 @@ def _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output):
+-    gateup, down = _decode_kernels(2 * I, H, I, topk, gateup_pq, down_pq)
++    gateup, down = _decode_kernels(2 * I, H, I, topk, gateup_pq, down_pq, swiglu_limit)
+@@ -396 +400 @@ def _stream_fused_quant(inter, block_m, hidden=0):
+-def _stream_gateup_kernel(N, K, topk, block_m, experts):
++def _stream_gateup_kernel(N, K, topk, block_m, experts, swiglu_limit=0.0):
+@@ -410 +414 @@ def _stream_gateup_kernel(N, K, topk, block_m, experts):
+-                                      **tile)
++                                      SWIGLU_LIMIT=swiglu_limit, **tile)
+@@ -547 +551 @@ def _launch(name, kernel, *args):
+-def _fused_moe_stream(hidden_states, weights, topk_weight, topk_ids, output):
++def _fused_moe_stream(hidden_states, weights, topk_weight, topk_ids, output, swiglu_limit):
+@@ -570 +574 @@ def _fused_moe_stream(hidden_states, weights, topk_weight, topk_ids, output):
+-    gateup = _stream_gateup_kernel(2 * I, H, topk, block_m, E)
++    gateup = _stream_gateup_kernel(2 * I, H, topk, block_m, E, swiglu_limit)
+@@ -606 +610 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-                   block_m=None, block_n=None, tile_k=None):
++                   block_m=None, block_n=None, tile_k=None, swiglu_limit=0.0):
+@@ -610 +614 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-    in Down; ``topk_ids`` int32 [M, topk] in ``[0, E)`` (a fused shared expert is an ordinary
++    in Down; ``topk_ids`` int32 [M, topk] in ``[0, E)`` or -1 for a masked route (a fused shared expert is an ordinary
+@@ -614 +618,2 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-    E4M3FNUZ with ``scale = amax / 240`` and ``q = RNE(x / scale)``. SiLU only, no expert mask /
++    E4M3FNUZ with ``scale = amax / 240`` and ``q = RNE(x / scale)``. A positive ``swiglu_limit``
++    caps the gate above and constrains the up values to ± the limit. SiLU only, no expert mask /
+@@ -617 +622 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-    (H <= 4096, the intermediate rows fit in LDS; with expert deduplication up to ``DECODE_DEDUP_MAX_M``
++    (H <= 5120, the intermediate rows fit in LDS; with expert deduplication up to ``DECODE_DEDUP_MAX_M``
+@@ -644 +649 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-            return _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output)
++            return _fused_moe_decode(hidden_states, weights, topk_weight, topk_ids, output, swiglu_limit)
+@@ -647 +652 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-            return _fused_moe_stream(hidden_states, weights, topk_weight, topk_ids, output)
++            return _fused_moe_stream(hidden_states, weights, topk_weight, topk_ids, output, swiglu_limit)
+@@ -669 +674 @@ def fused_moe_a8w4(hidden_states, weights, topk_weight, topk_ids, *, output=None
+-            _gateup_kernel(2 * I, H, topk, block_m, block_n, tile_k, E), xq, weights.w1,
++            _gateup_kernel(2 * I, H, topk, block_m, block_n, tile_k, E, swiglu_limit), xq, weights.w1,
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_common.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_common.py
+index e657af0..d2d1b14 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_common.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_common.py
+@@ -37,0 +38,9 @@ LDS_BYTES = 64 * 1024  # LDS of one workgroup on gfx942
++def clamp_gateup(gate, up, limit):
++    """Clamp the gate from above and the up projection on both sides."""
++    if limit > 0:
++        bound = fx.Float32(limit)
++        gate = fx.minnumf(gate, bound)
++        up = fx.minnumf(fx.maxnumf(up, -bound), bound)
++    return gate, up
++
++
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
+index e3b9800..adc1a26 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode.py
+@@ -55,3 +55,2 @@ def gateup_decode_fits(K):
+-    """Whether ``compile_a8w4_gateup_decode`` supports hidden size ``K``: one thread per 16-byte piece
+-    of the FP8 token row, at most 256 pieces."""
+-    return K % 512 == 0 and K // 16 <= 256
++    """Whether the decode kernel supports the hidden size, including DeepSeek H=5120."""
++    return 0 < K <= 5120 and K % 512 == 0
+@@ -197 +196 @@ def _wave_index(tid):
+-def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
++def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None, SWIGLU_LIMIT=0.0):
+@@ -209 +208 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-    assert I % 16 == 0 and K % 512 == 0, f"unsupported Gate/Up decode shape N={N} K={K}"
++    assert I % 16 == 0 and gateup_decode_fits(K), f"unsupported Gate/Up decode shape N={N} K={K}"
+@@ -217 +216 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-    assert X_CHUNKS <= 256
++    X_LOADS = (X_CHUNKS + 255) // 256
+@@ -264 +263,2 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-        expert = fx.recast_iter(fx.Int32, fxh._as_ptr(p_ids))[route]
++        route_expert = fx.Int32(fx.recast_iter(fx.Int32, fxh._as_ptr(p_ids))[route])
++        expert = (route_expert >= 0).select(route_expert, fx.Int32(0))
+@@ -272,2 +272,2 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-            # One coalesced 16-byte piece per thread, staged in LDS (MFMA operands are broadcast reads);
+-            # threads past the row issue no load (whole waves skip it).
++            # Coalesced 16-byte pieces staged in LDS. H=5120 fills 256 pieces
++            # on the first pass and one extra wave on the second.
+@@ -275,3 +275,7 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-            x_piece = fx.full(2, 0, fx.Int64)
+-            if tid < X_CHUNKS:
+-                x_piece = fx.ptr_load(x_row + tid * 2, result_type=Vec.make_type(2, fx.Int64))
++            x_pieces = []
++            for m in range_constexpr(X_LOADS):
++                piece = tid + m * 256
++                x_piece = fx.full(2, 0, fx.Int64)
++                if piece < X_CHUNKS:
++                    x_piece = fx.ptr_load(x_row + piece * 2, result_type=Vec.make_type(2, fx.Int64))
++                x_pieces.append(x_piece)
+@@ -312,2 +316,4 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
+-            if tid < X_CHUNKS:
+-                _lds_store(xq_base, tid * 16, x_piece, fx.Int64, 16)
++            for m in range_constexpr(X_LOADS):
++                piece = tid + m * 256
++                if piece < X_CHUNKS:
++                    _lds_store(xq_base, piece * 16, x_pieces[m], fx.Int64, 16)
+@@ -363,0 +370 @@ def compile_a8w4_gateup_decode(*, N, K, TOPK, PREQUANT=False, PLAN=None):
++            gate, up = a8w4.clamp_gateup(gate, up, SWIGLU_LIMIT)
+@@ -461 +468,5 @@ def compile_a8w4_down_decode(*, N, K, TOPK, WAVES=None):
+-        experts = [ids[token * TOPK + slots[r]] for r in range_constexpr(ROUNDS)]
++        experts = []
++        for r in range_constexpr(ROUNDS):
++            expert = fx.Int32(ids[token * TOPK + slots[r]])
++            valid[r] = valid[r] & (expert >= 0)
++            experts.append((expert >= 0).select(expert, fx.Int32(0)))
+@@ -613,3 +624,5 @@ def compile_a8w4_down_decode_pq(*, N, K, TOPK, WAVES=None):
+-        experts = [
+-            fx.Int32(rocdl.readfirstlane(T.i32, _raw(ids[token * TOPK + slots[q]]))) for q in range_constexpr(2 * ROUNDS)
+-        ]
++        experts = []
++        for q in range_constexpr(2 * ROUNDS):
++            expert = fx.Int32(rocdl.readfirstlane(T.i32, _raw(ids[token * TOPK + slots[q]])))
++            valid[q] = valid[q] & (expert >= 0)
++            experts.append((expert >= 0).select(expert, fx.Int32(0)))
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode_dedup.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode_dedup.py
+index d7360e7..b340077 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode_dedup.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_decode_dedup.py
+@@ -114 +114 @@ def _plan_route(r, lane, routes, ids_rsrc, ids_ptr, plan_rsrc, SEGS, GROUP):
+-    words[0] = ((rank % GROUP) == 0).select(count, fx.Int32(0))
++    words[0] = ((expert >= 0) & ((rank % GROUP) == 0)).select(count, fx.Int32(0))
+@@ -301,0 +302 @@ def _gateup_group(c, tid, lane, wave, j, count, members, expert, M, p_x, p_x_sca
++    gate, up = a8w4.clamp_gateup(gate, up, c["SWIGLU_LIMIT"])
+@@ -308 +309 @@ def _gateup_group(c, tid, lane, wave, j, count, members, expert, M, p_x, p_x_sca
+-def compile_a8w4_gateup_decode_dd(*, N, K, TOPK, GROUP=2, WAVES=4):
++def compile_a8w4_gateup_decode_dd(*, N, K, TOPK, GROUP=2, WAVES=4, SWIGLU_LIMIT=0.0):
+@@ -324 +325 @@ def compile_a8w4_gateup_decode_dd(*, N, K, TOPK, GROUP=2, WAVES=4):
+-             W_BYTES=a8w4.weight_bytes(N, K), D_BYTES=a8w4.delta_bytes(N, K))
++             W_BYTES=a8w4.weight_bytes(N, K), D_BYTES=a8w4.delta_bytes(N, K), SWIGLU_LIMIT=SWIGLU_LIMIT)
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_gemm1.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_gemm1.py
+index ca78554..d23b199 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_gemm1.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_gemm1.py
+@@ -65 +65,2 @@ def compile_a8w4_gemm1(
+-    *, N, K, TOPK, BLOCK_TILE_SIZE_M=64, BLOCK_TILE_SIZE_N=128, TILE_K=256, E=None
++    *, N, K, TOPK, BLOCK_TILE_SIZE_M=64, BLOCK_TILE_SIZE_N=128, TILE_K=256, E=None,
++    SWIGLU_LIMIT=0.0,
+@@ -134,2 +135,3 @@ def compile_a8w4_gemm1(
+-                    tmp = rocdl.exp2(T.f32, _raw(gate[j] * log2_exp1))
+-                    acc.append((gate[j] * rocdl.rcp(T.f32, 1.0 + tmp)) * up[j])
++                    g, u = a8w4.clamp_gateup(gate[j], up[j], SWIGLU_LIMIT)
++                    tmp = rocdl.exp2(T.f32, _raw(g * log2_exp1))
++                    acc.append((g * rocdl.rcp(T.f32, 1.0 + tmp)) * u)
+diff --git a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_stream.py b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_stream.py
+index 163c35b..05252a1 100644
+--- a/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_stream.py
++++ b/src/pyhip/ops/moe/flydsl/moe_gemm_2stage/a8w4_stream.py
+@@ -278 +278 @@ def compile_a8w4_gateup_stream(*, N, K, TOPK, BLOCK_M, G=4, W=1, PREFETCH=(6, 4)
+-                               E=None, SYNC=1, W_AUX=0):
++                               E=None, SYNC=1, W_AUX=0, SWIGLU_LIMIT=0.0):
+@@ -328,0 +329 @@ def compile_a8w4_gateup_stream(*, N, K, TOPK, BLOCK_M, G=4, W=1, PREFETCH=(6, 4)
++                    g, u = a8w4.clamp_gateup(g, u, SWIGLU_LIMIT)

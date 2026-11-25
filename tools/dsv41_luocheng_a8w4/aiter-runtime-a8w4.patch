@@ -1,0 +1,32 @@
+--- a/aiter/fused_moe.py
++++ b/aiter/fused_moe.py
+@@ -1244,0 +1245 @@
++    runtime_a8w4_weights=None,
+@@ -1270,0 +1272,3 @@
++    ``runtime_a8w4_weights`` selects the experimental gfx942 PyHIP backend.
++    Pass prepared MXFP4 weights here and leave ``w1`` and ``w2`` unset.
++    This TP path consumes BF16 activations and already-routed expert IDs.
+@@ -1278,0 +1283,23 @@
++    if runtime_a8w4_weights is not None:
++        if (
++            get_gfx_runtime() != "gfx942"
++            or w1 is not None
++            or w2 is not None
++            or quant_type != QuantType.per_1x32
++            or activation != ActivationType.Silu
++            or expert_mask is not None
++            or has_shared_expert
++            or doweight_stage1
++            or deterministic
++        ):
++            raise ValueError("Runtime A8W4 requires gfx942 TP, prepared weights and SiLU")
++        from pyhip.ops.moe.flydsl.moe_a8w4 import fused_moe_a8w4
++
++        return fused_moe_a8w4(
++            hidden_states,
++            runtime_a8w4_weights,
++            topk_weight,
++            topk_ids,
++            output=output,
++            swiglu_limit=swiglu_limit or 0.0,
++        )
