@@ -36,3 +36,6 @@ The ATOM adapter pre-packs weights during model load and calls
 `aiter.fused_moe` with the prepared weights. The supplied PyHIP patch
 extends decode to H=5120, applies the model's gate and up clamp before
 SiLU multiplication, and supports masked decode routes in graph replay.
+In the split arms, the shared expert's FP8 down GEMM pads K from 576 to
+640 with zeros to support the gfx942 preshuffled kernel. The logical
+intermediate width and channel scales stay at their checkpoint values.

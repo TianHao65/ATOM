@@ -1461,6 +1461,19 @@ class LinearBase(nn.Module):
                 ),
             )
             if need_shuffle and self.weight.dim() == 2:
+                if (
+                    envs.ATOM_DSV41_LUOCHENG_MOE in {"ptpc_split", "a8w4"}
+                    and self.prefix.endswith(".ffn.shared_experts.w2")
+                    and self.quant_type.value == QuantType.per_Token.value
+                    and self.weight.shape == (5120, 576)
+                    and getattr(get_current_atom_config().hf_config, "fp4ptpc", False)
+                ):
+                    # The gfx942 PTPC GEMM pads quantized activations to match
+                    # this physical K. The checkpoint and TP shard stay K=576.
+                    raw = self.weight.data.view(torch.uint8)
+                    self.weight.data = torch.nn.functional.pad(raw, (0, 64)).view(
+                        self.weight.dtype
+                    )
                 self.is_output_padded = self._maybe_pad_a8w8_preshuffle_output()
                 shuffle_weights(self.weight)
             elif self._maybe_pad_unquantized_output():
