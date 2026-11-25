@@ -1,0 +1,680 @@
+[
+  {
+    "phase": "prefill",
+    "side": "before",
+    "rank": 0,
+    "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+    "scope": "first audited gate/up and down call with adjacent MoE preparation and reduction",
+    "selected": [
+      {
+        "name": "moe_2stage_gateup_prefill_1x4_0",
+        "ts_ns": 4712953121972018,
+        "dur_ns": 2100168,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 235
+      },
+      {
+        "name": "moe_2stage_down_prefill_1x4_0",
+        "ts_ns": 4712953124200907,
+        "dur_ns": 1492005,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 237
+      }
+    ],
+    "area_events": [
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >, aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >::Kargs>(aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >::Kargs)",
+        "ts_ns": 4712953121865218,
+        "dur_ns": 5199,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 229
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >::Kargs)",
+        "ts_ns": 4712953121870418,
+        "dur_ns": 6119,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 230
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs)",
+        "ts_ns": 4712953121876538,
+        "dur_ns": 4559,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 231
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs)",
+        "ts_ns": 4712953121881098,
+        "dur_ns": 47039,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 233
+      },
+      {
+        "name": "_ZN5aiter37dynamic_per_token_scaled_quant_kernelIDF16bDB8_Li32EEEvPT0_PfPT_PKfiPKii",
+        "ts_ns": 4712953121928138,
+        "dur_ns": 43879,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 234
+      },
+      {
+        "name": "moe_2stage_gateup_prefill_1x4_0",
+        "ts_ns": 4712953121972018,
+        "dur_ns": 2100168,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 235
+      },
+      {
+        "name": "_ZN5aiter37dynamic_per_token_scaled_quant_kernelIDF16bDB8_Li8EEEvPT0_PfPT_PKfiPKii",
+        "ts_ns": 4712953124072187,
+        "dur_ns": 128719,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 236
+      },
+      {
+        "name": "moe_2stage_down_prefill_1x4_0",
+        "ts_ns": 4712953124200907,
+        "dur_ns": 1492005,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 237
+      },
+      {
+        "name": "sorted_sum_kernel_0",
+        "ts_ns": 4712953125692913,
+        "dur_ns": 194080,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 238
+      }
+    ],
+    "area_start_ns": 4712953121865218,
+    "area_end_ns": 4712953125886993,
+    "source": "rank0-before.trace.json.gz",
+    "source_sha256": "d9041d3000350d3cdf2ab03fa7d8846f45cc1a8d86145c1b3fbe44217f6b74b0",
+    "model": "DeepSeek-V4.1-Flash-1017-FP4PTPC",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "captured_moe_geometry": {
+      "hidden_size": 5120,
+      "global_intermediate_size": 2304,
+      "tp_intermediate_size": 576,
+      "routed_experts": 384,
+      "routed_top_k": 6,
+      "swiglu_limit": 10.0,
+      "expert_slots": 385,
+      "executed_top_k": 7,
+      "shared_expert": "included in FP8 PTPC fused MoE"
+    },
+    "trace_audit_errors": [
+      "Conversion: ValueError: Expected one original online quantization ledger, found 0"
+    ],
+    "window_start_ns": 4712953121165218,
+    "window_end_ns": 4712953129165218,
+    "rows": [
+      {
+        "id": 1181,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >, aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >::Kargs>(aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<true, 1024, 1> >::Kargs)",
+        "ts": "4712953121865218",
+        "dur": "5199",
+        "track_id": 3
+      },
+      {
+        "id": 1182,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, true, true> >::Kargs)",
+        "ts": "4712953121870418",
+        "dur": "6119",
+        "track_id": 3
+      },
+      {
+        "id": 1186,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs)",
+        "ts": "4712953121876538",
+        "dur": "4559",
+        "track_id": 3
+      },
+      {
+        "id": 1190,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >, aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, true, true> >::Kargs)",
+        "ts": "4712953121881098",
+        "dur": "47039",
+        "track_id": 3
+      },
+      {
+        "id": 1192,
+        "name": "_ZN5aiter37dynamic_per_token_scaled_quant_kernelIDF16bDB8_Li32EEEvPT0_PfPT_PKfiPKii",
+        "ts": "4712953121928138",
+        "dur": "43879",
+        "track_id": 3
+      },
+      {
+        "id": 1195,
+        "name": "moe_2stage_gateup_prefill_1x4_0",
+        "ts": "4712953121972018",
+        "dur": "2100168",
+        "track_id": 3
+      },
+      {
+        "id": 1404,
+        "name": "_ZN5aiter37dynamic_per_token_scaled_quant_kernelIDF16bDB8_Li8EEEvPT0_PfPT_PKfiPKii",
+        "ts": "4712953124072187",
+        "dur": "128719",
+        "track_id": 3
+      },
+      {
+        "id": 1416,
+        "name": "moe_2stage_down_prefill_1x4_0",
+        "ts": "4712953124200907",
+        "dur": "1492005",
+        "track_id": 3
+      },
+      {
+        "id": 1535,
+        "name": "sorted_sum_kernel_0",
+        "ts": "4712953125692913",
+        "dur": "194080",
+        "track_id": 3
+      }
+    ],
+    "track_uri": "/slice_3",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 30
+      }
+    ],
+    "slice_count": 48059,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4712953120998551",
+      "end": "4712953129331884.3333333730697632"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "prefill-before.png",
+    "screenshot_sha256": "4a7430914042d7bfd1f5136748a495256388b80203237a6ed58a0221a0eafe5b"
+  },
+  {
+    "phase": "prefill",
+    "side": "after",
+    "rank": 0,
+    "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+    "scope": "first audited gate/up and down call with adjacent MoE preparation and reduction",
+    "selected": [
+      {
+        "name": "a8w4_gateup_prefill_0",
+        "ts_ns": 4714556541095129,
+        "dur_ns": 1573444,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 259
+      },
+      {
+        "name": "a8w4_down_prefill_0",
+        "ts_ns": 4714556542715734,
+        "dur_ns": 1713006,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 261
+      }
+    ],
+    "area_events": [
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >, aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >::Kargs>(aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >::Kargs)",
+        "ts_ns": 4714556541022768,
+        "dur_ns": 5239,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 253
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >::Kargs)",
+        "ts_ns": 4714556541028008,
+        "dur_ns": 5359,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 254
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs)",
+        "ts_ns": 4714556541033368,
+        "dur_ns": 4279,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 255
+      },
+      {
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs)",
+        "ts_ns": 4714556541037648,
+        "dur_ns": 14519,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 257
+      },
+      {
+        "name": "row_quant_fp8_0",
+        "ts_ns": 4714556541052168,
+        "dur_ns": 42960,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 258
+      },
+      {
+        "name": "a8w4_gateup_prefill_0",
+        "ts_ns": 4714556541095129,
+        "dur_ns": 1573444,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 259
+      },
+      {
+        "name": "row_quant_fp8_0",
+        "ts_ns": 4714556542668574,
+        "dur_ns": 47159,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 260
+      },
+      {
+        "name": "a8w4_down_prefill_0",
+        "ts_ns": 4714556542715734,
+        "dur_ns": 1713006,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 261
+      },
+      {
+        "name": "sorted_sum_kernel_0",
+        "ts_ns": 4714556544428741,
+        "dur_ns": 164959,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 262
+      }
+    ],
+    "area_start_ns": 4714556541022768,
+    "area_end_ns": 4714556544593700,
+    "source": "rank0-after.trace.json.gz",
+    "source_sha256": "0a78b969ff6c2eeca6b666f901908470e3cc6df559ccaa3fcec9bd9b19f99288",
+    "model": "DeepSeek-V4.1-Flash-1017-FP4PTPC",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "captured_moe_geometry": {
+      "hidden_size": 5120,
+      "global_intermediate_size": 2304,
+      "tp_intermediate_size": 576,
+      "routed_experts": 384,
+      "routed_top_k": 6,
+      "swiglu_limit": 10.0,
+      "expert_slots": 384,
+      "executed_top_k": 6,
+      "shared_expert": "separate FP8 PTPC linear path"
+    },
+    "trace_audit_errors": [],
+    "window_start_ns": 4714556540322768,
+    "window_end_ns": 4714556548322768,
+    "rows": [
+      {
+        "id": 1349,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >, aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >::Kargs>(aiter::MoeSortingClearWorkspaceKernel<aiter::MoeSortingClearWorkspaceProblem<false, 1024, 1> >::Kargs)",
+        "ts": "4714556541022768",
+        "dur": "5239",
+        "track_id": 3
+      },
+      {
+        "id": 1351,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P0_v1<aiter::MoeSortingProblemMp<int, float, unsigned char, 4, false, false, true> >::Kargs)",
+        "ts": "4714556541028008",
+        "dur": "5359",
+        "track_id": 3
+      },
+      {
+        "id": 1352,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P1<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs)",
+        "ts": "4714556541033368",
+        "dur": "4279",
+        "track_id": 3
+      },
+      {
+        "id": 1354,
+        "name": "void aiter::opus_moe_sorting_entry<aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >, aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs>(aiter::MoeSortingMultiPhaseKernel_P23<aiter::MoeSortingProblemMp<int, float, unsigned char, 16, false, false, true> >::Kargs)",
+        "ts": "4714556541037648",
+        "dur": "14519",
+        "track_id": 3
+      },
+      {
+        "id": 1356,
+        "name": "row_quant_fp8_0",
+        "ts": "4714556541052168",
+        "dur": "42960",
+        "track_id": 3
+      },
+      {
+        "id": 1358,
+        "name": "a8w4_gateup_prefill_0",
+        "ts": "4714556541095129",
+        "dur": "1573444",
+        "track_id": 3
+      },
+      {
+        "id": 1509,
+        "name": "row_quant_fp8_0",
+        "ts": "4714556542668574",
+        "dur": "47159",
+        "track_id": 3
+      },
+      {
+        "id": 1511,
+        "name": "a8w4_down_prefill_0",
+        "ts": "4714556542715734",
+        "dur": "1713006",
+        "track_id": 3
+      },
+      {
+        "id": 1660,
+        "name": "sorted_sum_kernel_0",
+        "ts": "4714556544428741",
+        "dur": "164959",
+        "track_id": 3
+      }
+    ],
+    "track_uri": "/slice_3",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 30
+      }
+    ],
+    "slice_count": 57997,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4714556539684031.20765919238328934",
+      "end": "4714556554302037.460982508957386"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "prefill-after.png",
+    "screenshot_sha256": "6fe85d2c5497212b918bcd7fe1c3697505181885364ac15dc42e398cd6ae8526"
+  },
+  {
+    "phase": "decode",
+    "side": "before",
+    "rank": 0,
+    "annotation": "decode[bs=1 tok=1 d=1]",
+    "scope": "first audited gate/up and down call with adjacent MoE preparation and reduction",
+    "selected": [
+      {
+        "name": "moe_2stage_gateup_batch1_0",
+        "ts_ns": 4712953681478085,
+        "dur_ns": 19079,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5509
+      },
+      {
+        "name": "moe_2stage_down_batch1_0",
+        "ts_ns": 4712953681497165,
+        "dur_ns": 10799,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5509
+      }
+    ],
+    "area_events": [
+      {
+        "name": "moe_2stage_gateup_batch1_0",
+        "ts_ns": 4712953681478085,
+        "dur_ns": 19079,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5509
+      },
+      {
+        "name": "moe_2stage_down_batch1_0",
+        "ts_ns": 4712953681497165,
+        "dur_ns": 10799,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5509
+      }
+    ],
+    "area_start_ns": 4712953681478085,
+    "area_end_ns": 4712953681507964,
+    "source": "rank0-before.trace.json.gz",
+    "source_sha256": "d9041d3000350d3cdf2ab03fa7d8846f45cc1a8d86145c1b3fbe44217f6b74b0",
+    "model": "DeepSeek-V4.1-Flash-1017-FP4PTPC",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "captured_moe_geometry": {
+      "hidden_size": 5120,
+      "global_intermediate_size": 2304,
+      "tp_intermediate_size": 576,
+      "routed_experts": 384,
+      "routed_top_k": 6,
+      "swiglu_limit": 10.0,
+      "expert_slots": 385,
+      "executed_top_k": 7,
+      "shared_expert": "included in FP8 PTPC fused MoE"
+    },
+    "trace_audit_errors": [
+      "Conversion: ValueError: Expected one original online quantization ledger, found 0"
+    ],
+    "window_start_ns": 4712953681448085,
+    "window_end_ns": 4712953681598085,
+    "rows": [
+      {
+        "id": 19448,
+        "name": "moe_2stage_gateup_batch1_0",
+        "ts": "4712953681478085",
+        "dur": "19079",
+        "track_id": 3
+      },
+      {
+        "id": 19449,
+        "name": "moe_2stage_down_batch1_0",
+        "ts": "4712953681497165",
+        "dur": "10799",
+        "track_id": 3
+      }
+    ],
+    "track_uri": "/slice_3",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 30
+      }
+    ],
+    "slice_count": 48059,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4712953681444960",
+      "end": "4712953681601210"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "decode-before.png",
+    "screenshot_sha256": "00109050c91911104f8da94fdb39f2c466c7c7d68d5274a067fdc80b308e889a"
+  },
+  {
+    "phase": "decode",
+    "side": "after",
+    "rank": 0,
+    "annotation": "decode[bs=1 tok=1 d=1]",
+    "scope": "first audited gate/up and down call with adjacent MoE preparation and reduction",
+    "selected": [
+      {
+        "name": "a8w4_gateup_decode_0",
+        "ts_ns": 4714557104167475,
+        "dur_ns": 12879,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6604
+      },
+      {
+        "name": "a8w4_down_decode_0",
+        "ts_ns": 4714557104180355,
+        "dur_ns": 9279,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6604
+      }
+    ],
+    "area_events": [
+      {
+        "name": "a8w4_gateup_decode_0",
+        "ts_ns": 4714557104167475,
+        "dur_ns": 12879,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6604
+      },
+      {
+        "name": "a8w4_down_decode_0",
+        "ts_ns": 4714557104180355,
+        "dur_ns": 9279,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6604
+      }
+    ],
+    "area_start_ns": 4714557104167475,
+    "area_end_ns": 4714557104189634,
+    "source": "rank0-after.trace.json.gz",
+    "source_sha256": "0a78b969ff6c2eeca6b666f901908470e3cc6df559ccaa3fcec9bd9b19f99288",
+    "model": "DeepSeek-V4.1-Flash-1017-FP4PTPC",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "captured_moe_geometry": {
+      "hidden_size": 5120,
+      "global_intermediate_size": 2304,
+      "tp_intermediate_size": 576,
+      "routed_experts": 384,
+      "routed_top_k": 6,
+      "swiglu_limit": 10.0,
+      "expert_slots": 384,
+      "executed_top_k": 6,
+      "shared_expert": "separate FP8 PTPC linear path"
+    },
+    "trace_audit_errors": [],
+    "window_start_ns": 4714557104137475,
+    "window_end_ns": 4714557104287475,
+    "rows": [
+      {
+        "id": 21687,
+        "name": "a8w4_gateup_decode_0",
+        "ts": "4714557104167475",
+        "dur": "12879",
+        "track_id": 3
+      },
+      {
+        "id": 21692,
+        "name": "a8w4_down_decode_0",
+        "ts": "4714557104180355",
+        "dur": "9279",
+        "track_id": 3
+      }
+    ],
+    "track_uri": "/slice_3",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 30
+      }
+    ],
+    "slice_count": 57997,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4714557104134350",
+      "end": "4714557104290600"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "decode-after.png",
+    "screenshot_sha256": "2b65e5c4f8b1cb372c3d1408081b2d04624bddd51772b232f90cc88613b1bc95"
+  }
+]
