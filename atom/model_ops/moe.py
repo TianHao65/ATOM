@@ -1460,6 +1460,18 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         self.static_input_scales = not quant_config.is_dynamic
         self.fp8_activations = moe.mxfp4_fp8_activations
         gfx = get_gfx()
+        config = get_current_atom_config()
+        model_type = getattr(getattr(config, "hf_config", None), "model_type", None)
+        self.use_luocheng_a8w4 = (
+            envs.ATOM_DSV41_LUOCHENG_MOE == "a8w4"
+            and model_type in {"deepseek_v41", "deepseek_v41_text"}
+        )
+        if self.use_luocheng_a8w4 and (
+            gfx != "gfx942" or moe.use_ep or getattr(config, "eplb_enable", False)
+        ):
+            raise ValueError("Luocheng A8W4 requires gfx942 with tensor parallelism")
+        if self.use_luocheng_a8w4 and getattr(config, "online_quant_config", None):
+            raise ValueError("Luocheng A8W4 loads MXFP4 expert weights from the checkpoint")
         self.is_gfx1250 = gfx == "gfx1250"
         # aiter's gfx1250 fused_moe rejects the separated gate/up layout for every
         # G1U1 MoE, so on gfx1250 GU interleave is required, not opt-in.
@@ -1488,6 +1500,8 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         # that each call site has to re-interpret.
         self.use_triton = use_triton_moe and not ep_moe
         self.use_triton_ep = use_triton_moe and ep_moe
+        if self.use_luocheng_a8w4:
+            self.use_triton = False
         # Phase split: keep the weights in the FlyDSL layout and run the Triton
         # /gluon kernel on decode only, over a zero-copy view rebuilt in apply().
         # Narrows ATOM_USE_TRITON_MOE, so it is inert unless that path is on.
@@ -1544,6 +1558,7 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
             and self.routed_rows_wire is None
             and not envs.ATOM_USE_TRITON_MOE_A4W4
             and not self.use_triton
+            and not self.use_luocheng_a8w4
         ):
             self.routed_rows_wire = resolve_routed_rows_wire(
                 moe.in_dtype, moe.hidden_dim, mxfp8_activations=True
@@ -1603,7 +1618,7 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         scale_dtype = torch.uint8
 
         mxfp4_block = 32
-        pad_align = self.pad_align
+        pad_align = 64 if self.use_luocheng_a8w4 else self.pad_align
 
         intermediate_size_per_partition_after_pad = (
             (intermediate_size_per_partition + pad_align - 1) // pad_align * pad_align
@@ -1713,6 +1728,44 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
             layer.w2_input_scale = None
 
     def process_weights_after_loading(self, layer):
+        if self.use_luocheng_a8w4:
+            from pyhip.ops.moe.flydsl.moe_a8w4 import prepare_a8w4_weights
+
+            if (
+                layer.num_fused_shared_experts
+                or layer.w13_bias is not None
+                or layer.w2_bias is not None
+                or self.static_input_scales
+                or layer.activation != ActivationType.Silu
+                or layer.apply_router_weight_on_input
+            ):
+                raise ValueError(
+                    "Luocheng A8W4 expects SiLU routed experts with dynamic activations"
+                )
+            layer.luocheng_a8w4_weights = prepare_a8w4_weights(
+                layer.w13_weight,
+                layer.w13_weight_scale,
+                layer.w2_weight,
+                layer.w2_weight_scale,
+            )
+            for parameter in (
+                layer.w13_weight,
+                layer.w2_weight,
+                layer.w13_weight_scale,
+                layer.w2_weight_scale,
+            ):
+                parameter.data = parameter.new_empty(0)
+            logger.info(
+                "Luocheng A8W4 %s: H=%d I=%d E=%d top-k=%d SwiGLU clamp=%g",
+                layer.layer_name,
+                self.hidden_size,
+                self.intermediate_size,
+                self.num_experts,
+                layer.top_k,
+                layer.swiglu_limit,
+            )
+            return
+
         if layer.w13_bias is not None:
             layer.w13_bias.data = layer.w13_bias.data.to(torch.float32)
         if layer.w2_bias is not None:
@@ -2036,7 +2089,8 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
     def get_fused_moe_quant_config(
         self, layer: torch.nn.Module
     ) -> FusedMoEQuantConfig | None:
-
+        if self.use_luocheng_a8w4:
+            return None
         a1_scale = getattr(layer, "w13_input_scale", None)
         a2_scale = getattr(layer, "w2_input_scale", None)
 
@@ -2126,6 +2180,19 @@ class Mxfp4MoEMethod(FusedMoEMethodBase):
         shared_add: torch.Tensor | None = None,
         shared_ready: torch.cuda.Event | None = None,
     ) -> torch.Tensor:
+        if self.use_luocheng_a8w4:
+            return fused_moe(
+                x.contiguous(),
+                None,
+                None,
+                topk_weights.float().contiguous(),
+                topk_ids.to(torch.int32).contiguous(),
+                activation=activation,
+                quant_type=QuantType.per_1x32,
+                swiglu_limit=layer.swiglu_limit,
+                runtime_a8w4_weights=layer.luocheng_a8w4_weights,
+            )
+
         # ATOM_USE_TRITON_MOE_DECODE splits the two kernels by phase: the weights
         # sit in the FlyDSL layout, so prefill falls through to the FlyDSL tail
         # below and only decode takes the Triton block (over a view of the very
