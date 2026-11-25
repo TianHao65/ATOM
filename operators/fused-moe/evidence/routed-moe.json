@@ -1,0 +1,995 @@
+{
+  "PTL34": [
+    {
+      "phase": "setup",
+      "layer": 20,
+      "tp": 4,
+      "rank": 0,
+      "e": 384,
+      "topk": 6,
+      "h": 5120,
+      "i": 576,
+      "swiglu_limit": 10.0,
+      "seed": 42117,
+      "tokens": [
+        1,
+        32,
+        64,
+        512,
+        2048,
+        8192
+      ],
+      "repeat": 30,
+      "groups": 5,
+      "device": "AMD Instinct MI308X",
+      "arch": "gfx942:sramecc+:xnack-",
+      "cus": 80,
+      "aiter_config_fmoe": null,
+      "input_scope": "seeded BF16 hidden states, real layer router and routed weights",
+      "timing_scope": "post-topk rank-local routed expert forward including sorting and quantization"
+    },
+    {
+      "phase": "weights",
+      "native": [
+        [
+          384,
+          1152,
+          2560
+        ],
+        [
+          384,
+          1152,
+          160
+        ],
+        [
+          384,
+          5120,
+          288
+        ],
+        [
+          384,
+          5120,
+          18
+        ]
+      ],
+      "a8w4_padded_inter": 576
+    },
+    {
+      "phase": "launch",
+      "m": 1
+    },
+    {
+      "phase": "validation",
+      "m": 1,
+      "active_experts": 6,
+      "max_routes_per_expert": 1,
+      "a8w4_path": [
+        "a8w4_gateup_decode",
+        "a8w4_down_decode"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.01772911101579666,
+        "max_abs": 0.04139399528503418,
+        "max_abs_reference": 2.135113477706909,
+        "cosine": 0.9998961687088013
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04633774980902672,
+        "max_abs": 0.1171872615814209,
+        "max_abs_reference": 2.135113477706909,
+        "cosine": 0.9989258646965027
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.04918034002184868,
+        "max_abs": 0.1328125,
+        "max_abs_reference": 2.125,
+        "cosine": 0.998849093914032
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 1,
+      "a8w4_over_fp8_ptpc": 1.0906660140130902,
+      "fp8_ptpc": {
+        "window_us": [
+          25.85480014483134,
+          25.841466585795086,
+          25.985467433929443,
+          28.82949908574422,
+          27.15346614519755
+        ],
+        "median_us": 25.985467433929443
+      },
+      "a8w4": {
+        "window_us": [
+          26.654799779256184,
+          26.598833004633587,
+          52.505600452423096,
+          30.47216733296712,
+          28.341466188430786
+        ],
+        "median_us": 28.341466188430786
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 32
+    },
+    {
+      "phase": "validation",
+      "m": 32,
+      "active_experts": 131,
+      "max_routes_per_expert": 4,
+      "a8w4_path": [
+        "a8w4_row_quant_decode",
+        "a8w4_gateup_decode_pq",
+        "a8w4_row_quant_decode",
+        "a8w4_down_decode_pq"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.016490310430526733,
+        "max_abs": 0.05536520481109619,
+        "max_abs_reference": 3.044882297515869,
+        "cosine": 0.9999090433120728
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04424881935119629,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.044882297515869,
+        "cosine": 0.9990209937095642
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.0471542589366436,
+        "max_abs": 0.1875,
+        "max_abs_reference": 3.015625,
+        "cosine": 0.9989269971847534
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 32,
+      "a8w4_over_fp8_ptpc": 0.8260732922854696,
+      "fp8_ptpc": {
+        "window_us": [
+          379.99404271443683,
+          373.0127016703288,
+          399.09013112386066,
+          393.41808954874676,
+          392.2594706217448
+        ],
+        "median_us": 392.2594706217448
+      },
+      "a8w4": {
+        "window_us": [
+          350.45922597249347,
+          329.2071024576823,
+          324.03507232666016,
+          307.05366134643555,
+          311.64032618204754
+        ],
+        "median_us": 324.03507232666016
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 64
+    },
+    {
+      "phase": "validation",
+      "m": 64,
+      "active_experts": 214,
+      "max_routes_per_expert": 6,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm32",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_stream_bm32",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.01661175675690174,
+        "max_abs": 0.060479164123535156,
+        "max_abs_reference": 3.1308810710906982,
+        "cosine": 0.9999086260795593
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04443665221333504,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.1308810710906982,
+        "cosine": 0.9990122318267822
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.04749705269932747,
+        "max_abs": 0.1875,
+        "max_abs_reference": 3.125,
+        "cosine": 0.9989192485809326
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 64,
+      "a8w4_over_fp8_ptpc": 0.788089948607219,
+      "fp8_ptpc": {
+        "window_us": [
+          610.8060201009115,
+          611.9779586791992,
+          643.7221527099609,
+          624.9980290730795,
+          628.8446426391602
+        ],
+        "median_us": 624.9980290730795
+      },
+      "a8w4": {
+        "window_us": [
+          527.0695050557455,
+          498.3907063802083,
+          492.5546646118164,
+          484.6159299214681,
+          489.1799608866374
+        ],
+        "median_us": 492.5546646118164
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 512
+    },
+    {
+      "phase": "validation",
+      "m": 512,
+      "active_experts": 363,
+      "max_routes_per_expert": 38,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm16",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_stream_bm16",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04747937247157097,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.338888168334961,
+        "cosine": 0.9989228248596191
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04453925043344498,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.338888168334961,
+        "cosine": 0.9990077018737793
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.026416698470711708,
+        "max_abs": 0.109375,
+        "max_abs_reference": 3.265625,
+        "cosine": 0.9997056126594543
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 512,
+      "a8w4_over_fp8_ptpc": 0.6137293420579992,
+      "fp8_ptpc": {
+        "window_us": [
+          1406.655502319336,
+          1398.9847819010417,
+          1387.6475016276042,
+          1388.9381408691406,
+          1403.1874338785808
+        ],
+        "median_us": 1398.9847819010417
+      },
+      "a8w4": {
+        "window_us": [
+          859.3299865722656,
+          861.1700057983398,
+          858.5980097452799,
+          854.6831766764323,
+          858.4673563639323
+        ],
+        "median_us": 858.5980097452799
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 2048
+    },
+    {
+      "phase": "validation",
+      "m": 2048,
+      "active_experts": 382,
+      "max_routes_per_expert": 125,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm64",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_prefill_bm64",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.047448284924030304,
+        "max_abs": 0.6155548095703125,
+        "max_abs_reference": 22.365554809570312,
+        "cosine": 0.99892657995224
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04445117339491844,
+        "max_abs": 0.5159893035888672,
+        "max_abs_reference": 22.365554809570312,
+        "cosine": 0.9990116357803345
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.026377474889159203,
+        "max_abs": 0.5,
+        "max_abs_reference": 21.75,
+        "cosine": 0.9997076988220215
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 2048,
+      "a8w4_over_fp8_ptpc": 0.9492914041735779,
+      "fp8_ptpc": {
+        "window_us": [
+          1742.915980021159,
+          1743.4492746988933,
+          1735.9146118164062,
+          1734.2013041178386,
+          1735.8746846516926
+        ],
+        "median_us": 1735.9146118164062
+      },
+      "a8w4": {
+        "window_us": [
+          1650.3634134928386,
+          1631.3927968343098,
+          1647.8888193766277,
+          1645.8234151204426,
+          1658.935546875
+        ],
+        "median_us": 1647.8888193766277
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 8192
+    },
+    {
+      "phase": "validation",
+      "m": 8192,
+      "active_experts": 384,
+      "max_routes_per_expert": 499,
+      "a8w4_path": [
+        "moe_sorting_opus",
+        "a8w4_row_quant_fp8",
+        "a8w4_gateup_prefill_bm64_bn128_tk128",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_prefill_bm64",
+        "sorted_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04741598293185234,
+        "max_abs": 0.7904930114746094,
+        "max_abs_reference": 28.128252029418945,
+        "cosine": 0.998927891254425
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.044413790106773376,
+        "max_abs": 0.6009635925292969,
+        "max_abs_reference": 28.128252029418945,
+        "cosine": 0.9990131855010986
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.02637232467532158,
+        "max_abs": 0.5,
+        "max_abs_reference": 28.125,
+        "cosine": 0.999708354473114
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 8192,
+      "a8w4_over_fp8_ptpc": 0.9348061865653775,
+      "fp8_ptpc": {
+        "window_us": [
+          3905.9583028157554,
+          3913.1291707356772,
+          3933.832041422526,
+          3916.5250142415366,
+          3949.113210042318
+        ],
+        "median_us": 3916.5250142415366
+      },
+      "a8w4": {
+        "window_us": [
+          3635.0687662760415,
+          3640.71044921875,
+          3666.7943318684897,
+          3663.0037943522134,
+          3661.1918131510415
+        ],
+        "median_us": 3661.1918131510415
+      }
+    }
+  ],
+  "PTL52": [
+    {
+      "phase": "setup",
+      "layer": 20,
+      "tp": 4,
+      "rank": 0,
+      "e": 384,
+      "topk": 6,
+      "h": 5120,
+      "i": 576,
+      "swiglu_limit": 10.0,
+      "seed": 42117,
+      "tokens": [
+        1,
+        32,
+        64,
+        512,
+        2048,
+        8192
+      ],
+      "repeat": 30,
+      "groups": 5,
+      "device": "AMD Instinct MI308X",
+      "arch": "gfx942:sramecc+:xnack-",
+      "cus": 80,
+      "aiter_config_fmoe": null,
+      "input_scope": "seeded BF16 hidden states, real layer router and routed weights",
+      "timing_scope": "post-topk rank-local routed expert forward including sorting and quantization"
+    },
+    {
+      "phase": "weights",
+      "native": [
+        [
+          384,
+          1152,
+          2560
+        ],
+        [
+          384,
+          1152,
+          160
+        ],
+        [
+          384,
+          5120,
+          288
+        ],
+        [
+          384,
+          5120,
+          18
+        ]
+      ],
+      "a8w4_padded_inter": 576
+    },
+    {
+      "phase": "launch",
+      "m": 1
+    },
+    {
+      "phase": "validation",
+      "m": 1,
+      "active_experts": 6,
+      "max_routes_per_expert": 1,
+      "a8w4_path": [
+        "a8w4_gateup_decode",
+        "a8w4_down_decode"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.01770901493728161,
+        "max_abs": 0.041466712951660156,
+        "max_abs_reference": 2.135113477706909,
+        "cosine": 0.9998955726623535
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04633774980902672,
+        "max_abs": 0.1171872615814209,
+        "max_abs_reference": 2.135113477706909,
+        "cosine": 0.9989258646965027
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.04923495277762413,
+        "max_abs": 0.1328125,
+        "max_abs_reference": 2.125,
+        "cosine": 0.9988453984260559
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 1,
+      "a8w4_over_fp8_ptpc": 1.04406728799336,
+      "fp8_ptpc": {
+        "window_us": [
+          30.068133274714153,
+          28.138766686121624,
+          28.108133872350056,
+          29.746800661087036,
+          27.096132437388103
+        ],
+        "median_us": 28.138766686121624
+      },
+      "a8w4": {
+        "window_us": [
+          29.70013419787089,
+          29.37876582145691,
+          26.258766651153564,
+          32.17746615409851,
+          27.144100268681843
+        ],
+        "median_us": 29.37876582145691
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 32
+    },
+    {
+      "phase": "validation",
+      "m": 32,
+      "active_experts": 131,
+      "max_routes_per_expert": 4,
+      "a8w4_path": [
+        "a8w4_row_quant_decode",
+        "a8w4_gateup_decode_pq",
+        "a8w4_row_quant_decode",
+        "a8w4_down_decode_pq"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.01647946983575821,
+        "max_abs": 0.05536520481109619,
+        "max_abs_reference": 3.044882297515869,
+        "cosine": 0.9999091625213623
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04424881935119629,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.044882297515869,
+        "cosine": 0.9990209937095642
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.04714515432715416,
+        "max_abs": 0.1875,
+        "max_abs_reference": 3.015625,
+        "cosine": 0.9989273548126221
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 32,
+      "a8w4_over_fp8_ptpc": 0.9362860230150046,
+      "fp8_ptpc": {
+        "window_us": [
+          374.50822194417316,
+          372.60691324869794,
+          395.1123237609863,
+          374.19220606486004,
+          386.2963040669759
+        ],
+        "median_us": 374.50822194417316
+      },
+      "a8w4": {
+        "window_us": [
+          350.83608627319336,
+          330.4746945699056,
+          344.65742111206055,
+          350.6468137105306,
+          353.6601384480794
+        ],
+        "median_us": 350.6468137105306
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 64
+    },
+    {
+      "phase": "validation",
+      "m": 64,
+      "active_experts": 214,
+      "max_routes_per_expert": 6,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm32",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_stream_bm32",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.016611266881227493,
+        "max_abs": 0.060479164123535156,
+        "max_abs_reference": 3.1308810710906982,
+        "cosine": 0.9999086856842041
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04443665221333504,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.1308810710906982,
+        "cosine": 0.9990122318267822
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.04749726504087448,
+        "max_abs": 0.1875,
+        "max_abs_reference": 3.125,
+        "cosine": 0.9989193081855774
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 64,
+      "a8w4_over_fp8_ptpc": 0.8104731362092774,
+      "fp8_ptpc": {
+        "window_us": [
+          610.8425140380859,
+          623.486582438151,
+          634.9213282267252,
+          624.6253331502279,
+          628.7026723225912
+        ],
+        "median_us": 624.6253331502279
+      },
+      "a8w4": {
+        "window_us": [
+          885.1743698120117,
+          506.24205271402997,
+          494.17673746744794,
+          487.1806780497233,
+          529.7728538513184
+        ],
+        "median_us": 506.24205271402997
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 512
+    },
+    {
+      "phase": "validation",
+      "m": 512,
+      "active_experts": 363,
+      "max_routes_per_expert": 38,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm16",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_stream_bm16",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04747937247157097,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.338888168334961,
+        "cosine": 0.9989228248596191
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04453925043344498,
+        "max_abs": 0.21791768074035645,
+        "max_abs_reference": 3.338888168334961,
+        "cosine": 0.9990077018737793
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.026416698470711708,
+        "max_abs": 0.109375,
+        "max_abs_reference": 3.265625,
+        "cosine": 0.9997056126594543
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 512,
+      "a8w4_over_fp8_ptpc": 0.636612781871736,
+      "fp8_ptpc": {
+        "window_us": [
+          1365.8897399902344,
+          1362.3908996582031,
+          1356.0549418131511,
+          1356.0535430908203,
+          1356.750996907552
+        ],
+        "median_us": 1356.750996907552
+      },
+      "a8w4": {
+        "window_us": [
+          861.5529378255209,
+          863.7250264485677,
+          866.5329615275065,
+          860.3289286295573,
+          865.7409032185873
+        ],
+        "median_us": 863.7250264485677
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 2048
+    },
+    {
+      "phase": "validation",
+      "m": 2048,
+      "active_experts": 382,
+      "max_routes_per_expert": 125,
+      "a8w4_path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm64",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_prefill_bm64",
+        "a8w4_route_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.047448284924030304,
+        "max_abs": 0.6155548095703125,
+        "max_abs_reference": 22.365554809570312,
+        "cosine": 0.99892657995224
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04445117339491844,
+        "max_abs": 0.5159893035888672,
+        "max_abs_reference": 22.365554809570312,
+        "cosine": 0.9990116357803345
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.026377474889159203,
+        "max_abs": 0.5,
+        "max_abs_reference": 21.75,
+        "cosine": 0.9997076988220215
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 2048,
+      "a8w4_over_fp8_ptpc": 0.9424619924074512,
+      "fp8_ptpc": {
+        "window_us": [
+          1750.5846659342449,
+          1746.563212076823,
+          1750.7551829020183,
+          1754.9059549967449,
+          1755.6046803792317
+        ],
+        "median_us": 1750.7551829020183
+      },
+      "a8w4": {
+        "window_us": [
+          1650.0202178955078,
+          1638.730748494466,
+          1655.6922912597656,
+          1645.2269236246746,
+          1663.3655548095703
+        ],
+        "median_us": 1650.0202178955078
+      }
+    },
+    {
+      "phase": "launch",
+      "m": 8192
+    },
+    {
+      "phase": "validation",
+      "m": 8192,
+      "active_experts": 384,
+      "max_routes_per_expert": 499,
+      "a8w4_path": [
+        "moe_sorting_opus",
+        "a8w4_row_quant_fp8",
+        "a8w4_gateup_prefill_bm64_bn128_tk128",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_prefill_bm64",
+        "sorted_sum"
+      ],
+      "fp8_ptpc_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.04741598293185234,
+        "max_abs": 0.7904930114746094,
+        "max_abs_reference": 28.128252029418945,
+        "cosine": 0.998927891254425
+      },
+      "a8w4_vs_ref": {
+        "finite": true,
+        "normalized_rmse": 0.044413790106773376,
+        "max_abs": 0.6009635925292969,
+        "max_abs_reference": 28.128252029418945,
+        "cosine": 0.9990131855010986
+      },
+      "a8w4_vs_fp8_ptpc": {
+        "finite": true,
+        "normalized_rmse": 0.02637232467532158,
+        "max_abs": 0.5,
+        "max_abs_reference": 28.125,
+        "cosine": 0.999708354473114
+      }
+    },
+    {
+      "phase": "timings",
+      "m": 8192,
+      "a8w4_over_fp8_ptpc": 0.9340343082594579,
+      "fp8_ptpc": {
+        "window_us": [
+          3912.1149698893228,
+          3925.7535298665366,
+          3938.745880126953,
+          3921.660359700521,
+          3941.5072123209634
+        ],
+        "median_us": 3925.7535298665366
+      },
+      "a8w4": {
+        "window_us": [
+          3655.0684611002603,
+          3666.7884826660156,
+          3683.9497884114585,
+          3663.7578328450522,
+          3702.727508544922
+        ],
+        "median_us": 3666.7884826660156
+      }
+    }
+  ],
+  "primary_shard_sha256": "4e01a5258303836e0805ed2eccd3b0ea4aa5b020a2eef50ad2d39b6470f28ab5",
+  "primary_ownership": {
+    "returncode": 0,
+    "start_unix": 1795570100.1567652,
+    "end_unix": 1795570211.9138017,
+    "overlap": [],
+    "released": true,
+    "postcleanup": {
+      "7": {
+        "utilization_percent": 0,
+        "vram_bytes": 298594304,
+        "product": "AMD Instinct MI308X",
+        "gfx": "gfx942"
+      }
+    }
+  },
+  "first_run_note": "Foreign SGLang scheduler arrived after admission. All timings overlapped.",
+  "synthetic_clamp_and_graph": [
+    {
+      "device": "AMD Instinct MI308X",
+      "flydsl": "0.5.0"
+    },
+    {
+      "tokens": 1,
+      "path": [
+        "a8w4_gateup_decode",
+        "a8w4_down_decode"
+      ],
+      "sample_rows": [
+        0
+      ],
+      "clamp_count": 2196,
+      "ok": true,
+      "calc_diff": 1.3511184491221684e-06,
+      "max_err": 0.5379638671875,
+      "max_ref": 326.46038818359375,
+      "err_ratio": 0.0016478687358693013
+    },
+    {
+      "tokens": 4,
+      "path": [
+        "a8w4_gateup_decode",
+        "a8w4_row_quant_decode",
+        "a8w4_down_decode_pq"
+      ],
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "clamp_count": 6446,
+      "ok": true,
+      "calc_diff": 1.3732431384250177e-06,
+      "max_err": 0.99755859375,
+      "max_ref": 486.8019714355469,
+      "err_ratio": 0.002049208204330532
+    },
+    {
+      "tokens": 16,
+      "path": [
+        "a8w4_row_quant_decode",
+        "a8w4_gateup_decode_pq",
+        "a8w4_row_quant_decode",
+        "a8w4_down_decode_pq"
+      ],
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3,
+        15
+      ],
+      "clamp_count": 8795,
+      "ok": true,
+      "calc_diff": 1.3437764068147118e-06,
+      "max_err": 0.9915771484375,
+      "max_ref": 373.76849365234375,
+      "err_ratio": 0.002652917956642444
+    },
+    {
+      "tokens": 16,
+      "masked_route_graph_replay": "passed"
+    },
+    {
+      "tokens": 128,
+      "path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_stream_bm16",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_stream_bm16",
+        "a8w4_route_sum"
+      ],
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3,
+        127
+      ],
+      "clamp_count": 8607,
+      "ok": true,
+      "calc_diff": 2.748579532529938e-06,
+      "max_err": 2.005615234375,
+      "max_ref": 537.3570556640625,
+      "err_ratio": 0.003732369777663891
+    },
+    {
+      "tokens": 4096,
+      "path": [
+        "a8w4_stream_prep",
+        "a8w4_gateup_prefill_bm64_bn128_tk128",
+        "a8w4_row_quant_fp8",
+        "a8w4_down_prefill_bm64",
+        "sorted_sum"
+      ],
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3,
+        4095
+      ],
+      "clamp_count": 8694,
+      "ok": true,
+      "calc_diff": 2.771786939748111e-06,
+      "max_err": 1.545684814453125,
+      "max_ref": 410.67510986328125,
+      "err_ratio": 0.0037637655103268915
+    }
+  ]
+}

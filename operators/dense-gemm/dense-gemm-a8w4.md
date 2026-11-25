@@ -1,37 +1,28 @@
-# Luocheng dense A8W4 GEMM on MI308X
+# Luocheng dense A8W4 on DeepSeek-V4.1-Flash-1017-FP4PTPC
 
 ## What
 
-Luocheng's M0 FlyDSL GEMM packs MXFP4 weights once, quantizes activations per token on each call, and decodes weights into FP8 in registers before MFMA. One tile configuration serves the full M range. The baseline uses AITER FP8 PTPC with the same generated MXFP4 source weights converted to per-channel FP8. [M0 commit](https://github.com/luocheng25/aiter/commit/ba9dd6a3493bb2b6313e5c52664300f8f9f75438) · [Implementation](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/ops/flydsl/gemm_a8w4_ptpc.py)
+DeepSeek's TP4 dense projections use FP8 weights. Luocheng's `flydsl_gemm_a8w4_ptpc` requires packed E2M1 weights and one E8M0 scale per 32 K elements. The kernel quantizes BF16 activations per token to E4M3FNUZ, decodes the packed weights to FP8 in registers, and writes BF16 from FP32 accumulators. Both the original M0 and current M9 have the same weight format requirement. [M0](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/ops/flydsl/gemm_a8w4_ptpc.py#L124) · [M9](https://github.com/luocheng25/aiter/blob/4f98da2531efc78a51583900a249536626a76eaa/aiter/ops/flydsl/gemm_a8w4_ptpc.py#L257)
 
 ## Data
 
-Historical Qwen3.8-Flash-Next single-operator benchmark on one MI308X (gfx942, 80 CUs), FlyDSL 0.5.3, and an AITER worktree based on `162173e89`. Hidden size is 2,560. For `Y[M,N] = X[M,K] × W[N,K]ᵀ`, all six TP-local weight shapes run with `M = 2⁰, 2¹, …, 2¹⁵` (1 to 32,768 tokens, 96 cases). [Benchmark shapes](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/op_tests/test_gemm_a8w4_ptpc.py#L54)
+Checkpoint `ginsongsong/DeepSeek-V4.1-Flash-1017-FP4PTPC@97cc9b32` on PTL52. Shapes are per TP rank for `Y[M,N] = X[M,K] × W[N,K]ᵀ`, with M equal to the scheduled token rows. The backbone has 40 layers, hidden size 5,120, 64 attention heads of width 512, and Q/O LoRA ranks 1,280/1,024. [Checkpoint config](https://huggingface.co/ginsongsong/DeepSeek-V4.1-Flash-1017-FP4PTPC/blob/97cc9b32c970864edce0f3fc186d3042b04e3a36/config.json) · [ATOM projection setup](https://github.com/TianHao65/ATOM/blob/e309e005dfa83dd323dfb959b040d0af8bb6bceb/atom/models/deepseek_v41/attention.py#L285)
 
-| TP shape | Projection | Local N | Local K |
-|---|---|---:|---:|
-| TP2 | GDN `in_proj_qkvz` | 8,192 | 2,560 |
-| TP2 | Attention QKV with Q gate | 6,656 | 2,560 |
-| TP2 | GDN or attention output | 2,560 | 3,072 |
-| TP4 | GDN `in_proj_qkvz` | 4,096 | 2,560 |
-| TP4 | Attention QKV with Q gate | 3,584 | 2,560 |
-| TP4 | GDN or attention output | 2,560 | 1,536 |
+| TP4 call | Instances in backbone | Local N | Local K | Weight and scale |
+|---|---:|---:|---:|---|
+| `attn.wqkv_a` (`wq_a` + `wkv`, replicated) | 40 | 1,792 | 5,120 | E4M3, FP32 per output channel |
+| `attn.wq_b` (column parallel) | 40 | 8,192 | 1,280 | E4M3, FP32 per output channel |
+| `attn.wo_a` (two groups per rank) | 40 | 1,024 per group | 4,096 | E4M3, E8M0 per 32×32 block |
+| `attn.wo_b` (row parallel) | 40 | 5,120 | 2,048 | E4M3, FP32 per output channel |
+| `attn.indexer.wq_b` (replicated) | 8 | 4,096 | 1,280 | E4M3, FP32 per output channel |
+| `engram.wkv` (replicated at layers 1 and 14) | 2 | 25,600 | 6,144 | E4M3, FP32 per output channel |
 
-Inputs and output are BF16. A8W4 uses dynamic per-token E4M3FNUZ activations (FP32 scale `amax/240` for nonzero rows), packed E2M1 weights with one E8M0 scale per 32 K values, and FP32 accumulation. The GEMM tile is `64×128×128` (M×N×K), with four wave64s per workgroup and FP8 `16×16×32` MFMA. The weight preparation runs before timing. [Design and kernel parameters](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/ops/flydsl/kernels/gemm_a8w4_ptpc/README.md#2-总体设计)
+The shared expert also stores E4M3 with FP32 channel scales. Its local gate and up projections each have `N=576, K=5120`, and down has `N=5120, K=576`. ATOM's FP8 PTPC MoE fuses the shared slot with the 384 routed experts after load-time PTPC quantization of the routed matrices. The actual MXFP4 weights available in the checkpoint for runtime unpacking are the routed-expert matrices. [Engram projection](https://github.com/TianHao65/ATOM/blob/e309e005dfa83dd323dfb959b040d0af8bb6bceb/atom/model_ops/engram/device/layer.py#L41) · [Shared-expert dispatch](https://github.com/TianHao65/ATOM/blob/e309e005dfa83dd323dfb959b040d0af8bb6bceb/atom/models/deepseek_v41/moe.py#L19)
 
 ## Benchmarking and Profiling
 
-Both paths time the full call, including activation quantization, with one AITER `run_perftest` invocation per arm and shape. The harness uses its defaults of 101 iterations and two warmup calls with graph timing off. The FP8 PTPC path calls `per_token_quant_hip` plus `gemm_a8w8_bpreshuffle`. It selects tuned CK rows for TP2 except the output projection at M=32,768. TP4 uses default CK. [Timing loop](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/op_tests/test_gemm_a8w4_ptpc.py#L677) · [Timing defaults](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/test_common.py#L243)
-
-| M range | A8W4 / FP8 PTPC latency (geomean) | Latency ratio range | Throughput, FP8 PTPC → A8W4 |
-|---|---:|---:|---:|
-| 1–32 | 2.43× | 1.89–3.60× | 0.99 → 0.22 TB/s |
-| 64–2,048 | 1.32× | 0.97–2.60× | 179 → 136 TFLOPS |
-| 4,096–32,768 | 1.12× | 1.05–1.17× | 379 → 338 TFLOPS |
-
-M0 was slower in 95 of 96 cases. For M ≤ 32 its standalone quantizer is followed by only N/128 GEMM workgroups (20–64 across these shapes). The author publishes pooled TP2/TP4 statistics from one self-test pass. Per-shape latencies and an independent repeat are unavailable. [Reported measurements](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/ops/flydsl/kernels/gemm_a8w4_ptpc/README.md#4-性能与精度)
+ATOM's FP8 PTPC linear dispatch uses AITER `gemm_a8w8_bpreshuffle` on the standard path. The attention and indexer `wq_b` calls can reuse the same FP8 activation and FP32 token scale from `DualRMSNormPerToken`. Luocheng's public entry takes BF16 and quantizes it within the call. A dense A/B on this checkpoint stops at the weight format check. An A8W4 dense run would require requantizing checkpoint weights to MXFP4 and validating the resulting model. [ATOM FP8 dispatch](https://github.com/TianHao65/ATOM/blob/e309e005dfa83dd323dfb959b040d0af8bb6bceb/atom/model_ops/linear.py#L1663) · [ATOM fused norm](https://github.com/TianHao65/ATOM/blob/e309e005dfa83dd323dfb959b040d0af8bb6bceb/atom/models/deepseek_v41/attention.py#L299) · [Luocheng entry](https://github.com/luocheng25/aiter/blob/4f98da2531efc78a51583900a249536626a76eaa/aiter/ops/flydsl/gemm_a8w4_ptpc.py#L311)
 
 ## Validation
 
-- The author reports all 96 timed cases passing independent FP32 references built from each arm's quantized operands. The gate required finite outputs, `|error| ≤ 0.01 × (|reference| + row_max_abs_reference)`, and `calc_diff ≤ 1e-5`. The A8W4 reference applies the weight preparation rule that zeroes MXFP4 groups with an E8M0 scale delta of at least 12 from the channel maximum. [Reference and grading](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/op_tests/test_gemm_a8w4_ptpc.py#L143)
-- Profiler checks on six basic cases matched the declared kernel names. Additional coverage includes tile boundaries, bit-exact activation quantization, noncontiguous TP weight slices, and graph replay. The reported performance applies to these Qwen3.8 TP-local shapes. [Coverage](https://github.com/luocheng25/aiter/blob/ba9dd6a3493bb2b6313e5c52664300f8f9f75438/aiter/ops/flydsl/kernels/gemm_a8w4_ptpc/README.md#5-测试覆盖)
+Read the safetensors headers of all 48 local shards. The 96,085 tensor names match the checkpoint index. The backbone has 290 FP32 channel-scale tensors across the attention projections, Engram projections, and shared experts. The dense result is a compatibility check with GPU measurements pending a compatible dense weight format. [Checkpoint index](https://huggingface.co/ginsongsong/DeepSeek-V4.1-Flash-1017-FP4PTPC/blob/97cc9b32c970864edce0f3fc186d3042b04e3a36/model.safetensors.index.json)

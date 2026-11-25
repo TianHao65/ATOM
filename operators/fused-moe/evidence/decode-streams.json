@@ -1,0 +1,360 @@
+{
+  "method": [
+    "Read complete original rank 0 Kineto traces. Join each GPU kernel by unique correlation to a HIP launch inside one exact C1 decode CPU annotation.",
+    "Identify the routed/main stream by the routed GEMMs and use its original gpu_user_annotation span.",
+    "For a separate shared expert, identify its stream by the K-padded CKTile Down signature, then group the displayed operator signatures on that stream.",
+    "Stream spans include the elapsed interval and may overlap. The kernel duration sums record GPU work. The copy signature includes any auxiliary copies on the same stream."
+  ],
+  "arms": {
+    "baseline": {
+      "trace": "DeepSeek-V4.1-Flash-1017-FP4PTPC_ts_20261125_012620_166.pt.trace.json.gz",
+      "sha256": "d9041d3000350d3cdf2ab03fa7d8846f45cc1a8d86145c1b3fbe44217f6b74b0",
+      "annotation": "decode[bs=1 tok=1 d=1]",
+      "matched_forwards": 24,
+      "all_streams": {
+        "calls_per_forward_min_max": [
+          967,
+          967
+        ],
+        "calls_per_forward_p50": 967.0,
+        "summed_gpu_work_us_p50": 8021.9045,
+        "summed_gpu_work_us_mean": 8021.328583333328
+      },
+      "streams": [
+        {
+          "pid": 2,
+          "tid": 3,
+          "routed_gemm_stream": true,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 8031.413500000001,
+          "calls_per_forward_min_max": [
+            959,
+            959
+          ],
+          "calls_per_forward_p50": 959.0,
+          "summed_gpu_work_us_p50": 7974.092499999997,
+          "summed_gpu_work_us_mean": 7977.161499999996
+        },
+        {
+          "pid": 2,
+          "tid": 18,
+          "routed_gemm_stream": false,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 51.980999999999995,
+          "calls_per_forward_min_max": [
+            8,
+            8
+          ],
+          "calls_per_forward_p50": 8.0,
+          "summed_gpu_work_us_p50": 43.2125,
+          "summed_gpu_work_us_mean": 44.16708333333333
+        }
+      ],
+      "shared_expert_stream": null
+    },
+    "baseline_split": {
+      "trace": "DeepSeek-V4.1-Flash-1017-FP4PTPC_ts_20261125_015818_938.pt.trace.json.gz",
+      "sha256": "90b474d3f74cf8004e4b5849b9ab165add6a7c0beaa11d2e5cc4021db3ba0f81",
+      "annotation": "decode[bs=1 tok=1 d=1]",
+      "matched_forwards": 24,
+      "all_streams": {
+        "calls_per_forward_min_max": [
+          1287,
+          1287
+        ],
+        "calls_per_forward_p50": 1287.0,
+        "summed_gpu_work_us_p50": 10332.89249999999,
+        "summed_gpu_work_us_mean": 10507.847125
+      },
+      "streams": [
+        {
+          "pid": 2,
+          "tid": 3,
+          "routed_gemm_stream": true,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 9371.974,
+          "calls_per_forward_min_max": [
+            999,
+            999
+          ],
+          "calls_per_forward_p50": 999.0,
+          "summed_gpu_work_us_p50": 8189.111000000001,
+          "summed_gpu_work_us_mean": 8364.919333333331
+        },
+        {
+          "pid": 2,
+          "tid": 26,
+          "routed_gemm_stream": false,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 9144.9535,
+          "calls_per_forward_min_max": [
+            284,
+            284
+          ],
+          "calls_per_forward_p50": 284.0,
+          "summed_gpu_work_us_p50": 2118.7219999999993,
+          "summed_gpu_work_us_mean": 2119.5300416666664
+        },
+        {
+          "pid": 2,
+          "tid": 27,
+          "routed_gemm_stream": false,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 23.061,
+          "calls_per_forward_min_max": [
+            4,
+            4
+          ],
+          "calls_per_forward_p50": 4.0,
+          "summed_gpu_work_us_p50": 23.055999999999997,
+          "summed_gpu_work_us_mean": 23.39775
+        }
+      ],
+      "shared_expert_stream": {
+        "pid": 2,
+        "tid": 26,
+        "stages": {
+          "input_activation_quant": {
+            "name_fragments": [
+              "dynamic_per_token_scaled_quant_kernel",
+              "Li32E"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 204.20049999999992,
+            "summed_gpu_work_us_mean": 204.1640833333333
+          },
+          "gate_up_gemm": {
+            "name_fragments": [
+              "ck::kernel_gemm_xdl_cshuffle_v3_multi_d_b_preshuffle"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 360.82099999999997,
+            "summed_gpu_work_us_mean": 360.8495833333333
+          },
+          "clamp_silu_multiply": {
+            "name_fragments": [
+              "act_and_mul_kernel"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 224.72000000000003,
+            "summed_gpu_work_us_mean": 225.130625
+          },
+          "intermediate_activation_quant": {
+            "name_fragments": [
+              "dynamic_per_token_scaled_quant_kernel",
+              "Li8E"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 201.3005,
+            "summed_gpu_work_us_mean": 201.65737499999997
+          },
+          "padding_fill": {
+            "name_fragments": [
+              "FillFunctor<c10::Float8_e4m3fnuz>"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 205.20049999999998,
+            "summed_gpu_work_us_mean": 205.31904166666664
+          },
+          "stream_buffer_copies": {
+            "name_fragments": [
+              "__amd_rocclr_copyBuffer"
+            ],
+            "calls_per_forward_min_max": [
+              41,
+              41
+            ],
+            "calls_per_forward_p50": 41.0,
+            "summed_gpu_work_us_p50": 207.4595,
+            "summed_gpu_work_us_mean": 207.78145833333332
+          },
+          "down_gemm": {
+            "name_fragments": [
+              "_ZN7ck_tile6kentry",
+              "FlatmmKernel"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 695.4435000000001,
+            "summed_gpu_work_us_mean": 695.470875
+          }
+        }
+      }
+    },
+    "candidate": {
+      "trace": "DeepSeek-V4.1-Flash-1017-FP4PTPC_ts_20261125_015303_720.pt.trace.json.gz",
+      "sha256": "0a78b969ff6c2eeca6b666f901908470e3cc6df559ccaa3fcec9bd9b19f99288",
+      "annotation": "decode[bs=1 tok=1 d=1]",
+      "matched_forwards": 24,
+      "all_streams": {
+        "calls_per_forward_min_max": [
+          1287,
+          1287
+        ],
+        "calls_per_forward_p50": 1287.0,
+        "summed_gpu_work_us_p50": 10091.389500000005,
+        "summed_gpu_work_us_mean": 10092.180833333332
+      },
+      "streams": [
+        {
+          "pid": 2,
+          "tid": 3,
+          "routed_gemm_stream": true,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 9311.4345,
+          "calls_per_forward_min_max": [
+            999,
+            999
+          ],
+          "calls_per_forward_p50": 999.0,
+          "summed_gpu_work_us_p50": 8015.0095,
+          "summed_gpu_work_us_mean": 8016.613458333331
+        },
+        {
+          "pid": 2,
+          "tid": 26,
+          "routed_gemm_stream": false,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 9080.754,
+          "calls_per_forward_min_max": [
+            284,
+            284
+          ],
+          "calls_per_forward_p50": 284.0,
+          "summed_gpu_work_us_p50": 2051.8819999999996,
+          "summed_gpu_work_us_mean": 2052.202958333333
+        },
+        {
+          "pid": 2,
+          "tid": 27,
+          "routed_gemm_stream": false,
+          "gpu_annotated_spans": 24,
+          "gpu_annotated_span_us_p50": 23.000999999999998,
+          "calls_per_forward_min_max": [
+            4,
+            4
+          ],
+          "calls_per_forward_p50": 4.0,
+          "summed_gpu_work_us_p50": 22.996000000000002,
+          "summed_gpu_work_us_mean": 23.364416666666667
+        }
+      ],
+      "shared_expert_stream": {
+        "pid": 2,
+        "tid": 26,
+        "stages": {
+          "input_activation_quant": {
+            "name_fragments": [
+              "dynamic_per_token_scaled_quant_kernel",
+              "Li32E"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 203.13999999999993,
+            "summed_gpu_work_us_mean": 203.13541666666663
+          },
+          "gate_up_gemm": {
+            "name_fragments": [
+              "ck::kernel_gemm_xdl_cshuffle_v3_multi_d_b_preshuffle"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 363.66200000000003,
+            "summed_gpu_work_us_mean": 363.3045833333333
+          },
+          "clamp_silu_multiply": {
+            "name_fragments": [
+              "act_and_mul_kernel"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 224.6205,
+            "summed_gpu_work_us_mean": 224.419125
+          },
+          "intermediate_activation_quant": {
+            "name_fragments": [
+              "dynamic_per_token_scaled_quant_kernel",
+              "Li8E"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 263.90200000000004,
+            "summed_gpu_work_us_mean": 264.0311666666667
+          },
+          "padding_fill": {
+            "name_fragments": [
+              "FillFunctor<c10::Float8_e4m3fnuz>"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 222.5815,
+            "summed_gpu_work_us_mean": 222.43895833333335
+          },
+          "stream_buffer_copies": {
+            "name_fragments": [
+              "__amd_rocclr_copyBuffer"
+            ],
+            "calls_per_forward_min_max": [
+              41,
+              41
+            ],
+            "calls_per_forward_p50": 41.0,
+            "summed_gpu_work_us_p50": 195.33950000000002,
+            "summed_gpu_work_us_mean": 195.59620833333332
+          },
+          "down_gemm": {
+            "name_fragments": [
+              "_ZN7ck_tile6kentry",
+              "FlatmmKernel"
+            ],
+            "calls_per_forward_min_max": [
+              40,
+              40
+            ],
+            "calls_per_forward_p50": 40.0,
+            "summed_gpu_work_us_p50": 560.8025,
+            "summed_gpu_work_us_mean": 560.777125
+          }
+        }
+      }
+    }
+  }
+}
