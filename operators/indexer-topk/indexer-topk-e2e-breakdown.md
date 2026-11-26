@@ -1,16 +1,17 @@
-# DeepSeek-V4.1-Flash indexer top-k end-to-end evaluation
+# DeepSeek-V4.1-Flash model latency breakdown on MI308X
 
 ## What
 
-This evaluation measures request latency and GPU operator time with the default ATOM selectors and with AITER Ballot enabled. In the 100K/150 serving A/B, about **62% of mean request latency** came after the first token. In the AITER Ballot arm, that interval was **16.87 ms shorter** and mean end-to-end latency was **15.67 ms lower (0.85%)**. Stable K512 selection accounted for **4.90%** of the baseline median Decode GPU graph span. With AITER Ballot enabled, the largest GPU time contributors were paged sparse attention in Prefill and the attention path, MoE, and mHC in Decode. [ROCM-34375](https://amd.atlassian.net/browse/ROCM-34375) · [AITER Ballot implementation](https://github.com/ROCm/aiter/commit/7f36447ac7a235d15d8de7b4598c2c167d85da67) · [Selector A/B](indexer-topk-tp4.md)
+This evaluation compares whole-model inference with the default ATOM selectors and with AITER Ballot enabled. Mean E2E latency was **0.85% lower** with AITER Ballot in the 100K/150 serving A/B. In the separate 100K/24 Ballot profile, attention and its indexer accounted for **52.79%** of total GPU work, followed by **MoE (21.44%)** and **mHC (13.68%)**. The profile follows the full forward path from embedding and Engram through the output head and sampling. [ROCM-34375](https://amd.atlassian.net/browse/ROCM-34375) · [AITER Ballot implementation](https://github.com/ROCm/aiter/commit/7f36447ac7a235d15d8de7b4598c2c167d85da67) · [Isolated selector A/B](indexer-topk-tp4.md)
 
 ## Data
 
 | Parameter | Setting |
 |---|---|
 | Model | DeepSeek-V4.1-Flash-1017 `08c8657`, native online FP8 PTPC for FFN experts, BF16 KV cache, FP8 index cache |
+| Checkpoint dimensions | 40 layers, hidden size 5,120, expert intermediate size 2,304, 384 routed experts, 1 shared expert, 6 routed selections per token, mHC expansion factor 4, Engram at layers 1 and 14 |
 | Platform | Four MI308X GPUs (gfx942) on PTL52, TP4 Base, concurrency 1, DSpark off |
-| Software | Both arms used ATOM `e26da2a`, AITER `ad0d5e20`, image `cfd987217fc4`, PyTorch 2.10.0 and ROCm 7.2.4. |
+| Software | Both arms used tested ATOM source `e26da2a`, AITER `ad0d5e20`, image `cfd987217fc4`, PyTorch 2.10.0 and ROCm 7.2.4. |
 | Selector | The ATOM baseline used the default FlyDSL and HIP radix selectors. The AITER Ballot arm enabled the library built from the linked AITER commit. |
 | Dispatch | Stable K=512, one query token, non-tentative Decode. FP32 logits shapes per graph were `[1, 16384]` × 4, `[1, 51200]` × 3, and `[1, 102400]` × 1. |
 | Serving A/B | 100,000 input / 150 output tokens, greedy generation, 8 matched prompts, one server start per arm, profiler off |
@@ -53,50 +54,57 @@ Six of eight requests completed faster. The median of the eight paired E2E diffe
 
 </details>
 
-### Prefill GPU time
+### Whole-model GPU time by module
 
-Rank 0 had two Prefill chunks, `8192 @ ctx=98048` and `1952/2048 @ ctx=100000` as recorded by ATOM. GPU kernels were attributed by matching HIP launch correlations inside each Prefill annotation. The table sums per-family durations on the main GPU stream across both chunks. Percentages use the AITER Ballot arm's 569.60 ms main-stream span.
+Each cell shows **ATOM baseline → AITER Ballot** for rank 0. The full-request column sums both Prefill chunks (`8192 @ ctx=98048` and `1952/2048 @ ctx=100000`) and all 24 Decode steps. The other columns show the sum across Prefill and the mean across Decode. Percentages use the corresponding column's total GPU kernel and device-copy time, including overlapping streams.
 
-| Prefill GPU work | ATOM baseline (ms) | AITER Ballot (ms) | AITER Ballot span share |
+| Module | Full profiled request, ms (share) | Prefill, ms (share) | Decode, ms/step (share) |
 |---|---:|---:|---:|
-| **Paged sparse attention, including split and combine** | **171.38** | **171.40** | **30.09%** |
-| MoE expert Gate/Up, Down, gating, sort and reduction | 109.71 | 109.47 | 19.22% |
-| Dense GEMM and BMM | 91.29 | 91.23 | 16.02% |
-| mHC | 67.16 | 66.82 | 11.73% |
-| TP collectives | 51.83 | 52.31 | 9.18% |
-| Indexer FP8 MQA scoring | 46.60 | 46.69 | 8.20% |
-| Indexer HIP radix selection | 15.16 | 15.16 | 2.66% |
-| Remaining kernels | 15.20 | 15.60 | 2.74% |
-| Gaps between kernels | 1.09 | 0.92 | 0.16% |
-| **Main-stream span, both chunks** | **569.41** | **569.60** | **100%** |
+| **Attention projections, RoPE, sparse attention and KV** | **322.486 (42.03%) → 323.313 (42.27%)** | 249.574 (43.58%) → 250.114 (43.62%) | 3.038 (37.44%) → 3.050 (38.23%) |
+| **MoE routing and expert compute** | **164.012 (21.37%) → 163.998 (21.44%)** | 119.046 (20.79%) → 118.782 (20.72%) | 1.874 (23.09%) → 1.884 (23.62%) |
+| **mHC** | **104.688 (13.64%) → 104.647 (13.68%)** | 68.374 (11.94%) → 68.060 (11.87%) | 1.513 (18.65%) → 1.524 (19.11%) |
+| Indexer projections, scoring, selection and metadata | 83.480 (10.88%) → 80.465 (10.52%) | 63.631 (11.11%) → 63.716 (11.11%) | 0.827 (10.19%) → 0.698 (8.75%) |
+| TP collectives | 65.789 (8.57%) → 65.824 (8.61%) | 53.526 (9.35%) → 54.490 (9.50%) | 0.511 (6.30%) → 0.472 (5.92%) |
+| Token embedding and Engram | 21.040 (2.74%) → 21.307 (2.79%) | 17.061 (2.98%) → 17.338 (3.02%) | 0.166 (2.04%) → 0.165 (2.07%) |
+| Final RMSNorm and LM head | 3.212 (0.42%) → 3.171 (0.41%) | 0.143 (0.03%) → 0.138 (0.02%) | 0.128 (1.58%) → 0.126 (1.58%) |
+| Greedy sampling | 0.274 (0.04%) → 0.265 (0.03%) | 0.011 (<0.01%) → 0.011 (<0.01%) | 0.011 (0.13%) → 0.011 (0.13%) |
+| Device copies | 1.664 (0.22%) → 1.088 (0.14%) | 1.155 (0.20%) → 0.577 (0.10%) | 0.021 (0.26%) → 0.021 (0.27%) |
+| Other runtime GPU kernels | 0.715 (0.09%) → 0.723 (0.09%) | 0.117 (0.02%) → 0.120 (0.02%) | 0.025 (0.31%) → 0.025 (0.31%) |
+| **Total GPU work** | **767.361 (100%) → 764.801 (100%)** | **572.638 (100%) → 573.347 (100%)** | **8.113 (100%) → 7.977 (100%)** |
 
-Paged sparse attention, scoring, and radix selection together account for **233.25 ms (40.95%)** of the AITER Ballot arm's Prefill GPU span. Sparse attention itself is the largest component at **171.40 ms**. Both arms ran 12 HIP radix kernels and zero Ballot kernels in Prefill.
+GPU events were matched to HIP launches within the outer `ATOM::forward` annotations, including input preparation and postprocessing. Model kernels were assigned once by kernel family and launcher context. Generic GEMMs in graph replays were attributed by their position relative to attention projection, router, and Engram markers. The mHC row includes state initialization, fused pre/post, and the final collapse. TP communication includes LM-head all-gather and sampled-token broadcast. The LM head runs after the Decode graph, followed by greedy sampling in postprocessing. [ATOM model runtime](https://github.com/TianHao65/ATOM/blob/e26da2ae6e2b7a85bd8cde2a9f67f8238a3f276f/atom/models/deepseek_v41/runtime.py#L425) · [ATOM runner](https://github.com/TianHao65/ATOM/blob/e26da2ae6e2b7a85bd8cde2a9f67f8238a3f276f/atom/model_engine/model_runner.py#L3809)
 
-### Decode GPU time
+### Remaining bottlenecks
 
-Each Decode scope was matched to one HIP graph launch at batch 1 and one query token. The table shows mean summed kernel durations over 24 rank-0 replays and shares of summed GPU work for the AITER Ballot arm. The two GPU streams overlap by about 45 µs per step, so the measured graph span is reported separately. The profile used a separate request from the serving benchmark.
+- **Prefill.** Paged sparse attention is the largest submodule at **171.40 ms (29.89%)**, followed within the attention path by projections and KV/window preparation at **78.71 ms** and indexer scoring at **46.69 ms**. Both arms used the same 12 HIP radix selector calls in Prefill.
+- **Decode.** Attention accounts for **3.050 ms/step (38.23%)** with AITER Ballot, including **1.234 ms** of projection GEMMs and **0.708 ms** of sparse attention. MoE accounts for **1.884 ms/step (23.62%)**, with **0.746 ms** in expert Gate/Up and **0.417 ms** in expert Down. mHC accounts for **1.524 ms/step (19.11%)**. K512 selection plus split scratch initialization accounts for **0.245 ms/step (3.07%)**.
 
-| Decode GPU work | ATOM baseline (ms/step) | AITER Ballot (ms/step) | AITER Ballot work share |
-|---|---:|---:|---:|
-| **Attention projections, norm/RoPE/quant, and sparse attention** | **2.916** | **2.929** | **37.65%** |
-| **MoE router GEMM, gating and expert Gate/Up + Down** | **1.874** | **1.884** | **24.22%** |
-| **mHC** | **1.494** | **1.505** | **19.35%** |
-| TP all-reduce | 0.479 | 0.439 | 5.65% |
-| K512 selection kernels | 0.385 | 0.240 | 3.08% |
-| Ballot split workspace zeroing | 0 | 0.005 | 0.06% |
-| Indexer FP8 MQA scoring | 0.044 | 0.047 | 0.60% |
-| Indexer K2048, maxima, lift, and weight scaling | 0.089 | 0.087 | 1.12% |
-| Remaining kernels | 0.633 | 0.643 | 8.27% |
-| **Summed GPU kernel work** | **7.913** | **7.779** | **100%** |
-
-Attention in the AITER Ballot arm breaks down into **1.234 ms** for QKV/Q/output projections, **0.986 ms** for norm, RoPE and projection-input quantization, and **0.708 ms** for paged sparse attention. Projection attribution follows the Q/K norm, RoPE, inverse RoPE, and all-reduce markers in each layer. MoE includes the router GEMM immediately preceding each expert-gating kernel. [ATOM attention implementation](https://github.com/TianHao65/ATOM/blob/e26da2ae6e2b7a85bd8cde2a9f67f8238a3f276f/atom/models/deepseek_v41/attention.py)
-
-| Rank-0 profile metric | ATOM baseline → AITER Ballot |
+| Rank-0 Decode metric | ATOM baseline → AITER Ballot |
 |---|---:|
 | P50 K512 kernel work | 387.89 → 238.75 µs/step (−38.45%) |
 | P50 GPU graph span | 7.911 → 7.773 ms/step (−1.74%) |
+| P50 full step GPU span, preparation through postprocess | 8.165 → 8.027 ms/step (−1.69%) |
 
-Including split workspace zeroing, mean selector time was **0.140 ms lower per step** in the AITER Ballot arm, a difference equivalent to about **1.8%** of the baseline mean graph span. Over 149 post-first-token intervals, this corresponds to about **21 ms**, or **1.1%** of baseline mean E2E, if the per-step savings carry through to request latency. The trace identifies which operators take the most GPU time. Hardware-level attribution within those operators remains open.
+Stable K512 selection represented **4.90%** of the baseline median Decode graph span. Including split workspace zeroing, the selector averaged **0.140 ms less per step** with AITER Ballot. Sustaining that saving over the 149 post-first-token intervals in the serving workload would account for about **21 ms**, or **1.1%** of baseline mean E2E, if it carries through to the request's latency path.
+
+<details>
+<summary>Wall-time cross-check for the profiled request</summary>
+
+The 100K/24 profiles account for about 75% Prefill and 25% Decode by summed GPU activity in the module table. The HTTP wall-time view below uses the client request start and finish timestamps to clip the original rank-0 trace intervals. It uses the union of GPU activity on that timeline so each interval contributes once.
+
+| Time within the instrumented HTTP request | ATOM baseline (ms) | AITER Ballot (ms) |
+|---|---:|---:|
+| GPU kernels in the Prefill model execution | 568.485 (70.93%) | 568.691 (67.00%) |
+| GPU kernels in the Decode model execution, including the LM head | 190.685 (23.79%) | 187.653 (22.11%) |
+| Other captured GPU activity, including input staging, copies, and sampling | 1.924 (0.24%) | 1.932 (0.23%) |
+| Time with no captured rank-0 GPU activity | 40.393 (5.04%) | 90.528 (10.67%) |
+| **HTTP span of the profiled request** | **801.487 (100%)** | **848.805 (100%)** |
+
+The profiled AITER Ballot request spent **84.20 ms** before the first captured GPU event, versus **34.06 ms** in the baseline capture. Client, scheduler, and profiling contributions within that interval remain unassigned. The 100K/150 table above measures serving latency with the profiler off.
+
+The UTC windows on 2026-11-24 were `03:49:08.798839–03:49:09.600326` for the ATOM baseline and `03:54:02.959027–03:54:03.807832` for AITER Ballot. Kineto's `baseTimeNanoseconds` aligns event timestamps to those windows.
+
+</details>
 
 <details>
 <summary>Original Perfetto samples</summary>
@@ -131,6 +139,7 @@ The existing rank-0 samples show the first Prefill chunk and the 102,400-column 
 
 ## Validation
 
-- All eight original rank trace files matched their capture hashes. In the AITER Ballot arm, each rank ran seven unsplit and one split K512 Ballot kernel per replay. K2048 selection and MoE gating call counts matched across arms. Operator rankings were consistent across all four ranks in the AITER Ballot arm.
+- All eight original rank trace files matched their capture hashes. On rank 0, the module table accounts for every captured kernel and GPU copy, **25,375** events in the baseline and **25,399** with AITER Ballot. The dominant model modules agreed across TP ranks.
+- Each AITER Ballot rank ran seven unsplit and one split K512 Ballot kernel per Decode graph. K2048 selection and MoE gating call counts matched across arms.
 - The serving A/B matched all eight prompts, cache hit counts, and output lengths. GPU ownership sampling reported zero overlap. One server start per arm limits the estimate of run-to-run variation.
 - A separate shadow run returned identical stable top-k indices on all **39,904** same-logits comparisons. The timed requests matched SSE output hashes on **3/8** pairs. The cause of the output differences remains unresolved. [Selector validation](indexer-topk-tp4.md#validation)
