@@ -2,7 +2,7 @@
 
 ## What
 
-The ATOM adapter sends stable K=512 selection for the gfx942 FP8 paged index cache to Silo’s Ballot kernel in non-tentative, single-token Decode. Ballot uses wave ballots and popcount to reduce LDS atomic contention during radix counting. ATOM original uses AITER FlyDSL for the 16,384-column rows and HIP radix selection for longer rows. Set `ATOM_DSV41_BALLOT_TOPK_LIB` to the shared library built with `hipcc -O3 --offload-arch=gfx942 -std=c++17 -shared -fPIC`. [ATOM adapter](https://github.com/TianHao65/ATOM/commit/e309e005dfa83dd323dfb959b040d0af8bb6bceb) · [Silo AITER kernel](https://github.com/ROCm/aiter/commit/7f36447ac7a235d15d8de7b4598c2c167d85da67)
+The ATOM adapter sends stable K=512 selection for the gfx942 FP8 paged index cache to the AITER Ballot kernel in non-tentative, single-token Decode. Ballot uses wave ballots and popcount to reduce LDS atomic contention during radix counting. The ATOM baseline uses AITER FlyDSL for the 16,384-column rows and HIP radix selection for longer rows. Set `ATOM_DSV41_BALLOT_TOPK_LIB` to the shared library built with `hipcc -O3 --offload-arch=gfx942 -std=c++17 -shared -fPIC`. [ATOM adapter](https://github.com/TianHao65/ATOM/commit/e309e005dfa83dd323dfb959b040d0af8bb6bceb) · [AITER Ballot kernel](https://github.com/ROCm/aiter/commit/7f36447ac7a235d15d8de7b4598c2c167d85da67)
 
 ## Data
 
@@ -15,7 +15,7 @@ The ATOM adapter sends stable K=512 selection for the gfx942 FP8 paged index cac
 | End-to-end | 100,000 input / 150 output tokens, 8 matched requests per arm, separate server starts, 90K shared-prefix warmup, 89,984 cached tokens per request, profiler off |
 | Profiling | Separate 100,000 input / 24 output run per arm with 24 Decode graph replays per rank |
 
-Both server arms used the same image and source tree, tested at `e26da2a`. The candidate enabled the Ballot library. The Bobo delivery lists TP4 ATOM launchers. Its SGLang revision `baa9befa` contains a paged top-k v2 selector, and the isolated SGL arm is left blank. [Tested commit](https://github.com/TianHao65/ATOM/commit/e26da2ae6e2b7a85bd8cde2a9f67f8238a3f276f) · [SGLang top-k v2 dispatch](https://github.com/sgl-project/sglang/blob/baa9befa381511cd4d56f83980951e5a45fffc6d/python/sglang/srt/layers/attention/dsv4/indexer.py#L446)
+Both server arms used the same image and source tree, tested at `e26da2a`. The AITER Ballot arm enabled the Ballot library. The delivery notes list TP4 ATOM launchers. SGLang revision `baa9befa` contains the paged top-k v2 selector referenced in the table. [Tested commit](https://github.com/TianHao65/ATOM/commit/e26da2ae6e2b7a85bd8cde2a9f67f8238a3f276f) · [SGLang top-k v2 dispatch](https://github.com/sgl-project/sglang/blob/baa9befa381511cd4d56f83980951e5a45fffc6d/python/sglang/srt/layers/attention/dsv4/indexer.py#L446)
 
 ## Benchmarking and Profiling
 
@@ -23,7 +23,7 @@ Both server arms used the same image and source tree, tested at `e26da2a`. The c
 
 Each arm warms up with three eager calls and one CUDA graph replay. Latencies are the medians of eight GPU-event means over 200 replays per arm and shape, with alternating arm order and one selector call per replay. Timing includes split scratch zeroing. The weighted sum uses ATOM’s observed calls per Decode step.
 
-| Physical columns | Live columns | Calls per step | ATOM original (µs) | SGL Bobo (µs) | AITER Silo (µs) | Silo speedup vs ATOM |
+| Physical columns | Live columns | Calls per step | ATOM baseline (µs) | SGLang paged top-k v2 (µs) | AITER Ballot (µs) | AITER Ballot speedup vs baseline |
 |---:|---:|---:|---:|---:|---:|---:|
 | 16,384 | 16,384 | 4 | 26.77 | | 16.31 | 1.64× |
 | 51,200 | 50,000 | 3 | 46.54 | | 22.90 | 2.03× |
@@ -42,7 +42,7 @@ Six of eight requests finished faster with Ballot. Median paired ETE delta was �
 
 ### Rank 0 trace
 
-| Metric | ATOM original → Ballot |
+| Metric | ATOM baseline → AITER Ballot |
 |---|---:|
 | P50 Decode K512 GPU work (µs/step) | 387.89 → 238.75 (−38.45%) |
 | P50 Decode GPU graph span (ms/step) | 7.911 → 7.773 (−1.74%) |
