@@ -1,0 +1,218 @@
+{
+  "baseline": [
+    {
+      "rank": "rank_0",
+      "sha256": "185298dab7b0671978ef3f2a206f55d63d958b32ff2ec7b87655bb9aabcb1659",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_1",
+      "sha256": "beb3f7b21c577480063a7c63df76f54cd644bcd3639f2200518892508bfcfac2",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_2",
+      "sha256": "eefe285c16bc0340ee732f2bfe3bfe71ba236f3fdc597aa573f93c16d3f41dbe",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_3",
+      "sha256": "9c384ef37dbae4d27b3b20aa460ffff8d9b28fbb9fb0ec83c6a5e75d35e45b68",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 0
+      }
+    }
+  ],
+  "csa": [
+    {
+      "rank": "rank_0",
+      "sha256": "b5b5366bd2cdfcb1952662812222da661d3a36c63afc6e106d428d6afb48b294",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_1",
+      "sha256": "b78cc56214c6d688b795fe3875a70ef2d312ecf967d27006fb65d99e9aa25e86",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_2",
+      "sha256": "9fcae3e2f0b5470c662fc47a7a3a1c7b5aca203f293c0da6d0ce094bc66f7587",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 0
+      }
+    },
+    {
+      "rank": "rank_3",
+      "sha256": "bafc6b2e0b257661017f8ceed7a010caa895a9ca3e818e957fb49dc595f62182",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 0
+      }
+    }
+  ],
+  "ballot": [
+    {
+      "rank": "rank_0",
+      "sha256": "98d67f883d59a88b325297f23adbf014689e8a88c23ea4cbbb361390d36ab614",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_1",
+      "sha256": "eb45bd4ded42083c7f7a4bdea14484297e8ee550ae5d5111495b87a1d1ffc1fc",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_2",
+      "sha256": "c5aab474ef28852ca0de491261b3c9046d313f4f0b370dc159879b41548fecf5",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_3",
+      "sha256": "64caabc60c63494e75211fe536477d8430367343463768dd5c8ad4b14392d45a",
+      "counts": {
+        "atom_sparse_attention": 1020,
+        "atom_split_combine": 913,
+        "standalone_inverse_rope": 1020,
+        "hip_unsplit": 0,
+        "hip_split_stage": 0,
+        "hip_split_combine": 0,
+        "ballot_stable_topk": 192
+      }
+    }
+  ],
+  "combined": [
+    {
+      "rank": "rank_0",
+      "sha256": "24e1307267573835af94deeaba610cd395212b89b1a8bf240420f6f5e5d49912",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_1",
+      "sha256": "f1146cd5a10702ae65c3c252d94d73f2734f59e657d868c4f75f32ae78843c68",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_2",
+      "sha256": "ab55f8a802798bd1d8d1807ec0b5bc4f4313160dae5f90b25b3f98288912ed21",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 192
+      }
+    },
+    {
+      "rank": "rank_3",
+      "sha256": "3fd0d2c61b74edf46f5aa7837a15ccf370ad384916b32fac4bcb04ab326b5fae",
+      "counts": {
+        "atom_sparse_attention": 0,
+        "atom_split_combine": 0,
+        "standalone_inverse_rope": 0,
+        "hip_unsplit": 59,
+        "hip_split_stage": 961,
+        "hip_split_combine": 961,
+        "ballot_stable_topk": 192
+      }
+    }
+  ]
+}

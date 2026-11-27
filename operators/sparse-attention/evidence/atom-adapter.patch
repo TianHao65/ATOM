@@ -1,0 +1,320 @@
+From b2b8a1bad27af463e27c4f83cf78e6bc838fd92a Mon Sep 17 00:00:00 2001
+From: TianHao65 <283868507+TianHao65@users.noreply.github.com>
+Date: Fri, 27 Nov 2026 10:05:42 +0800
+Subject: [PATCH] perf(dsv41): add opt-in gfx942 HIP sparse attention
+
+Route BF16 two-source attention to the standalone kernel from ROCm/aiter 3dcbc414ca0bc0c061a7073cd4dfaa10de97f550. Fuse inverse RoPE for BF16 output projection and keep the existing quantized projection path.
+
+Signed-off-by: TianHao65 <283868507+TianHao65@users.noreply.github.com>
+---
+ .../deepseek_v41/hip_sparse_attention.py      | 177 ++++++++++++++++++
+ atom/models/deepseek_v41/attention.py         |  57 ++++--
+ atom/utils/envs.py                            |   4 +
+ 3 files changed, 225 insertions(+), 13 deletions(-)
+ create mode 100644 atom/model_ops/deepseek_v41/hip_sparse_attention.py
+
+diff --git a/atom/model_ops/deepseek_v41/hip_sparse_attention.py b/atom/model_ops/deepseek_v41/hip_sparse_attention.py
+new file mode 100644
+index 0000000..2a85cb6
+--- /dev/null
++++ b/atom/model_ops/deepseek_v41/hip_sparse_attention.py
+@@ -0,0 +1,177 @@
++# SPDX-License-Identifier: MIT
++"""Opt-in launcher for AITER's gfx942 BF16 two-source sparse attention."""
++
++import ctypes
++import logging
++from functools import cache
++
++import torch
++from aiter.jit.utils.chip_info import get_gfx_runtime
++
++from atom.utils import envs
++
++logger = logging.getLogger("atom")
++
++
++def supports_hip_sparse_attention(q: torch.Tensor) -> bool:
++    return bool(
++        envs.ATOM_DSV41_HIP_SPARSE_ATTN_LIB
++        and not torch.compiler.is_compiling()
++        and q.is_cuda
++        and q.dtype == torch.bfloat16
++        and q.shape[-1] == 512
++        and get_gfx_runtime() == "gfx942"
++    )
++
++
++@cache
++def _load_library(path: str):
++    lib = ctypes.CDLL(path)
++    lib.sparse_attn_v4_gfx942_splits.argtypes = [ctypes.c_int] * 4
++    lib.sparse_attn_v4_gfx942_splits.restype = ctypes.c_int
++    lib.sparse_attn_v4_gfx942_workspace_bytes.argtypes = [ctypes.c_int] * 3
++    lib.sparse_attn_v4_gfx942_workspace_bytes.restype = ctypes.c_longlong
++    lib.sparse_attn_v4_gfx942_launch.argtypes = (
++        [ctypes.c_void_p] * 9
++        + [ctypes.c_longlong] * 6
++        + [ctypes.c_int] * 3
++        + [ctypes.c_float]
++        + [ctypes.c_void_p] * 4
++        + [ctypes.c_longlong, ctypes.c_int, ctypes.c_void_p]
++    )
++    lib.sparse_attn_v4_gfx942_launch.restype = ctypes.c_int
++    logger.info("DeepSeek-V4.1 HIP sparse attention library loaded from %s", path)
++    return lib
++
++
++@cache
++def _log_dispatch(decode: bool, fused_rope: bool):
++    logger.info(
++        "DeepSeek-V4.1 HIP sparse attention dispatched in %s, fused inverse RoPE=%s",
++        "Decode" if decode else "Prefill",
++        fused_rope,
++    )
++
++
++def hip_sparse_attention(
++    q: torch.Tensor,
++    prefix_kv: torch.Tensor,
++    prefix_indices: torch.Tensor,
++    prefix_indptr: torch.Tensor,
++    extend_kv: torch.Tensor,
++    extend_indices: torch.Tensor,
++    extend_indptr: torch.Tensor,
++    sink: torch.Tensor,
++    scale: float,
++    *,
++    decode: bool,
++    rope=None,
++    positions: torch.Tensor | None = None,
++) -> torch.Tensor:
++    """Launch on the current stream with graph-local split workspace."""
++    tokens, heads, dim = q.shape
++    if not tokens:
++        return q
++
++    # The HIP ABI vector-loads Q and KV and uses unit-stride CSR indices.
++    if not (
++        q.is_contiguous()
++        and q.data_ptr() % 8 == 0
++        and all(
++            kv.ndim == 2
++            and kv.shape[-1] == dim
++            and kv.device == q.device
++            and kv.dtype == q.dtype
++            and kv.stride(-1) == 1
++            and kv.stride(0) % 8 == 0
++            and kv.data_ptr() % 16 == 0
++            for kv in (prefix_kv, extend_kv)
++        )
++        and all(
++            csr.ndim == 1
++            and csr.device == q.device
++            and csr.dtype == torch.int32
++            and csr.is_contiguous()
++            for csr in (prefix_indices, prefix_indptr, extend_indices, extend_indptr)
++        )
++        and prefix_indptr.numel() == extend_indptr.numel() == tokens + 1
++        and sink.shape == (heads,)
++        and sink.device == q.device
++        and sink.dtype == torch.float32
++        and sink.is_contiguous()
++    ):
++        raise RuntimeError("Unsupported DeepSeek-V4.1 HIP sparse attention layout")
++
++    cos_ptr = sin_ptr = pos_ptr = rope_stride = rope_dim = 0
++    if rope is not None:
++        cos, sin = rope.cos_cache, rope.sin_cache
++        if not (
++            positions is not None
++            and positions.shape == (tokens,)
++            and positions.dtype == torch.int64
++            and positions.device == q.device
++            and positions.is_contiguous()
++            and cos.shape == sin.shape
++            and cos.ndim == 2
++            and cos.shape[1] == 32
++            and cos.dtype == sin.dtype == torch.bfloat16
++            and cos.device == sin.device == q.device
++            and cos.is_contiguous()
++            and sin.is_contiguous()
++        ):
++            raise RuntimeError("Unsupported DeepSeek-V4.1 HIP inverse RoPE layout")
++        cos_ptr, sin_ptr, pos_ptr = cos.data_ptr(), sin.data_ptr(), positions.data_ptr()
++        rope_stride, rope_dim = cos.stride(0), 64
++
++    with torch.cuda.device(q.device):
++        lib = _load_library(envs.ATOM_DSV41_HIP_SPARSE_ATTN_LIB)
++        num_cus = torch.cuda.get_device_properties(q.device).multi_processor_count
++        # Index capacity chooses a split count without a device-to-host read.
++        # The kernel uses each row's true CSR endpoints to read the slots.
++        avg_keys = (prefix_indices.numel() + extend_indices.numel()) // tokens
++        splits = lib.sparse_attn_v4_gfx942_splits(tokens, heads, avg_keys, num_cus)
++        workspace = None
++        if splits > 1:
++            # Stage 1 initializes every partial before combine reads it.
++            workspace = torch.empty(
++                lib.sparse_attn_v4_gfx942_workspace_bytes(tokens, heads, splits),
++                dtype=torch.uint8,
++                device=q.device,
++            )
++        # The split stage reads Q and its combine writes the result in a
++        # later kernel. The unsplit kernel requires non-aliasing Q and O.
++        out = q if splits > 1 else torch.empty_like(q)
++        status = lib.sparse_attn_v4_gfx942_launch(
++            q.data_ptr(),
++            prefix_kv.data_ptr(),
++            prefix_indices.data_ptr(),
++            prefix_indptr.data_ptr(),
++            extend_kv.data_ptr(),
++            extend_indices.data_ptr(),
++            extend_indptr.data_ptr(),
++            sink.data_ptr(),
++            out.data_ptr(),
++            q.stride(0),
++            q.stride(1),
++            prefix_kv.stride(0),
++            extend_kv.stride(0),
++            out.stride(0),
++            out.stride(1),
++            tokens,
++            heads,
++            splits,
++            scale,
++            None if workspace is None else workspace.data_ptr(),
++            cos_ptr,
++            sin_ptr,
++            pos_ptr,
++            rope_stride,
++            rope_dim,
++            torch.cuda.current_stream(q.device).cuda_stream,
++        )
++        if status:
++            raise RuntimeError(
++                f"DeepSeek-V4.1 HIP sparse attention launch failed ({status})"
++            )
++    _log_dispatch(decode, rope is not None)
++    return out
+diff --git a/atom/models/deepseek_v41/attention.py b/atom/models/deepseek_v41/attention.py
+index 13e3912..eb0f154 100644
+--- a/atom/models/deepseek_v41/attention.py
++++ b/atom/models/deepseek_v41/attention.py
+@@ -36,6 +36,10 @@ from atom.model_ops.attentions.deepseek_v41.score_planner import score_layout
+ from atom.model_ops.blockscale_kernels.quantization import AMAX_FLOOR
+ from atom.model_ops.deepseek_v41.ballot_topk import try_ballot_topk
+ from atom.model_ops.deepseek_v41.compressor import Compressor
++from atom.model_ops.deepseek_v41.hip_sparse_attention import (
++    hip_sparse_attention,
++    supports_hip_sparse_attention,
++)
+ from atom.model_ops.deepseek_v41.paged_scoring import (
+     quantize_query_fp4,
+     score_topk_paged,
+@@ -432,7 +436,7 @@ class Attention(nn.Module):
+             "mxfp8 epilogue" if self._fuse_woa_quant else "shape unsupported",
+         )
+ 
+-    def _project_out(self, output, rope, positions):
++    def _project_out(self, output, rope, positions, *, inverse_rope_fused=False):
+         """Inverse RoPE fused into the MXFP8 group quant, then the grouped FP8
+         `wo_a` GEMM and `wo_b`. `positions` are the rows' positions, in the
+         order of `output`'s leading dims.
+@@ -443,16 +447,17 @@ class Attention(nn.Module):
+             x = output.reshape(rows, self.heads, self.head_dim)
+             if not x.is_contiguous():
+                 x = x.contiguous()
+-            pos = positions.flatten()
+-            if pos.stride(0) != 1:
+-                pos = pos.contiguous()
+-            inverse_rope_inplace(
+-                x,
+-                rope.cos_cache[:, None, None, :],
+-                rope.sin_cache[:, None, None, :],
+-                pos,
+-                rope.rope_dim,
+-            )
++            if not inverse_rope_fused:
++                pos = positions.flatten()
++                if pos.stride(0) != 1:
++                    pos = pos.contiguous()
++                inverse_rope_inplace(
++                    x,
++                    rope.cos_cache[:, None, None, :],
++                    rope.sin_cache[:, None, None, :],
++                    pos,
++                    rope.rope_dim,
++                )
+             # Written through a [G, M, N] view: wo_b needs no transpose copy.
+             w = self.wo_a.weight.view(self.groups, self.o_rank, -1)
+             x = x.view(rows, self.groups, -1)
+@@ -566,11 +571,27 @@ class Attention(nn.Module):
+         # joined -- with or without a forked scorer (`ATOM_DSV41_SIDE_STREAMS`
+         # 1 forks the compressor alone).
+         join_stream(self.index_stream, self.compress_stream)
+-        output = self._attend(query, cache, step, queries, prepared)
++        use_hip = (
++            not cache.packed
++            and not cache.kv_fp8
++            and supports_hip_sparse_attention(query)
++        )
++        # Quantized wo_a already fuses inverse RoPE into MXFP8 group quant.
++        hip_rope = (
++            rope
++            if use_hip
++            and self.wo_a.weight.dtype == torch.bfloat16
++            and rope.rope_dim == 64
++            else None
++        )
++        output = self._attend(
++            query, cache, step, queries, prepared, use_hip=use_hip, hip_rope=hip_rope
++        )
+         return self._project_out(
+             output.view_as(query),
+             rope,
+             cache.rope_positions(step) if queries is None else queries.positions,
++            inverse_rope_fused=hip_rope is not None,
+         )
+ 
+     def _prepare_attention(self, query, kv_normed, cache, step, rope, queries):
+@@ -617,7 +638,9 @@ class Attention(nn.Module):
+         return a8w4, query_fp8, kv, window_kv
+ 
+     @eager_region(live=_live_rows)
+-    def _attend(self, query, cache, step, queries, prepared=None):
++    def _attend(
++        self, query, cache, step, queries, prepared=None, *, use_hip=False, hip_rope=None
++    ):
+         if not step.requests:  # a dummy prefill on a token graph
+             return query
+         if prepared is None:
+@@ -639,6 +662,14 @@ class Attention(nn.Module):
+             attending = tuple(part.flatten(0, 1) for part in query_fp8)
+             if a8w4:
+                 kwargs["pool_scale_dtype"] = torch.float8_e4m3fn
++        elif use_hip:
++            attend = hip_sparse_attention
++            attending = flat_query
++            kwargs = {"decode": step.decode, "rope": hip_rope}
++            if hip_rope is not None:
++                kwargs["positions"] = (
++                    cache.rope_positions(step) if queries is None else queries.positions
++                ).flatten()
+         else:
+             attend = packed_prefill if cache.packed else sparse_attn_v4_paged_2src
+             attending = flat_query
+diff --git a/atom/utils/envs.py b/atom/utils/envs.py
+index 670b9d1..32ac8ab 100644
+--- a/atom/utils/envs.py
++++ b/atom/utils/envs.py
+@@ -651,6 +651,10 @@ environment_variables: dict[str, Callable[[], Any]] = {
+     "ATOM_DSV41_NATIVE_FP8_PTPC": lambda: _flag_env("ATOM_DSV41_NATIVE_FP8_PTPC"),
+     # Optional gfx942 shared library for the V4.1 C1 Decode Ballot top-k.
+     "ATOM_DSV41_BALLOT_TOPK_LIB": lambda: os.getenv("ATOM_DSV41_BALLOT_TOPK_LIB"),
++    # Optional gfx942 shared library for V4.1 BF16 two-source sparse attention.
++    "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": lambda: os.getenv(
++        "ATOM_DSV41_HIP_SPARSE_ATTN_LIB"
++    ),
+     # Direct NVFP4 CSA / MXFP8 SWA attention; off retains the BF16 adapter.
+     "ATOM_DSV41_A8W4_ATTN": lambda: os.getenv("ATOM_DSV41_A8W4_ATTN", "auto")
+     .strip()

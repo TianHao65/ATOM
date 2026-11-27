@@ -1,0 +1,118 @@
+[
+  {
+    "stage": "decode",
+    "ratio": 2,
+    "live": 1,
+    "padded": 1,
+    "empty": false,
+    "aliased": true,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    },
+    "replay": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    }
+  },
+  {
+    "stage": "decode",
+    "ratio": 1,
+    "live": 1,
+    "padded": 4,
+    "empty": false,
+    "aliased": true,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    },
+    "replay": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    }
+  },
+  {
+    "stage": "decode",
+    "ratio": 1,
+    "live": 1,
+    "padded": 4,
+    "empty": true,
+    "aliased": true,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    },
+    "replay": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    }
+  },
+  {
+    "stage": "encoder",
+    "ratio": 2,
+    "live": 1952,
+    "padded": 2048,
+    "empty": false,
+    "aliased": false,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.00048828125,
+      "mean_abs": 6.84810038364958e-06,
+      "rmse": 2.5933873985195532e-05,
+      "bf16_exact_fraction": 0.8459091782569885
+    },
+    "replay": null
+  },
+  {
+    "stage": "decoder_tail",
+    "ratio": 1,
+    "live": 128,
+    "padded": 128,
+    "empty": false,
+    "aliased": false,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.00048828125,
+      "mean_abs": 7.857086529838853e-06,
+      "rmse": 2.8389322324073873e-05,
+      "bf16_exact_fraction": 0.8329811096191406
+    },
+    "replay": null
+  },
+  {
+    "stage": "decoder_last",
+    "ratio": 1,
+    "live": 1,
+    "padded": 1,
+    "empty": false,
+    "aliased": true,
+    "padded_zero": true,
+    "eager": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    },
+    "replay": {
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "bf16_exact_fraction": 1.0
+    }
+  }
+]

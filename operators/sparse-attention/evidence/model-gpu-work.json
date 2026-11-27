@@ -1,0 +1,890 @@
+{
+  "baseline": {
+    "workload": {
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e"
+    },
+    "ranks": [
+      {
+        "rank": 0,
+        "sha256": "185298dab7b0671978ef3f2a206f55d63d958b32ff2ec7b87655bb9aabcb1659",
+        "gpu_work_ms": 933.2295719999917,
+        "event_count": 25375,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.580185999999,
+            "share_percent": 26.315088309267722,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.5052389999943,
+            "share_percent": 23.30672382507787,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.22356600000003,
+            "share_percent": 17.918802727353086,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.14097599999836,
+            "share_percent": 13.623762021120298,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.52235300000011,
+            "share_percent": 10.771449599970564,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 68.33523599999987,
+            "share_percent": 7.322446485868589,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.321346000000001,
+            "share_percent": 0.5702076058944313,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.291791,
+            "share_percent": 0.13842156729255592,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.30887899999999996,
+            "share_percent": 0.03309785815488525,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 1,
+        "sha256": "beb3f7b21c577480063a7c63df76f54cd644bcd3639f2200518892508bfcfac2",
+        "gpu_work_ms": 933.2111129999909,
+        "event_count": 25375,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.1660689999997,
+            "share_percent": 26.271233334530823,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 216.79233599999367,
+            "share_percent": 23.230792366270908,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.11541899999955,
+            "share_percent": 17.907568466772126,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.52868899999802,
+            "share_percent": 13.665577619412606,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 99.90110700000007,
+            "share_percent": 10.705091871318194,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 69.78118299999987,
+            "share_percent": 7.477534507242903,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.268870999999996,
+            "share_percent": 0.5645958268823196,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.3515210000000002,
+            "share_percent": 0.14482478628606016,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.305918,
+            "share_percent": 0.03278122128406362,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 2,
+        "sha256": "eefe285c16bc0340ee732f2bfe3bfe71ba236f3fdc597aa573f93c16d3f41dbe",
+        "gpu_work_ms": 932.0946719999921,
+        "event_count": 25375,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.72575399999897,
+            "share_percent": 26.36274633699452,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.8039289999946,
+            "share_percent": 23.367146658252377,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.64745099999942,
+            "share_percent": 17.986096910121685,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.92982399999902,
+            "share_percent": 13.724981790261761,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.41239100000008,
+            "share_percent": 10.772767404039076,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.41986199999988,
+            "share_percent": 7.018585554150709,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 4.771419999999998,
+            "share_percent": 0.5119029368295798,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 2.0737650000000003,
+            "share_percent": 0.22248437441985697,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.310276,
+            "share_percent": 0.03328803493042631,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 3,
+        "sha256": "9c384ef37dbae4d27b3b20aa460ffff8d9b28fbb9fb0ec83c6a5e75d35e45b68",
+        "gpu_work_ms": 931.9587169999933,
+        "event_count": 25375,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.96563399999997,
+            "share_percent": 26.392331496374826,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.57311899999527,
+            "share_percent": 23.345789360753074,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.34669699999975,
+            "share_percent": 17.95644956663901,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.5893369999983,
+            "share_percent": 13.690449445090518,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.61851600000008,
+            "share_percent": 10.796456341316759,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.665813,
+            "share_percent": 7.0460001931609675,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 4.785421999999995,
+            "share_percent": 0.5134800407688047,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 2.1051400000000013,
+            "share_percent": 0.2258833960775128,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.30903899999999995,
+            "share_percent": 0.033160159818538634,
+            "event_count": 50
+          }
+        }
+      }
+    ]
+  },
+  "csa": {
+    "workload": {
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e"
+    },
+    "ranks": [
+      {
+        "rank": 0,
+        "sha256": "b5b5366bd2cdfcb1952662812222da661d3a36c63afc6e106d428d6afb48b294",
+        "gpu_work_ms": 812.3421789999924,
+        "event_count": 24423,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 216.911717999995,
+            "share_percent": 26.702013462727887,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.18479799999903,
+            "share_percent": 20.58058812184374,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.49918999999821,
+            "share_percent": 15.695256665971966,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.92980300000042,
+            "share_percent": 15.625164651213023,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.44638800000014,
+            "share_percent": 12.365034168686332,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.89656999999964,
+            "share_percent": 8.111922746781348,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.366311999999999,
+            "share_percent": 0.6605974844992075,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.7791240000000006,
+            "share_percent": 0.21901164878452253,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.32827600000000007,
+            "share_percent": 0.04041104949199039,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 1,
+        "sha256": "b78cc56214c6d688b795fe3875a70ef2d312ecf967d27006fb65d99e9aa25e86",
+        "gpu_work_ms": 812.4493769999948,
+        "event_count": 24423,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 216.68163199999685,
+            "share_percent": 26.670170244957703,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 166.83218399999998,
+            "share_percent": 20.53447128189515,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.57142299999816,
+            "share_percent": 15.702076536886677,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.37789199999962,
+            "share_percent": 15.555171260842807,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 99.95353800000025,
+            "share_percent": 12.302740432774176,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 67.60960900000006,
+            "share_percent": 8.321701131663307,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.303184000000002,
+            "share_percent": 0.652740238361957,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.8077990000000013,
+            "share_percent": 0.2225122021356431,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.312116,
+            "share_percent": 0.038416670482596976,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 2,
+        "sha256": "9fcae3e2f0b5470c662fc47a7a3a1c7b5aca203f293c0da6d0ce094bc66f7587",
+        "gpu_work_ms": 812.4025799999922,
+        "event_count": 24423,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 216.91885799999523,
+            "share_percent": 26.70090707983686,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.447389999999,
+            "share_percent": 20.61138087473831,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 128.0100839999986,
+            "share_percent": 15.756976547267962,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.89487200000002,
+            "share_percent": 15.619703226447315,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.44178899999991,
+            "share_percent": 12.363548746977253,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.23155499999953,
+            "share_percent": 8.029461821748543,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.283261999999993,
+            "share_percent": 0.6503256058098736,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.8662139999999998,
+            "share_percent": 0.22971542015536406,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.30855600000000005,
+            "share_percent": 0.03798067701852978,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 3,
+        "sha256": "bafc6b2e0b257661017f8ceed7a010caa895a9ca3e818e957fb49dc595f62182",
+        "gpu_work_ms": 812.3243989999934,
+        "event_count": 24423,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.2984319999952,
+            "share_percent": 26.750203769269888,
+            "event_count": 11371
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.32827599999965,
+            "share_percent": 20.598701233889813,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.5705769999984,
+            "share_percent": 15.704388192333422,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.91533100000022,
+            "share_percent": 15.623725097539667,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 100.46855500000022,
+            "share_percent": 12.368033648094453,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.30588499999962,
+            "share_percent": 8.039384891109266,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.377503000000003,
+            "share_percent": 0.6619895951198735,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.7496850000000013,
+            "share_percent": 0.2153923976866803,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.3101549999999999,
+            "share_percent": 0.03818117495692782,
+            "event_count": 50
+          }
+        }
+      }
+    ]
+  },
+  "ballot": {
+    "workload": {
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e"
+    },
+    "ranks": [
+      {
+        "rank": 0,
+        "sha256": "98d67f883d59a88b325297f23adbf014689e8a88c23ea4cbbb361390d36ab614",
+        "gpu_work_ms": 928.2771249999917,
+        "event_count": 25399,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.1729379999995,
+            "share_percent": 26.411610433683986,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.2733589999935,
+            "share_percent": 23.40608781025337,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.15055400000062,
+            "share_percent": 18.006535925357646,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.46601899999804,
+            "share_percent": 13.731461819658563,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.52187899999997,
+            "share_percent": 10.397959445569754,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 67.75723600000002,
+            "share_percent": 7.299246547737631,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.3025610000000025,
+            "share_percent": 0.5712260764801298,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.3248659999999999,
+            "share_percent": 0.14272311191552972,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.30771300000000007,
+            "share_percent": 0.03314882934339278,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 1,
+        "sha256": "eb45bd4ded42083c7f7a4bdea14484297e8ee550ae5d5111495b87a1d1ffc1fc",
+        "gpu_work_ms": 928.3207969999889,
+        "event_count": 25399,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.13006299999964,
+            "share_percent": 26.40574936941788,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.2079949999909,
+            "share_percent": 23.39794559186133,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.33247000000077,
+            "share_percent": 18.025285067485434,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.68747399999808,
+            "share_percent": 13.754671274481812,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.09450999999979,
+            "share_percent": 10.35143350343372,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 67.92354799999978,
+            "share_percent": 7.316818520010017,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.293202999999999,
+            "share_percent": 0.5701911469726625,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.3427010000000001,
+            "share_percent": 0.14463760850119317,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.308833,
+            "share_percent": 0.03326791783595081,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 2,
+        "sha256": "c5aab474ef28852ca0de491261b3c9046d313f4f0b370dc159879b41548fecf5",
+        "gpu_work_ms": 927.7947489999879,
+        "event_count": 25399,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.74107199999835,
+            "share_percent": 26.4865771513438,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.2068479999919,
+            "share_percent": 23.411088307419895,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.6055169999997,
+            "share_percent": 18.064934855543346,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 128.08248099999795,
+            "share_percent": 13.805044826784165,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.48975900000013,
+            "share_percent": 10.399903545908233,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.72423499999978,
+            "share_percent": 7.083919700002596,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.107003000000008,
+            "share_percent": 0.5504453442428434,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.5325210000000005,
+            "share_percent": 0.1651788826841076,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.30531300000000006,
+            "share_percent": 0.03290738607101171,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 3,
+        "sha256": "64caabc60c63494e75211fe536477d8430367343463768dd5c8ad4b14392d45a",
+        "gpu_work_ms": 928.2635209999911,
+        "event_count": 25399,
+        "groups": {
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 245.75891100000007,
+            "share_percent": 26.475123220963287,
+            "event_count": 2953
+          },
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.88123399999392,
+            "share_percent": 23.47191600993615,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.39485199999996,
+            "share_percent": 18.033117559081756,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.43019899999777,
+            "share_percent": 13.727804240623499,
+            "event_count": 4184
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.59091599999984,
+            "share_percent": 10.405549050979108,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 66.2642769999997,
+            "share_percent": 7.138519989303806,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.273241999999998,
+            "share_percent": 0.5680759698839924,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.3613760000000004,
+            "share_percent": 0.1466583539266339,
+            "event_count": 178
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.308514,
+            "share_percent": 0.033235605301784016,
+            "event_count": 50
+          }
+        }
+      }
+    ]
+  },
+  "combined": {
+    "workload": {
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e"
+    },
+    "ranks": [
+      {
+        "rank": 0,
+        "sha256": "24e1307267573835af94deeaba610cd395212b89b1a8bf240420f6f5e5d49912",
+        "gpu_work_ms": 809.0797129999937,
+        "event_count": 24447,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.28179899999455,
+            "share_percent": 26.85542543074445,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.11034299999992,
+            "share_percent": 20.654373149509585,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.28618699999815,
+            "share_percent": 15.732218340765533,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.80552700000099,
+            "share_percent": 15.672810102952361,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.38048100000016,
+            "share_percent": 11.912359122518366,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 66.76494199999992,
+            "share_percent": 8.25196095356805,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.334630999999995,
+            "share_percent": 0.6593455396650189,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.806612000000001,
+            "share_percent": 0.22329221348305084,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.309191,
+            "share_percent": 0.03821514679357711,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 1,
+        "sha256": "f1146cd5a10702ae65c3c252d94d73f2734f59e657d868c4f75f32ae78843c68",
+        "gpu_work_ms": 809.0728729999937,
+        "event_count": 24447,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 216.6059829999959,
+            "share_percent": 26.772122787510337,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 166.62970399999955,
+            "share_percent": 20.59514161958571,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.499306999998,
+            "share_percent": 15.758692604194998,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.39002999999965,
+            "share_percent": 15.621587896199388,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 95.93738800000035,
+            "share_percent": 11.85769430685153,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 68.58860100000018,
+            "share_percent": 8.477431797419898,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.339391,
+            "share_percent": 0.6599394415736444,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.7737580000000002,
+            "share_percent": 0.21923340396063606,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.308711,
+            "share_percent": 0.038156142703847935,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 2,
+        "sha256": "ab55f8a802798bd1d8d1807ec0b5bc4f4313160dae5f90b25b3f98288912ed21",
+        "gpu_work_ms": 809.012344999991,
+        "event_count": 24447,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.02167399999274,
+            "share_percent": 26.825508330159682,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.47508899999895,
+            "share_percent": 20.701178422685356,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.86191899999879,
+            "share_percent": 15.80469319043583,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 126.8915200000007,
+            "share_percent": 15.684744588168442,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.385607,
+            "share_percent": 11.913984699454874,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.91261599999977,
+            "share_percent": 8.147294217123536,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.357065000000003,
+            "share_percent": 0.6621734554619265,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.7934630000000005,
+            "share_percent": 0.22168549232706955,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.31339200000000017,
+            "share_percent": 0.03873760418328396,
+            "event_count": 50
+          }
+        }
+      },
+      {
+        "rank": 3,
+        "sha256": "3fd0d2c61b74edf46f5aa7837a15ccf370ad384916b32fac4bcb04ab326b5fae",
+        "gpu_work_ms": 809.0473699999893,
+        "event_count": 24447,
+        "groups": {
+          "projections and other GPU work": {
+            "gpu_work_ms": 217.60788899999375,
+            "share_percent": 26.896804447927025,
+            "event_count": 11395
+          },
+          "MoE routing and expert kernels": {
+            "gpu_work_ms": 167.45739999999878,
+            "share_percent": 20.698095835847163,
+            "event_count": 3298
+          },
+          "mHC": {
+            "gpu_work_ms": 127.79500699999743,
+            "share_percent": 15.79573851157802,
+            "event_count": 4184
+          },
+          "sparse attention and inverse RoPE": {
+            "gpu_work_ms": 127.02051900000001,
+            "share_percent": 15.700010124252884,
+            "event_count": 1981
+          },
+          "indexer scoring and selection": {
+            "gpu_work_ms": 96.55612699999993,
+            "share_percent": 11.934545563135716,
+            "event_count": 939
+          },
+          "TP collectives": {
+            "gpu_work_ms": 65.11206599999939,
+            "share_percent": 8.047991800529584,
+            "event_count": 2168
+          },
+          "embedding and Engram kernels": {
+            "gpu_work_ms": 5.360671999999994,
+            "share_percent": 0.6625906218569211,
+            "event_count": 234
+          },
+          "device copies and fills": {
+            "gpu_work_ms": 1.822977000000001,
+            "share_percent": 0.22532388925509084,
+            "event_count": 198
+          },
+          "sampling kernels": {
+            "gpu_work_ms": 0.3147129999999999,
+            "share_percent": 0.038899205617589985,
+            "event_count": 50
+          }
+        }
+      }
+    ]
+  }
+}
