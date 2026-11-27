@@ -12,8 +12,9 @@ Ballot selector remains independently configurable.
 [ATOM adapter patch](evidence/atom-adapter.patch) ·
 [AITER Ballot kernel](https://github.com/ROCm/aiter/commit/7f36447ac7a235d15d8de7b4598c2c167d85da67)
 
-For 100K/150 TP4 C1 serving, P50 E2E fell **7.78%** with HIP attention and
-**8.91%** with HIP attention and Ballot top-k together.
+The node 52 retest measured the 100K/150 TP4 C1 workload with a verified PTL
+configuration and two independent ATOM baseline starts.
+[Node 52 PTL-enabled results](#node-52-ptl-enabled-retest)
 
 ## Data
 
@@ -23,7 +24,9 @@ For 100K/150 TP4 C1 serving, P50 E2E fell **7.78%** with HIP attention and
 | Attention | TP4 with 16 local Q heads, one latent KV head, head dim 512, interleaved RoPE dim 64, sliding window 128, indexer K=512 |
 | Layer schedule | 2 SWA-only layers, 18 ratio-2 CSA+SWA layers and 20 ratio-1 CSA+SWA layers |
 | Runtime | MI308X gfx942 (80 CUs), PyTorch 2.10.0, ROCm 7.2.4, AITER runtime `ad0d5e20`, ATOM overlay `b2b8a1b` based on `e26da2a` |
-| Serving | Node 19 GPUs 4–7, image `7d2b9b52053b`, TP4 C1 with graph capture size 1, 100,000 input / 150 output tokens, 90K shared-prefix prime, 8 matched requests per arm, separate server starts, profiler off |
+| Serving workload | TP4 C1 with graph capture size 1, 100,000 input / 150 output tokens, 90K shared-prefix prime, 8 matched requests per start, profiler off |
+| Initial serving | Node 19 GPUs 4–7, image `7d2b9b52053b`, PTL readback `N/A` |
+| PTL-enabled serving retest | Node 52 GPUs 0–3, image `cfd987217fc4`, PTL `Enabled / VECTOR,F8` on all four GPUs |
 | Serving limits | Maximum model length 102,400, 64 sequence slots, 8,192-token Prefill chunks and 16-token pages |
 | Profiling | Separate 100,000 input / 24 output C1 request per arm, same prefix and prompt across arms |
 | Isolated operator | Node 52 GPU 4, image `cfd987217fc4`, synthetic BF16 Q and paged KV with the TP4 head shape and checkpoint RoPE, Decode batches 1/4/8 and bounded Prefill row sizes |
@@ -35,7 +38,28 @@ with inverse RoPE already applied by the HIP epilogue.
 
 ## Benchmarking and Profiling
 
-### End-to-end serving
+### Node 52 PTL-enabled retest
+
+Every timed request hit 89,984 cached tokens. The selected GPU BDFs, PTL state,
+and PTL format agreed across 201 read-only snapshots taken at startup, during
+measurement and profiling, and after cleanup.
+
+| Configuration, C1 | Output tok/s | P50 TTFT (ms) | P50 TPOT (ms/token) | P50 E2E (ms) | P50 E2E change |
+|---|---:|---:|---:|---:|---:|
+| ATOM baseline | 79.82 | 616.38 | 7.691 | 1,770.17 | — |
+| ATOM baseline (independent repeat) | 80.93 | 621.28 | 7.570 | 1,765.00 | −0.29% |
+| Ballot top-k | 82.98 | 617.53 | 7.300 | 1,705.46 | −3.66% |
+| HIP sparse attention (repeat) | 88.03 | 528.22 | 7.249 | 1,612.64 | −8.90% |
+| HIP sparse attention + Ballot top-k (repeat) | 88.73 | 531.74 | 7.140 | 1,594.30 | −9.93% |
+
+Changes are relative to the first ATOM baseline. The timings from both
+optimized repeats include all eight requests. The detailed report records the
+long-tail requests in the first HIP-only start and the GPU overlap observed
+in the first combined start.
+[Full retest, initial runs, and Perfetto captures](csa-hip-tp4-ptl-enabled.md) ·
+[PTL snapshots and GPU telemetry](evidence/ptl-enabled/ptl-telemetry.json)
+
+### Node 19 end-to-end serving
 
 All four arms used the same eight prompts and each request hit 89,984 cached
 tokens. The table uses one independent server start per arm.
@@ -78,7 +102,7 @@ replay (19 × 128 rows plus one final query).
 [Per-shape timings and numerical checks](evidence/microbench.json) ·
 [Operator benchmark script](evidence/bench_atom_sparse_attention.py)
 
-### Rank 0 100K/24 profile
+### Node 19 rank 0 100K/24 profile
 
 Both arms executed 60 sparse-attention calls across two Prefill chunks and
 40 calls per Decode replay. The HIP epilogue absorbed the separate inverse
