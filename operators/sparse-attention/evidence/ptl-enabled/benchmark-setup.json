@@ -1,0 +1,89 @@
+{
+  "machine": "hjbog-srdc-52",
+  "image_id": "sha256:cfd987217fc428c50a2d11eddcd23952f926a77bbbe5532bccdf43636c4361dc",
+  "selected_gpu_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "selected_gpu_ids": [
+    63420,
+    61531,
+    60224,
+    50797
+  ],
+  "selected_gpu_bdfs": {
+    "0": "0000:0a:00.0",
+    "1": "0000:80:00.0",
+    "2": "0000:a4:00.0",
+    "3": "0000:c8:00.0"
+  },
+  "ptl_format": "VECTOR,F8",
+  "model_revision": "08c8657f02291e11b6f6b63e0e16014f8e748518",
+  "model_metadata_sha256": {
+    "config.json": "8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879",
+    "model.safetensors.index.json": "74b0686a3d2891980d5e303251b075a3bccae2c2ff650747db2620a649b98fa8"
+  },
+  "aiter_commit": "ad0d5e208eb2d49ab658c3c161aa5c3502dfc2a1",
+  "atom_commit": "5f6bdb75c19a0e4bc57512ef425973d53f0f54f4",
+  "attention_aiter_commit": "3dcbc414ca0bc0c061a7073cd4dfaa10de97f550",
+  "ballot_aiter_commit": "7f36447ac7a235d15d8de7b4598c2c167d85da67",
+  "library_sha256": {
+    "libballot_topk_gfx942.so": "8ffe36042da91cdad68062b800facd364a825556f30aaea107d10ecd757f6694",
+    "libsparse_attn_v4_gfx942.so": "a0ef196c7d6655629d3c0105bb1b6224ac473352097bf2e3b3f9dbcbd8400273"
+  },
+  "online_quant_config": {
+    "layer_quant_config": {
+      "*.ffn.experts*": "ptpc_fp8"
+    }
+  },
+  "benchmark": {
+    "input_tokens": 100000,
+    "prefix_tokens": 90000,
+    "output_tokens": 150,
+    "concurrency": 1,
+    "requests": 8,
+    "prefix_seed": 42,
+    "first_suffix_seed": 1000,
+    "profiler": false,
+    "max_num_seqs": 64,
+    "graph_batch_sizes": [
+      1
+    ]
+  },
+  "profile_input_tokens": 100000,
+  "profile_prefix_tokens": 90000,
+  "profile_output_tokens": 24,
+  "tested_atom_source": "b2b8a1bad27af463e27c4f83cf78e6bc838fd92a",
+  "enabled_flags_by_attempt": {
+    "baseline": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": ""
+    },
+    "csa_first": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": "/bench/libsparse_attn_v4_gfx942.so"
+    },
+    "ballot": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "/bench/libballot_topk_gfx942.so",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": ""
+    },
+    "combined_first": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "/bench/libballot_topk_gfx942.so",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": "/bench/libsparse_attn_v4_gfx942.so"
+    },
+    "baseline_repeat": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": ""
+    },
+    "csa_repeat": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": "/bench/libsparse_attn_v4_gfx942.so"
+    },
+    "combined_repeat": {
+      "ATOM_DSV41_BALLOT_TOPK_LIB": "/bench/libballot_topk_gfx942.so",
+      "ATOM_DSV41_HIP_SPARSE_ATTN_LIB": "/bench/libsparse_attn_v4_gfx942.so"
+    }
+  }
+}

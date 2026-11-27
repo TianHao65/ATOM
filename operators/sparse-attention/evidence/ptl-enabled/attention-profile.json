@@ -1,0 +1,1062 @@
+{
+  "baseline": {
+    "rank": 0,
+    "arm": "baseline",
+    "side": "before",
+    "source": "perfetto/rank0-before.trace.json.gz",
+    "source_sha256": "51c6a9a3eeab7c0b41621d75e706e9c5232153156db7a8711ac9a699953087a1",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "prefill": [
+      {
+        "step": 1,
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "sparse_attention_calls": 20,
+        "kernel_counts": {
+          "triton_csa_unsplit": 20,
+          "inverse_rope": 20
+        },
+        "kernel_time_ns": {
+          "triton_csa_unsplit": 134268222,
+          "inverse_rope": 562581
+        },
+        "attention_and_inverse_rope_ns": 134830803,
+        "correlated_gpu_span_ns": 430344097,
+        "main_stream_span_ns": 430344097
+      },
+      {
+        "step": 2,
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_csa_unsplit": 39,
+          "inverse_rope": 40,
+          "triton_csa_split": 1,
+          "triton_combine": 1
+        },
+        "kernel_time_ns": {
+          "triton_csa_unsplit": 37597628,
+          "inverse_rope": 302121,
+          "triton_csa_split": 12079,
+          "triton_combine": 5599
+        },
+        "attention_and_inverse_rope_ns": 37917427,
+        "correlated_gpu_span_ns": 141422123,
+        "main_stream_span_ns": 141422123
+      }
+    ],
+    "decode": [
+      {
+        "step": 1,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 79238,
+          "inverse_rope": 207361,
+          "triton_csa_split": 423965,
+          "triton_combine": 206443
+        },
+        "attention_and_inverse_rope_ns": 917007,
+        "correlated_gpu_span_ns": 7887308,
+        "main_stream_span_ns": 7887308
+      },
+      {
+        "step": 2,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77359,
+          "inverse_rope": 206360,
+          "triton_csa_split": 423482,
+          "triton_combine": 206203
+        },
+        "attention_and_inverse_rope_ns": 913404,
+        "correlated_gpu_span_ns": 13076170,
+        "main_stream_span_ns": 13076170
+      },
+      {
+        "step": 3,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 79558,
+          "inverse_rope": 207160,
+          "triton_csa_split": 423124,
+          "triton_combine": 205604
+        },
+        "attention_and_inverse_rope_ns": 915446,
+        "correlated_gpu_span_ns": 7844909,
+        "main_stream_span_ns": 7844909
+      },
+      {
+        "step": 4,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77558,
+          "inverse_rope": 207321,
+          "triton_csa_split": 423444,
+          "triton_combine": 206602
+        },
+        "attention_and_inverse_rope_ns": 914925,
+        "correlated_gpu_span_ns": 7848030,
+        "main_stream_span_ns": 7848030
+      },
+      {
+        "step": 5,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78118,
+          "inverse_rope": 208400,
+          "triton_csa_split": 422282,
+          "triton_combine": 206642
+        },
+        "attention_and_inverse_rope_ns": 915442,
+        "correlated_gpu_span_ns": 7857301,
+        "main_stream_span_ns": 7857301
+      },
+      {
+        "step": 6,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78118,
+          "inverse_rope": 206960,
+          "triton_csa_split": 423403,
+          "triton_combine": 206364
+        },
+        "attention_and_inverse_rope_ns": 914845,
+        "correlated_gpu_span_ns": 7864710,
+        "main_stream_span_ns": 7864710
+      },
+      {
+        "step": 7,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78318,
+          "inverse_rope": 206720,
+          "triton_csa_split": 421324,
+          "triton_combine": 205882
+        },
+        "attention_and_inverse_rope_ns": 912244,
+        "correlated_gpu_span_ns": 7862789,
+        "main_stream_span_ns": 7862789
+      },
+      {
+        "step": 8,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77758,
+          "inverse_rope": 207601,
+          "triton_csa_split": 422406,
+          "triton_combine": 206042
+        },
+        "attention_and_inverse_rope_ns": 913807,
+        "correlated_gpu_span_ns": 7866550,
+        "main_stream_span_ns": 7866550
+      },
+      {
+        "step": 9,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77758,
+          "inverse_rope": 205762,
+          "triton_csa_split": 422925,
+          "triton_combine": 207523
+        },
+        "attention_and_inverse_rope_ns": 913968,
+        "correlated_gpu_span_ns": 7858070,
+        "main_stream_span_ns": 7858070
+      },
+      {
+        "step": 10,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78198,
+          "inverse_rope": 206520,
+          "triton_csa_split": 424202,
+          "triton_combine": 206924
+        },
+        "attention_and_inverse_rope_ns": 915844,
+        "correlated_gpu_span_ns": 7872389,
+        "main_stream_span_ns": 7872389
+      },
+      {
+        "step": 11,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78758,
+          "inverse_rope": 206522,
+          "triton_csa_split": 421643,
+          "triton_combine": 205803
+        },
+        "attention_and_inverse_rope_ns": 912726,
+        "correlated_gpu_span_ns": 7866830,
+        "main_stream_span_ns": 7866830
+      },
+      {
+        "step": 12,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78638,
+          "inverse_rope": 207360,
+          "triton_csa_split": 423763,
+          "triton_combine": 205922
+        },
+        "attention_and_inverse_rope_ns": 915683,
+        "correlated_gpu_span_ns": 7867789,
+        "main_stream_span_ns": 7867789
+      },
+      {
+        "step": 13,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77758,
+          "inverse_rope": 207080,
+          "triton_csa_split": 421043,
+          "triton_combine": 206243
+        },
+        "attention_and_inverse_rope_ns": 912124,
+        "correlated_gpu_span_ns": 7835519,
+        "main_stream_span_ns": 7835519
+      },
+      {
+        "step": 14,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77840,
+          "inverse_rope": 207202,
+          "triton_csa_split": 423564,
+          "triton_combine": 206163
+        },
+        "attention_and_inverse_rope_ns": 914769,
+        "correlated_gpu_span_ns": 7873310,
+        "main_stream_span_ns": 7873310
+      },
+      {
+        "step": 15,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78518,
+          "inverse_rope": 206121,
+          "triton_csa_split": 424123,
+          "triton_combine": 205922
+        },
+        "attention_and_inverse_rope_ns": 914684,
+        "correlated_gpu_span_ns": 7852309,
+        "main_stream_span_ns": 7852309
+      },
+      {
+        "step": 16,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77478,
+          "inverse_rope": 205961,
+          "triton_csa_split": 422163,
+          "triton_combine": 207923
+        },
+        "attention_and_inverse_rope_ns": 913525,
+        "correlated_gpu_span_ns": 7867670,
+        "main_stream_span_ns": 7867670
+      },
+      {
+        "step": 17,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78238,
+          "inverse_rope": 206481,
+          "triton_csa_split": 421522,
+          "triton_combine": 206723
+        },
+        "attention_and_inverse_rope_ns": 912964,
+        "correlated_gpu_span_ns": 7862069,
+        "main_stream_span_ns": 7862069
+      },
+      {
+        "step": 18,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77998,
+          "inverse_rope": 206440,
+          "triton_csa_split": 421044,
+          "triton_combine": 207483
+        },
+        "attention_and_inverse_rope_ns": 912965,
+        "correlated_gpu_span_ns": 7861110,
+        "main_stream_span_ns": 7861110
+      },
+      {
+        "step": 19,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78640,
+          "inverse_rope": 205602,
+          "triton_csa_split": 422404,
+          "triton_combine": 206883
+        },
+        "attention_and_inverse_rope_ns": 913529,
+        "correlated_gpu_span_ns": 7847550,
+        "main_stream_span_ns": 7847550
+      },
+      {
+        "step": 20,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77518,
+          "inverse_rope": 208120,
+          "triton_csa_split": 423405,
+          "triton_combine": 205842
+        },
+        "attention_and_inverse_rope_ns": 914885,
+        "correlated_gpu_span_ns": 7872909,
+        "main_stream_span_ns": 7872909
+      },
+      {
+        "step": 21,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78798,
+          "inverse_rope": 207400,
+          "triton_csa_split": 422802,
+          "triton_combine": 207082
+        },
+        "attention_and_inverse_rope_ns": 916082,
+        "correlated_gpu_span_ns": 7850118,
+        "main_stream_span_ns": 7850118
+      },
+      {
+        "step": 22,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 77918,
+          "inverse_rope": 205840,
+          "triton_csa_split": 422883,
+          "triton_combine": 205643
+        },
+        "attention_and_inverse_rope_ns": 912284,
+        "correlated_gpu_span_ns": 7856630,
+        "main_stream_span_ns": 7856630
+      },
+      {
+        "step": 23,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78798,
+          "inverse_rope": 207240,
+          "triton_csa_split": 421363,
+          "triton_combine": 205683
+        },
+        "attention_and_inverse_rope_ns": 913084,
+        "correlated_gpu_span_ns": 7841509,
+        "main_stream_span_ns": 7841509
+      },
+      {
+        "step": 24,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "triton_swa_unsplit": 2,
+          "inverse_rope": 40,
+          "triton_csa_split": 38,
+          "triton_combine": 38
+        },
+        "kernel_time_ns": {
+          "triton_swa_unsplit": 78838,
+          "inverse_rope": 206520,
+          "triton_csa_split": 423084,
+          "triton_combine": 207922
+        },
+        "attention_and_inverse_rope_ns": 916364,
+        "correlated_gpu_span_ns": 7862510,
+        "main_stream_span_ns": 7862510
+      }
+    ],
+    "prefill_total": {
+      "sparse_attention_calls": 60,
+      "kernel_counts": {
+        "triton_csa_unsplit": 59,
+        "inverse_rope": 60,
+        "triton_csa_split": 1,
+        "triton_combine": 1
+      },
+      "kernel_time_ns": {
+        "triton_csa_unsplit": 171865850,
+        "inverse_rope": 864702,
+        "triton_csa_split": 12079,
+        "triton_combine": 5599
+      },
+      "attention_and_inverse_rope_ns": 172748230
+    },
+    "decode_total": {
+      "sparse_attention_calls": 960,
+      "kernel_counts": {
+        "triton_swa_unsplit": 48,
+        "inverse_rope": 960,
+        "triton_csa_split": 912,
+        "triton_combine": 912
+      },
+      "kernel_time_ns": {
+        "triton_swa_unsplit": 1877717,
+        "inverse_rope": 4964054,
+        "triton_csa_split": 10145363,
+        "triton_combine": 4955466
+      },
+      "attention_and_inverse_rope_ns": 21942600
+    },
+    "decode_median_attention_and_inverse_rope_ns": 914326.0,
+    "decode_median_graph_span_ns": 7862289.5
+  },
+  "csa": {
+    "rank": 0,
+    "arm": "csa",
+    "side": "after",
+    "source": "perfetto/rank0-after.trace.json.gz",
+    "source_sha256": "695758144cee4fc434ec624e7c35e52c83d238d9f2cd701285b61a03f6414953",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "prefill": [
+      {
+        "step": 1,
+        "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+        "sparse_attention_calls": 20,
+        "kernel_counts": {
+          "hip_unsplit": 20
+        },
+        "kernel_time_ns": {
+          "hip_unsplit": 66460937
+        },
+        "attention_and_inverse_rope_ns": 66460937,
+        "correlated_gpu_span_ns": 361337045,
+        "main_stream_span_ns": 361337045
+      },
+      {
+        "step": 2,
+        "annotation": "prefill[bs=1 tok=1952/2048 ctx=100000 nctx=193.3M]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_unsplit": 39,
+          "hip_split": 1,
+          "hip_combine": 1
+        },
+        "kernel_time_ns": {
+          "hip_unsplit": 19066758,
+          "hip_split": 9399,
+          "hip_combine": 5119
+        },
+        "attention_and_inverse_rope_ns": 19081276,
+        "correlated_gpu_span_ns": 122990085,
+        "main_stream_span_ns": 122990085
+      }
+    ],
+    "decode": [
+      {
+        "step": 1,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 338203,
+          "hip_combine": 196282
+        },
+        "attention_and_inverse_rope_ns": 534485,
+        "correlated_gpu_span_ns": 7503915,
+        "main_stream_span_ns": 7503915
+      },
+      {
+        "step": 2,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 335082,
+          "hip_combine": 190280
+        },
+        "attention_and_inverse_rope_ns": 525362,
+        "correlated_gpu_span_ns": 10354883,
+        "main_stream_span_ns": 10354883
+      },
+      {
+        "step": 3,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 335320,
+          "hip_combine": 190840
+        },
+        "attention_and_inverse_rope_ns": 526160,
+        "correlated_gpu_span_ns": 10299002,
+        "main_stream_span_ns": 10299002
+      },
+      {
+        "step": 4,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 334680,
+          "hip_combine": 199401
+        },
+        "attention_and_inverse_rope_ns": 534081,
+        "correlated_gpu_span_ns": 7520190,
+        "main_stream_span_ns": 7520190
+      },
+      {
+        "step": 5,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337121,
+          "hip_combine": 198882
+        },
+        "attention_and_inverse_rope_ns": 536003,
+        "correlated_gpu_span_ns": 7464911,
+        "main_stream_span_ns": 7464911
+      },
+      {
+        "step": 6,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336401,
+          "hip_combine": 197361
+        },
+        "attention_and_inverse_rope_ns": 533762,
+        "correlated_gpu_span_ns": 7472310,
+        "main_stream_span_ns": 7472310
+      },
+      {
+        "step": 7,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337602,
+          "hip_combine": 201561
+        },
+        "attention_and_inverse_rope_ns": 539163,
+        "correlated_gpu_span_ns": 7461670,
+        "main_stream_span_ns": 7461670
+      },
+      {
+        "step": 8,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336644,
+          "hip_combine": 201241
+        },
+        "attention_and_inverse_rope_ns": 537885,
+        "correlated_gpu_span_ns": 7474390,
+        "main_stream_span_ns": 7474390
+      },
+      {
+        "step": 9,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 338322,
+          "hip_combine": 198401
+        },
+        "attention_and_inverse_rope_ns": 536723,
+        "correlated_gpu_span_ns": 7459750,
+        "main_stream_span_ns": 7459750
+      },
+      {
+        "step": 10,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337281,
+          "hip_combine": 197483
+        },
+        "attention_and_inverse_rope_ns": 534764,
+        "correlated_gpu_span_ns": 7476870,
+        "main_stream_span_ns": 7476870
+      },
+      {
+        "step": 11,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337601,
+          "hip_combine": 198200
+        },
+        "attention_and_inverse_rope_ns": 535801,
+        "correlated_gpu_span_ns": 7457590,
+        "main_stream_span_ns": 7457590
+      },
+      {
+        "step": 12,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 338641,
+          "hip_combine": 197440
+        },
+        "attention_and_inverse_rope_ns": 536081,
+        "correlated_gpu_span_ns": 7485950,
+        "main_stream_span_ns": 7485950
+      },
+      {
+        "step": 13,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 338400,
+          "hip_combine": 197881
+        },
+        "attention_and_inverse_rope_ns": 536281,
+        "correlated_gpu_span_ns": 7465188,
+        "main_stream_span_ns": 7465188
+      },
+      {
+        "step": 14,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337240,
+          "hip_combine": 196321
+        },
+        "attention_and_inverse_rope_ns": 533561,
+        "correlated_gpu_span_ns": 7477470,
+        "main_stream_span_ns": 7477470
+      },
+      {
+        "step": 15,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336242,
+          "hip_combine": 197641
+        },
+        "attention_and_inverse_rope_ns": 533883,
+        "correlated_gpu_span_ns": 7468310,
+        "main_stream_span_ns": 7468310
+      },
+      {
+        "step": 16,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336683,
+          "hip_combine": 200242
+        },
+        "attention_and_inverse_rope_ns": 536925,
+        "correlated_gpu_span_ns": 7471310,
+        "main_stream_span_ns": 7471310
+      },
+      {
+        "step": 17,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 338081,
+          "hip_combine": 198121
+        },
+        "attention_and_inverse_rope_ns": 536202,
+        "correlated_gpu_span_ns": 7483950,
+        "main_stream_span_ns": 7483950
+      },
+      {
+        "step": 18,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 335240,
+          "hip_combine": 198641
+        },
+        "attention_and_inverse_rope_ns": 533881,
+        "correlated_gpu_span_ns": 7471390,
+        "main_stream_span_ns": 7471390
+      },
+      {
+        "step": 19,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336641,
+          "hip_combine": 197721
+        },
+        "attention_and_inverse_rope_ns": 534362,
+        "correlated_gpu_span_ns": 7446430,
+        "main_stream_span_ns": 7446430
+      },
+      {
+        "step": 20,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 335202,
+          "hip_combine": 196160
+        },
+        "attention_and_inverse_rope_ns": 531362,
+        "correlated_gpu_span_ns": 7474470,
+        "main_stream_span_ns": 7474470
+      },
+      {
+        "step": 21,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337283,
+          "hip_combine": 199001
+        },
+        "attention_and_inverse_rope_ns": 536284,
+        "correlated_gpu_span_ns": 7465271,
+        "main_stream_span_ns": 7465271
+      },
+      {
+        "step": 22,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 335562,
+          "hip_combine": 198560
+        },
+        "attention_and_inverse_rope_ns": 534122,
+        "correlated_gpu_span_ns": 7502848,
+        "main_stream_span_ns": 7502848
+      },
+      {
+        "step": 23,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 336400,
+          "hip_combine": 198201
+        },
+        "attention_and_inverse_rope_ns": 534601,
+        "correlated_gpu_span_ns": 7462390,
+        "main_stream_span_ns": 7462390
+      },
+      {
+        "step": 24,
+        "annotation": "decode[bs=1 tok=1 d=1]",
+        "sparse_attention_calls": 40,
+        "kernel_counts": {
+          "hip_split": 40,
+          "hip_combine": 40
+        },
+        "kernel_time_ns": {
+          "hip_split": 337681,
+          "hip_combine": 198563
+        },
+        "attention_and_inverse_rope_ns": 536244,
+        "correlated_gpu_span_ns": 7478390,
+        "main_stream_span_ns": 7478390
+      }
+    ],
+    "prefill_total": {
+      "sparse_attention_calls": 60,
+      "kernel_counts": {
+        "hip_unsplit": 59,
+        "hip_split": 1,
+        "hip_combine": 1
+      },
+      "kernel_time_ns": {
+        "hip_unsplit": 85527695,
+        "hip_split": 9399,
+        "hip_combine": 5119
+      },
+      "attention_and_inverse_rope_ns": 85542213
+    },
+    "decode_total": {
+      "sparse_attention_calls": 960,
+      "kernel_counts": {
+        "hip_split": 960,
+        "hip_combine": 960
+      },
+      "kernel_time_ns": {
+        "hip_split": 8083553,
+        "hip_combine": 4744425
+      },
+      "attention_and_inverse_rope_ns": 12827978
+    },
+    "decode_median_attention_and_inverse_rope_ns": 534682.5,
+    "decode_median_graph_span_ns": 7473350.0
+  }
+}

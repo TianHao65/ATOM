@@ -5,5 +5,6 @@
 | [Indexer top-k](operators/indexer-topk/indexer-topk-tp4.md) | DeepSeek-V4.1-Flash-1017 TP4 Base, stable K=512, ATOM baseline and AITER Ballot |
 | [DeepSeek-V4.1-Flash model latency breakdown](operators/indexer-topk/indexer-topk-e2e-breakdown.md) | TP4 C1, 100K/150 serving latency and 100K/24 whole-model module shares, ATOM baseline and AITER Ballot |
 | [HIP sparse attention and inverse RoPE](operators/sparse-attention/csa-hip-tp4.md) | DeepSeek-V4.1-Flash-1017 TP4 C1, HIP attention and Ballot top-k, with isolated C1/C4/C8 and Perfetto comparisons |
+| [PTL-enabled sparse attention retest](operators/sparse-attention/csa-hip-tp4-ptl-enabled.md) | Node 52, 100K/150 TP4 C1, four matched configurations and independent baseline repeats |
 | [Luocheng runtime A8W4 MoE](operators/fused-moe/luocheng-a8w4-moe.md) | DeepSeek-V4.1-Flash-1017-FP4PTPC TP4 |
 | [Luocheng dense A8W4 GEMM](operators/dense-gemm/dense-gemm-a8w4.md) | DeepSeek-V4.1-Flash-1017-FP4PTPC TP4 weight formats and projection shapes |

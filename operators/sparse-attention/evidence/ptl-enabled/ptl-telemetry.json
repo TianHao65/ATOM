@@ -1,0 +1,2975 @@
+{
+  "attempts": [
+    {
+      "attempt": "baseline/attempt-01",
+      "arm": "baseline",
+      "attempt_started_utc": "2026-11-27T03:20:24.803558+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T03:29:23.371222+00:00",
+        "last_request_finished_utc": "2026-11-27T03:29:38.405361+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 27,
+        "measured_window_sample_count": 7,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 7,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1744,
+                "p50": 1813,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1750,
+                "p50": 1818,
+                "max": 1824
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1817,
+                "max": 1821
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1746,
+                "p50": 1812,
+                "max": 1818
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 382,
+                "p50": 419,
+                "max": 534
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 62,
+                "p50": 62,
+                "max": 64
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 49,
+                "p50": 50,
+                "max": 51
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 80,
+                "p50": 98,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 14,
+                "max": 14
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1727,
+                "p50": 1773,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1735,
+                "p50": 1785,
+                "max": 1822
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1723,
+                "p50": 1769,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1734,
+                "p50": 1785,
+                "max": 1826
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 360,
+                "p50": 419,
+                "max": 515
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 59,
+                "p50": 60,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 45,
+                "p50": 45,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 68,
+                "p50": 99,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 10,
+                "max": 14
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1753,
+                "max": 1821
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1744,
+                "p50": 1751,
+                "max": 1811
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1758,
+                "p50": 1761,
+                "max": 1831
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1755,
+                "p50": 1757,
+                "max": 1825
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 376,
+                "p50": 466,
+                "max": 541
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 60,
+                "p50": 60,
+                "max": 64
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 46,
+                "p50": 46,
+                "max": 47
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 68,
+                "p50": 98,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 9,
+                "max": 14
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1743,
+                "p50": 1770,
+                "max": 1824
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1757,
+                "p50": 1786,
+                "max": 1831
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1775,
+                "max": 1827
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1751,
+                "p50": 1781,
+                "max": 1825
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 377,
+                "p50": 484,
+                "max": 520
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 54,
+                "p50": 56,
+                "max": 60
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 42,
+                "p50": 42,
+                "max": 45
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 82,
+                "p50": 98,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 8,
+                "max": 14
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 616.3844913244247,
+        "tpot_ms": 7.690961175791969,
+        "e2e_ms": 1770.1701973564923
+      },
+      "mean": {
+        "ttft_ms": 728.1243575271219,
+        "tpot_ms": 7.694173092491325,
+        "e2e_ms": 1874.5561483083293
+      },
+      "throughput_tok_s": 79.8183538487542,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "csa/attempt-01",
+      "arm": "csa",
+      "attempt_started_utc": "2026-11-27T03:30:05.850054+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T03:34:41.145629+00:00",
+        "last_request_finished_utc": "2026-11-27T03:35:31.927037+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 44,
+        "measured_window_sample_count": 27,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 27,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 27,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1846
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1850
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1847
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1847
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 900,
+                "p50": 900,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 27,
+                "min": 164,
+                "p50": 171,
+                "max": 569
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 27,
+                "min": 52,
+                "p50": 58,
+                "max": 66
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 27,
+                "min": 45,
+                "p50": 46,
+                "max": 54
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 15
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 27,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1851
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 102,
+                "max": 1849
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1847
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1852
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 900,
+                "p50": 902,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 27,
+                "min": 163,
+                "p50": 180,
+                "max": 536
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 27,
+                "min": 49,
+                "p50": 55,
+                "max": 62
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 27,
+                "min": 42,
+                "p50": 43,
+                "max": 48
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 15
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 27,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 103,
+                "max": 1849
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 88,
+                "p50": 89,
+                "max": 1842
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 90,
+                "max": 1855
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1851
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 900,
+                "p50": 914,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 27,
+                "min": 165,
+                "p50": 183,
+                "max": 564
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 27,
+                "min": 49,
+                "p50": 54,
+                "max": 66
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 27,
+                "min": 42,
+                "p50": 42,
+                "max": 50
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 15
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 27,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 90,
+                "max": 1847
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1857
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1852
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 89,
+                "p50": 89,
+                "max": 1851
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 27,
+                "min": 900,
+                "p50": 901,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 27,
+                "min": 158,
+                "p50": 177,
+                "max": 539
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 27,
+                "min": 43,
+                "p50": 48,
+                "max": 62
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 27,
+                "min": 38,
+                "p50": 39,
+                "max": 45
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 27,
+                "min": 0,
+                "p50": 0,
+                "max": 15
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 530.8839906938374,
+        "tpot_ms": 7.5071300567446535,
+        "e2e_ms": 1665.7826988957822
+      },
+      "mean": {
+        "ttft_ms": 1307.7167312148958,
+        "tpot_ms": 33.7983950489707,
+        "e2e_ms": 6343.677593511529
+      },
+      "throughput_tok_s": 23.6306975459541,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "ballot/attempt-01",
+      "arm": "ballot",
+      "attempt_started_utc": "2026-11-27T03:35:58.011007+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T03:42:16.878582+00:00",
+        "last_request_finished_utc": "2026-11-27T03:42:31.340734+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 26,
+        "measured_window_sample_count": 8,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 8,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1432,
+                "p50": 1768.0,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1433,
+                "p50": 1778.5,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1432,
+                "p50": 1771.5,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1434,
+                "p50": 1771.5,
+                "max": 1817
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 930,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 195,
+                "p50": 445.5,
+                "max": 531
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 58,
+                "p50": 59.5,
+                "max": 62
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 41,
+                "p50": 45.5,
+                "max": 48
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 2,
+                "p50": 99.5,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 10.5,
+                "max": 14
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1429,
+                "p50": 1762.5,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1425,
+                "p50": 1773.5,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1422,
+                "p50": 1758.5,
+                "max": 1817
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1433,
+                "p50": 1772.5,
+                "max": 1824
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 910,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 188,
+                "p50": 442.0,
+                "max": 533
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 55,
+                "p50": 56.5,
+                "max": 57
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 38,
+                "p50": 43.0,
+                "max": 45
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 1,
+                "p50": 99.5,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 9.0,
+                "max": 14
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1493,
+                "p50": 1779.0,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1482,
+                "p50": 1775.0,
+                "max": 1812
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1497,
+                "p50": 1789.5,
+                "max": 1827
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1492,
+                "p50": 1785.0,
+                "max": 1825
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 916,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 201,
+                "p50": 459.0,
+                "max": 529
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 56,
+                "p50": 60.0,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 39,
+                "p50": 44.0,
+                "max": 47
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 8,
+                "p50": 99.0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 11.0,
+                "max": 14
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1641,
+                "p50": 1765.5,
+                "max": 1817
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1649,
+                "p50": 1781.0,
+                "max": 1823
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1641,
+                "p50": 1770.0,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1644,
+                "p50": 1774.5,
+                "max": 1818
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1155,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 320,
+                "p50": 433.0,
+                "max": 543
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 52,
+                "p50": 56.0,
+                "max": 57
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 36,
+                "p50": 41.0,
+                "max": 43
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 38,
+                "p50": 99.5,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 2,
+                "p50": 10.0,
+                "max": 14
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 617.5332316197455,
+        "tpot_ms": 7.30018358015074,
+        "e2e_ms": 1705.4601088166237
+      },
+      "mean": {
+        "ttft_ms": 715.8132622716948,
+        "tpot_ms": 7.301718388034043,
+        "e2e_ms": 1803.7693020887673
+      },
+      "throughput_tok_s": 82.97521610787513,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "combined/attempt-01",
+      "arm": "combined",
+      "attempt_started_utc": "2026-11-27T03:43:26.868827+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T03:48:15.825471+00:00",
+        "last_request_finished_utc": "2026-11-27T03:48:29.360405+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 34,
+        "measured_window_sample_count": 8,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 8,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1490,
+                "p50": 1800.5,
+                "max": 1813
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1489,
+                "p50": 1803.0,
+                "max": 1817
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1490,
+                "p50": 1803.0,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1488,
+                "p50": 1799.0,
+                "max": 1812
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 906,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 200,
+                "p50": 429.0,
+                "max": 559
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 63,
+                "p50": 65.0,
+                "max": 67
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 45,
+                "p50": 51.0,
+                "max": 54
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 1,
+                "p50": 97.0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 13.5,
+                "max": 15
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1446,
+                "p50": 1779.0,
+                "max": 1829
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1451,
+                "p50": 1786.5,
+                "max": 1829
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1443,
+                "p50": 1774.5,
+                "max": 1825
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1451,
+                "p50": 1784.5,
+                "max": 1833
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 902,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 205,
+                "p50": 426.5,
+                "max": 561
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 59,
+                "p50": 61.0,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 41,
+                "p50": 46.0,
+                "max": 48
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 4,
+                "p50": 89.0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 10.0,
+                "max": 15
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1436,
+                "p50": 1759.5,
+                "max": 1815
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1421,
+                "p50": 1756.5,
+                "max": 1805
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1438,
+                "p50": 1769.0,
+                "max": 1826
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1429,
+                "p50": 1766.0,
+                "max": 1818
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 917,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 199,
+                "p50": 437.0,
+                "max": 581
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 61,
+                "p50": 63.0,
+                "max": 64
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 42,
+                "p50": 48.5,
+                "max": 50
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 2,
+                "p50": 96.0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 11.5,
+                "max": 15
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 8,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1430,
+                "p50": 1768.0,
+                "max": 1815
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1434,
+                "p50": 1782.0,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1427,
+                "p50": 1771.5,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 1427,
+                "p50": 1776.5,
+                "max": 1817
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 8,
+                "min": 906,
+                "p50": 1300.0,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 8,
+                "min": 188,
+                "p50": 424.5,
+                "max": 552
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 8,
+                "min": 56,
+                "p50": 58.5,
+                "max": 60
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 8,
+                "min": 39,
+                "p50": 44.5,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 1,
+                "p50": 99.0,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 8,
+                "min": 0,
+                "p50": 11.5,
+                "max": 15
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 530.9848473407328,
+        "tpot_ms": 7.010769199004909,
+        "e2e_ms": 1576.6488681547344
+      },
+      "mean": {
+        "ttft_ms": 635.4737082729116,
+        "tpot_ms": 7.061419331924927,
+        "e2e_ms": 1687.6251887297258
+      },
+      "throughput_tok_s": 88.65948083747476,
+      "affected_suffix_seeds": [
+        1005,
+        1006
+      ],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "baseline/attempt-02",
+      "arm": "baseline",
+      "attempt_started_utc": "2026-11-27T03:49:00.434731+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T03:55:55.013443+00:00",
+        "last_request_finished_utc": "2026-11-27T03:56:09.841725+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 18,
+        "measured_window_sample_count": 7,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 7,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1749,
+                "p50": 1757,
+                "max": 1815
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1751,
+                "p50": 1766,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1752,
+                "p50": 1762,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1762,
+                "max": 1814
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 376,
+                "p50": 473,
+                "max": 527
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 62,
+                "p50": 63,
+                "max": 65
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 49,
+                "p50": 50,
+                "max": 51
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 68,
+                "p50": 98,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 8,
+                "p50": 8,
+                "max": 14
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1679,
+                "p50": 1758,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1681,
+                "p50": 1766,
+                "max": 1821
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1676,
+                "p50": 1753,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1685,
+                "p50": 1765,
+                "max": 1824
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 324,
+                "p50": 498,
+                "max": 536
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 59,
+                "p50": 60,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 45,
+                "p50": 45,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 49,
+                "p50": 98,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 7,
+                "max": 14
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1700,
+                "p50": 1765,
+                "max": 1784
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1694,
+                "p50": 1764,
+                "max": 1783
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1710,
+                "p50": 1775,
+                "max": 1796
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1704,
+                "p50": 1772,
+                "max": 1791
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 372,
+                "p50": 508,
+                "max": 544
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 61,
+                "p50": 63,
+                "max": 65
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 46,
+                "p50": 46,
+                "max": 50
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 71,
+                "p50": 99,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 7,
+                "max": 13
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1740,
+                "p50": 1757,
+                "max": 1806
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1754,
+                "p50": 1774,
+                "max": 1813
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1745,
+                "p50": 1763,
+                "max": 1809
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1749,
+                "p50": 1769,
+                "max": 1811
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 434,
+                "p50": 492,
+                "max": 537
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 56,
+                "p50": 58,
+                "max": 60
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 42,
+                "p50": 43,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 84,
+                "p50": 99,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 7,
+                "p50": 8,
+                "max": 14
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 621.2781826034188,
+        "tpot_ms": 7.5700780964337735,
+        "e2e_ms": 1765.0012141093612
+      },
+      "mean": {
+        "ttft_ms": 718.5969005804509,
+        "tpot_ms": 7.589212521104354,
+        "e2e_ms": 1849.3895662249997
+      },
+      "throughput_tok_s": 80.92644901809116,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "csa/attempt-02",
+      "arm": "csa",
+      "attempt_started_utc": "2026-11-27T03:56:33.806797+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T04:01:58.205757+00:00",
+        "last_request_finished_utc": "2026-11-27T04:02:11.837527+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 24,
+        "measured_window_sample_count": 7,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 7,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1725,
+                "p50": 1781,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1729,
+                "p50": 1786,
+                "max": 1823
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1727,
+                "p50": 1784,
+                "max": 1821
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1726,
+                "p50": 1784,
+                "max": 1820
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1293,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 388,
+                "p50": 430,
+                "max": 552
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 63,
+                "p50": 64,
+                "max": 65
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 47,
+                "p50": 50,
+                "max": 51
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 74,
+                "p50": 96,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 8,
+                "p50": 12,
+                "max": 15
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1735,
+                "p50": 1808,
+                "max": 1821
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1810,
+                "max": 1823
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1728,
+                "p50": 1804,
+                "max": 1815
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1746,
+                "p50": 1813,
+                "max": 1824
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1298,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 409,
+                "p50": 438,
+                "max": 561
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 59,
+                "p50": 59,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 45,
+                "p50": 45,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 91,
+                "p50": 99,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 9,
+                "p50": 14,
+                "max": 15
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1733,
+                "p50": 1800,
+                "max": 1817
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1732,
+                "p50": 1788,
+                "max": 1808
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1744,
+                "p50": 1811,
+                "max": 1826
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1741,
+                "p50": 1801,
+                "max": 1821
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1299,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 385,
+                "p50": 432,
+                "max": 574
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 61,
+                "p50": 63,
+                "max": 65
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 47,
+                "p50": 48,
+                "max": 49
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 75,
+                "p50": 99,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 9,
+                "p50": 14,
+                "max": 15
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1803,
+                "max": 1815
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1762,
+                "p50": 1810,
+                "max": 1823
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1753,
+                "p50": 1806,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1756,
+                "p50": 1807,
+                "max": 1817
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 411,
+                "p50": 441,
+                "max": 556
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 55,
+                "p50": 58,
+                "max": 60
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 42,
+                "p50": 44,
+                "max": 45
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 87,
+                "p50": 100,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 9,
+                "p50": 14,
+                "max": 15
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 528.223155066371,
+        "tpot_ms": 7.2488229152990264,
+        "e2e_ms": 1612.6399948261678
+      },
+      "mean": {
+        "ttft_ms": 614.1676458064467,
+        "tpot_ms": 7.286594674341231,
+        "e2e_ms": 1699.87025228329
+      },
+      "throughput_tok_s": 88.02967193880133,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    },
+    {
+      "attempt": "combined/attempt-02",
+      "arm": "combined",
+      "attempt_started_utc": "2026-11-27T04:02:36.724734+00:00",
+      "window": {
+        "first_request_started_utc": "2026-11-27T04:07:19.246920+00:00",
+        "last_request_finished_utc": "2026-11-27T04:07:32.771391+00:00",
+        "guard_sample_selection": "guard timestamp inside the timed requests' wall-clock range",
+        "requests": 8
+      },
+      "ptl": {
+        "selected_expected": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        },
+        "all_sample_count": 28,
+        "measured_window_sample_count": 7,
+        "failures": [],
+        "verified": true,
+        "immediate_prelaunch_readback": {
+          "0": {
+            "bdf": "0000:0a:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "1": {
+            "bdf": "0000:80:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "2": {
+            "bdf": "0000:a4:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          },
+          "3": {
+            "bdf": "0000:c8:00.0",
+            "ptl_state": "Enabled",
+            "ptl_format": "VECTOR,F8"
+          }
+        }
+      },
+      "gpu_telemetry": {
+        "samples": 7,
+        "unavailable_samples": 0,
+        "gpus": {
+          "0": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1720,
+                "p50": 1809,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1728,
+                "p50": 1811,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1722,
+                "p50": 1812,
+                "max": 1819
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1723,
+                "p50": 1810,
+                "max": 1816
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 404,
+                "p50": 446,
+                "max": 581
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 63,
+                "p50": 64,
+                "max": 66
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 50,
+                "p50": 51,
+                "max": 54
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 88,
+                "p50": 100,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 9,
+                "p50": 15,
+                "max": 15
+              }
+            ]
+          },
+          "1": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1750,
+                "p50": 1813,
+                "max": 1824
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1758,
+                "p50": 1815,
+                "max": 1825
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1746,
+                "p50": 1810,
+                "max": 1820
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1758,
+                "p50": 1819,
+                "max": 1828
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 394,
+                "p50": 435,
+                "max": 553
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 59,
+                "p50": 60,
+                "max": 61
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 45,
+                "p50": 46,
+                "max": 48
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 83,
+                "p50": 100,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 8,
+                "p50": 15,
+                "max": 15
+              }
+            ]
+          },
+          "2": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1734,
+                "p50": 1813,
+                "max": 1817
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1737,
+                "p50": 1802,
+                "max": 1808
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1745,
+                "p50": 1826,
+                "max": 1827
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1745,
+                "p50": 1817,
+                "max": 1821
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 419,
+                "p50": 439,
+                "max": 577
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 61,
+                "p50": 64,
+                "max": 65
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 47,
+                "p50": 48,
+                "max": 50
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 94,
+                "p50": 100,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 9,
+                "p50": 15,
+                "max": 15
+              }
+            ]
+          },
+          "3": {
+            "sample_rows": 7,
+            "metrics": [
+              {
+                "field": "clock.gfx_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1747,
+                "p50": 1811,
+                "max": 1816
+              },
+              {
+                "field": "clock.gfx_1.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1765,
+                "p50": 1817,
+                "max": 1822
+              },
+              {
+                "field": "clock.gfx_2.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1752,
+                "p50": 1814,
+                "max": 1818
+              },
+              {
+                "field": "clock.gfx_3.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1758,
+                "p50": 1814,
+                "max": 1818
+              },
+              {
+                "field": "clock.mem_0.clk",
+                "unit": "MHz",
+                "n": 7,
+                "min": 1300,
+                "p50": 1300,
+                "max": 1300
+              },
+              {
+                "field": "power.socket_power",
+                "unit": "W",
+                "n": 7,
+                "min": 368,
+                "p50": 424,
+                "max": 555
+              },
+              {
+                "field": "temperature.hotspot",
+                "unit": "C",
+                "n": 7,
+                "min": 56,
+                "p50": 58,
+                "max": 60
+              },
+              {
+                "field": "temperature.mem",
+                "unit": "C",
+                "n": 7,
+                "min": 42,
+                "p50": 44,
+                "max": 46
+              },
+              {
+                "field": "usage.gfx_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 71,
+                "p50": 100,
+                "max": 100
+              },
+              {
+                "field": "usage.umc_activity",
+                "unit": "%",
+                "n": 7,
+                "min": 8,
+                "p50": 15,
+                "max": 15
+              }
+            ]
+          }
+        }
+      },
+      "p50": {
+        "ttft_ms": 531.7432871088386,
+        "tpot_ms": 7.139942783787346,
+        "e2e_ms": 1594.3046943284571
+      },
+      "mean": {
+        "ttft_ms": 621.1714902892709,
+        "tpot_ms": 7.149803561577261,
+        "e2e_ms": 1686.4922209642828
+      },
+      "throughput_tok_s": 88.7280927578552,
+      "affected_suffix_seeds": [],
+      "port_released": true,
+      "owned_gpu_processes_remaining": []
+    }
+  ],
+  "baseline_repeat_drift": [
+    {
+      "first_attempt": "baseline/attempt-01",
+      "repeat_attempt": "baseline/attempt-02",
+      "both_ptl_verified": true,
+      "paired_requests": 8,
+      "pairs_without_observed_overlap": 8,
+      "matching_output_hashes": 0,
+      "median_paired_delta_ms": {
+        "ttft_ms": 1.2625721283257008,
+        "tpot_ms": -0.08439586729111292,
+        "e2e_ms": -11.312412098050117
+      },
+      "difference_in_all_request_p50_percent": {
+        "ttft_ms": 0.7939348487628228,
+        "tpot_ms": -1.5717551629136683,
+        "e2e_ms": -0.29200487359070104
+      },
+      "throughput_delta_percent": 1.3882711380350798
+    }
+  ]
+}

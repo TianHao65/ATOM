@@ -1,0 +1,141 @@
+{
+  "csa_first_start": {
+    "requests": [
+      {
+        "suffix_seed": 1005,
+        "started_utc": "2026-11-27T03:34:50.168486+00:00",
+        "finished_utc": "2026-11-27T03:34:57.205018+00:00",
+        "ttft_ms": 5973.358186893165,
+        "tpot_ms": 7.135123683252191,
+        "e2e_ms": 7036.4916156977415
+      },
+      {
+        "suffix_seed": 1006,
+        "started_utc": "2026-11-27T03:34:57.209621+00:00",
+        "finished_utc": "2026-11-27T03:35:30.262033+00:00",
+        "ttft_ms": 528.4528508782387,
+        "tpot_ms": 218.28132595291873,
+        "e2e_ms": 33052.37041786313
+      }
+    ],
+    "seed_1005_before_first_token": {
+      "sample_count": 3,
+      "all_four_gfx_idle_samples": 2,
+      "foreign_process_samples": 0
+    },
+    "seed_1006_received_content_gaps": [
+      {
+        "start_utc": "2026-11-27T03:34:58.525193+00:00",
+        "end_utc": "2026-11-27T03:35:00.588318+00:00",
+        "seconds": 2.0631249006837606,
+        "telemetry": {
+          "sample_count": 2,
+          "all_four_gfx_idle_samples": 0,
+          "foreign_process_samples": 0
+        }
+      },
+      {
+        "start_utc": "2026-11-27T03:35:00.807522+00:00",
+        "end_utc": "2026-11-27T03:35:30.218698+00:00",
+        "seconds": 29.41117546427995,
+        "telemetry": {
+          "sample_count": 15,
+          "all_four_gfx_idle_samples": 12,
+          "foreign_process_samples": 0
+        }
+      }
+    ]
+  },
+  "combined_first_start": {
+    "affected_suffix_seeds": [
+      1005,
+      1006
+    ],
+    "foreign_gpu_samples": [
+      {
+        "phase": "benchmarking",
+        "utc": "2026-11-27T03:48:25.421395+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 483737600
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      },
+      {
+        "phase": "benchmarking",
+        "utc": "2026-11-27T03:48:27.283173+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 506060800
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      },
+      {
+        "phase": "profiling",
+        "utc": "2026-11-27T03:48:33.120983+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 371298304
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      },
+      {
+        "phase": "profiling",
+        "utc": "2026-11-27T03:48:34.349522+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 483737600
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      },
+      {
+        "phase": "profiling",
+        "utc": "2026-11-27T03:48:35.577271+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 483737600
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      },
+      {
+        "phase": "profiling",
+        "utc": "2026-11-27T03:48:36.803767+00:00",
+        "selected_gpu_accounting": [
+          {
+            "selected_vram_bytes": {
+              "61531": 506036224
+            },
+            "selected_queue_gpu_ids": [
+              61531
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

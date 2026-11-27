@@ -1,0 +1,231 @@
+{
+  "nov24_original": {
+    "started_utc": "2026-11-24T03:44:40.962179+00:00",
+    "host": "hjbog-srdc-52",
+    "selected_gpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "kfd_ids": [
+      63420,
+      61531,
+      60224,
+      50797
+    ],
+    "image": "sha256:cfd987217fc428c50a2d11eddcd23952f926a77bbbe5532bccdf43636c4361dc",
+    "model_revision": "08c8657f02291e11b6f6b63e0e16014f8e748518",
+    "capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      48,
+      64
+    ],
+    "p50": {
+      "ttft_ms": 617.4210617318749,
+      "tpot_ms": 7.582121525559849,
+      "e2e_ms": 1768.2761661708355
+    },
+    "profile_request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "cached_tokens": 89984,
+      "input_tokens": 100000,
+      "output_tokens": 24
+    },
+    "ptl_before": "unavailable",
+    "ranks": [
+      {
+        "rank": "rank_0",
+        "original_sha256": "e7a0e9067401e1deb52ac42a1f2bf7e2d027b355a0322c739cf1862228d02674",
+        "triton_csa_prefill_ms": 171.35790699999998,
+        "tp_collective_ms": 65.789063
+      },
+      {
+        "rank": "rank_1",
+        "original_sha256": "13755a9dbea7bebcd2fde6ffa08033621a9fb2e8fcb3b46b7806f93a4ab91d9d",
+        "triton_csa_prefill_ms": 171.36842800000002,
+        "tp_collective_ms": 66.0917169999996
+      },
+      {
+        "rank": "rank_2",
+        "original_sha256": "1f182aab5ea2635131d24df8e838e3dea2e7b76ece80f503c55060c980f93ea7",
+        "triton_csa_prefill_ms": 171.25362799999988,
+        "tp_collective_ms": 65.71909699999952
+      },
+      {
+        "rank": "rank_3",
+        "original_sha256": "7a62c2d6665553c499ecbca8799b9439a846748f9a92fd084d139e4399388357",
+        "triton_csa_prefill_ms": 171.26178600000006,
+        "tp_collective_ms": 64.88267099999933
+      }
+    ]
+  },
+  "nov27_mixed": {
+    "started_utc": "2026-11-27T02:06:13.466715+00:00",
+    "host": "hjbog-srdc-52",
+    "selected_gpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "kfd_ids": [
+      63420,
+      61531,
+      60224,
+      50797
+    ],
+    "image": "sha256:cfd987217fc428c50a2d11eddcd23952f926a77bbbe5532bccdf43636c4361dc",
+    "model_revision": "08c8657f02291e11b6f6b63e0e16014f8e748518",
+    "capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      48,
+      64
+    ],
+    "p50": {
+      "ttft_ms": 736.8690883740783,
+      "tpot_ms": 9.328832906114574,
+      "e2e_ms": 2132.450493052602
+    },
+    "profile_request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "cached_tokens": 89984,
+      "input_tokens": 100000,
+      "output_tokens": 24
+    },
+    "ptl_before": {
+      "0": {
+        "ptl_state": "Disabled",
+        "ptl_format": "N/A"
+      },
+      "1": {
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      },
+      "2": {
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      },
+      "3": {
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      }
+    },
+    "ranks": [
+      {
+        "rank": "rank_0",
+        "original_sha256": "0a477fc78c42fbf29b99f0071a384dcd547bd8e9c3e1a570ba50036f1514e237",
+        "triton_csa_prefill_ms": 219.020247,
+        "tp_collective_ms": 63.75816099999989
+      },
+      {
+        "rank": "rank_1",
+        "original_sha256": "ab0b9fabac177b15dba2e0ce6829a90e83244da7f692a77e94d86ebb51294c07",
+        "triton_csa_prefill_ms": 171.1363279999999,
+        "tp_collective_ms": 234.7266090000001
+      },
+      {
+        "rank": "rank_2",
+        "original_sha256": "dba9ab8e067dbc469465140602e3f2c704a07d9ddc5d5f077f887db68c6641e7",
+        "triton_csa_prefill_ms": 171.108167,
+        "tp_collective_ms": 235.75240099999903
+      },
+      {
+        "rank": "rank_3",
+        "original_sha256": "cee9f0d6f575208933b9a926bf3cd6e8f94154f7beb7df026f134218ad588e4b",
+        "triton_csa_prefill_ms": 171.01296499999995,
+        "tp_collective_ms": 234.5852059999994
+      }
+    ]
+  },
+  "current_enabled": {
+    "started_utc": "2026-11-27T03:20:24.803558+00:00",
+    "host": "hjbog-srdc-52",
+    "selected_gpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "kfd_ids": [
+      63420,
+      61531,
+      60224,
+      50797
+    ],
+    "image": "sha256:cfd987217fc428c50a2d11eddcd23952f926a77bbbe5532bccdf43636c4361dc",
+    "model_revision": "08c8657f02291e11b6f6b63e0e16014f8e748518",
+    "capture_sizes": [
+      1
+    ],
+    "p50": {
+      "ttft_ms": 616.3844913244247,
+      "tpot_ms": 7.690961175791969,
+      "e2e_ms": 1770.1701973564923
+    },
+    "profile_request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "cached_tokens": 89984,
+      "input_tokens": 100000,
+      "output_tokens": 24
+    },
+    "ptl_before": {
+      "0": {
+        "bdf": "0000:0a:00.0",
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      },
+      "1": {
+        "bdf": "0000:80:00.0",
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      },
+      "2": {
+        "bdf": "0000:a4:00.0",
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      },
+      "3": {
+        "bdf": "0000:c8:00.0",
+        "ptl_state": "Enabled",
+        "ptl_format": "VECTOR,F8"
+      }
+    },
+    "ranks": [
+      {
+        "rank": "rank_0",
+        "original_sha256": "51c6a9a3eeab7c0b41621d75e706e9c5232153156db7a8711ac9a699953087a1",
+        "triton_csa_prefill_ms": 171.86585,
+        "tp_collective_ms": 72.94971499999964
+      },
+      {
+        "rank": "rank_1",
+        "original_sha256": "1ba01cae3991c16643d2db5febf0b7be423d1120698fdfeaa20b051cd736f372",
+        "triton_csa_prefill_ms": 171.542694,
+        "tp_collective_ms": 76.46154099999988
+      },
+      {
+        "rank": "rank_2",
+        "original_sha256": "fcd5d5802f1aa7ce28a95cc97476a0be187624c88de93e5b09f648fdfc3c6996",
+        "triton_csa_prefill_ms": 171.56429599999998,
+        "tp_collective_ms": 67.84497799999986
+      },
+      {
+        "rank": "rank_3",
+        "original_sha256": "57bed39e55146e15fd6a67f7638c02cfe6a97fd95ce9ad24be4304c690e0c8b0",
+        "triton_csa_prefill_ms": 171.37032800000003,
+        "tp_collective_ms": 68.54445299999989
+      }
+    ]
+  }
+}
