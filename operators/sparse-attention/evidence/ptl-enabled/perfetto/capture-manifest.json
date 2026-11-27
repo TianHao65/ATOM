@@ -1,0 +1,539 @@
+[
+  {
+    "rank": 0,
+    "arm": "baseline",
+    "side": "before",
+    "source": "rank0-before.trace.json.gz",
+    "source_sha256": "51c6a9a3eeab7c0b41621d75e706e9c5232153156db7a8711ac9a699953087a1",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "phase": "prefill",
+    "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+    "step": 1,
+    "layer": 2,
+    "layer_attribution": "Inferred from ordered attention launches and the model config. The selected third call follows the two SWA-only layers.",
+    "selected": [
+      {
+        "name": "_sparse_attn_v4_paged_2src_csa_kernel",
+        "ts_ns": 4893160008373825,
+        "dur_ns": 7095186,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 470,
+        "grid": [
+          8192,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "_inverse_rope_gptj_kernel",
+        "ts_ns": 4893160015474012,
+        "dur_ns": 28679,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 482,
+        "grid": [
+          16,
+          256,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      }
+    ],
+    "area_events": [
+      {
+        "name": "_sparse_attn_v4_paged_2src_csa_kernel",
+        "ts_ns": 4893160008373825,
+        "dur_ns": 7095186,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 470,
+        "grid": [
+          8192,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "_swa_write_kernel",
+        "ts_ns": 4893160015469012,
+        "dur_ns": 4999,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 477,
+        "grid": [
+          1,
+          128,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "_inverse_rope_gptj_kernel",
+        "ts_ns": 4893160015474012,
+        "dur_ns": 28679,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 482,
+        "grid": [
+          16,
+          256,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      }
+    ],
+    "area_start_ns": 4893160008373825,
+    "area_end_ns": 4893160015502691,
+    "window_start_ns": 4893160007673825,
+    "window_end_ns": 4893160017673825,
+    "rows": [
+      {
+        "id": 5467,
+        "name": "_sparse_attn_v4_paged_2src_csa_kernel",
+        "ts": "4893160008373825",
+        "dur": "7095186",
+        "track_id": 4
+      },
+      {
+        "id": 6154,
+        "name": "_swa_write_kernel",
+        "ts": "4893160015469012",
+        "dur": "4999",
+        "track_id": 4
+      },
+      {
+        "id": 6155,
+        "name": "_inverse_rope_gptj_kernel",
+        "ts": "4893160015474012",
+        "dur": "28679",
+        "track_id": 4
+      }
+    ],
+    "track_uri": "/slice_4",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ],
+    "slice_count": 48063,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4893160007673825",
+      "end": "4893160017673825"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "prefill-before.png",
+    "service_worker_modal_closed": true,
+    "screenshot_sha256": "8c8a83ad1484606370f528bf34d02e77b4e8d5f7e6ac91a48618c2eb83302a75"
+  },
+  {
+    "rank": 0,
+    "arm": "csa",
+    "side": "after",
+    "source": "rank0-after.trace.json.gz",
+    "source_sha256": "695758144cee4fc434ec624e7c35e52c83d238d9f2cd701285b61a03f6414953",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "phase": "prefill",
+    "annotation": "prefill[bs=1 tok=8192 ctx=98048 nctx=769.7M]",
+    "step": 1,
+    "layer": 2,
+    "layer_attribution": "Inferred from ordered attention launches and the model config. The selected third call follows the two SWA-only layers.",
+    "selected": [
+      {
+        "name": "void (anonymous namespace)::sparse_attn_v4_unsplit_4w_kernel<true>(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, float const*, unsigned short*, long, long, long, long, long, long, int, float, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts_ns": 4893511664413152,
+        "dur_ns": 3565254,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 433,
+        "grid": [
+          8192,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      }
+    ],
+    "area_events": [
+      {
+        "name": "void (anonymous namespace)::sparse_attn_v4_unsplit_4w_kernel<true>(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, float const*, unsigned short*, long, long, long, long, long, long, int, float, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts_ns": 4893511664413152,
+        "dur_ns": 3565254,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 433,
+        "grid": [
+          8192,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ]
+      }
+    ],
+    "area_start_ns": 4893511664413152,
+    "area_end_ns": 4893511667978406,
+    "window_start_ns": 4893511663713152,
+    "window_end_ns": 4893511673713152,
+    "rows": [
+      {
+        "id": 5223,
+        "name": "void (anonymous namespace)::sparse_attn_v4_unsplit_4w_kernel<true>(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, float const*, unsigned short*, long, long, long, long, long, long, int, float, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts": "4893511664413152",
+        "dur": "3565254",
+        "track_id": 4
+      }
+    ],
+    "track_uri": "/slice_4",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 25
+      }
+    ],
+    "slice_count": 45802,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4893511663713152",
+      "end": "4893511673713152"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "prefill-after.png",
+    "service_worker_modal_closed": true,
+    "screenshot_sha256": "518d8c7678eb1d61b11f4e445e3c6388482b8e7a6c09f5acb3b342d7d3b56538"
+  },
+  {
+    "rank": 0,
+    "arm": "baseline",
+    "side": "before",
+    "source": "rank0-before.trace.json.gz",
+    "source_sha256": "51c6a9a3eeab7c0b41621d75e706e9c5232153156db7a8711ac9a699953087a1",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "phase": "decode",
+    "annotation": "decode[bs=1 tok=1 d=1]",
+    "step": 13,
+    "layer": 2,
+    "layer_attribution": "Inferred from ordered attention launches and the model config. The selected third call follows the two SWA-only layers.",
+    "selected": [
+      {
+        "name": "_sparse_attn_v4_paged_2src_csa_split_kernel",
+        "ts_ns": 4893160652914972,
+        "dur_ns": 11599,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "_sparse_attn_v4_split_combine_kernel",
+        "ts_ns": 4893160652926572,
+        "dur_ns": 5519,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "_inverse_rope_gptj_kernel",
+        "ts_ns": 4893160652932092,
+        "dur_ns": 5159,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      }
+    ],
+    "area_events": [
+      {
+        "name": "_sparse_attn_v4_paged_2src_csa_split_kernel",
+        "ts_ns": 4893160652914972,
+        "dur_ns": 11599,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "_sparse_attn_v4_split_combine_kernel",
+        "ts_ns": 4893160652926572,
+        "dur_ns": 5519,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "_inverse_rope_gptj_kernel",
+        "ts_ns": 4893160652932092,
+        "dur_ns": 5159,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 6255,
+        "grid": null,
+        "block": null
+      }
+    ],
+    "area_start_ns": 4893160652914972,
+    "area_end_ns": 4893160652937251,
+    "window_start_ns": 4893160652889972,
+    "window_end_ns": 4893160653049972,
+    "rows": [
+      {
+        "id": 33931,
+        "name": "_sparse_attn_v4_paged_2src_csa_split_kernel",
+        "ts": "4893160652914972",
+        "dur": "11599",
+        "track_id": 4
+      },
+      {
+        "id": 33933,
+        "name": "_sparse_attn_v4_split_combine_kernel",
+        "ts": "4893160652926572",
+        "dur": "5519",
+        "track_id": 4
+      },
+      {
+        "id": 33934,
+        "name": "_inverse_rope_gptj_kernel",
+        "ts": "4893160652932092",
+        "dur": "5159",
+        "track_id": 4
+      }
+    ],
+    "track_uri": "/slice_4",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 28
+      }
+    ],
+    "slice_count": 48063,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4893160652889972",
+      "end": "4893160653049972"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "decode-before.png",
+    "service_worker_modal_closed": true,
+    "screenshot_sha256": "3ee01e58dc29114528dc72278dfb5e1a407acaaa9e133f44f19b47df7819321b"
+  },
+  {
+    "rank": 0,
+    "arm": "csa",
+    "side": "after",
+    "source": "rank0-after.trace.json.gz",
+    "source_sha256": "695758144cee4fc434ec624e7c35e52c83d238d9f2cd701285b61a03f6414953",
+    "model": "DeepSeek-V4.1-Flash-1017",
+    "workload": {
+      "concurrency": 1,
+      "tensor_parallel_size": 4,
+      "input_tokens": 100000,
+      "shared_prefix_tokens": 90000,
+      "output_tokens": 24,
+      "token_generator": "random.Random.randrange",
+      "prefix_seed": 42,
+      "suffix_seed": 30001000,
+      "token_id_range": [
+        16,
+        119999
+      ]
+    },
+    "request": {
+      "input_ids_sha256": "ea44ee12f899a9d12698965a98a96512cb0ee4d5f26b602c3e0ac792f243450e",
+      "input_tokens": 100000,
+      "output_tokens": 24,
+      "cached_tokens": 89984,
+      "finish_reason": "length"
+    },
+    "phase": "decode",
+    "annotation": "decode[bs=1 tok=1 d=1]",
+    "step": 13,
+    "layer": 2,
+    "layer_attribution": "Inferred from ordered attention launches and the model config. The selected third call follows the two SWA-only layers.",
+    "selected": [
+      {
+        "name": "(anonymous namespace)::sparse_attn_v4_split_stage_4w_kernel(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, long, long, long, long, int, int, int, float, HIP_vector_type<float, 2u>*, float __vector(4)*)",
+        "ts_ns": 4893512224226804,
+        "dur_ns": 9039,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5529,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "void (anonymous namespace)::sparse_attn_v4_combine_32wg_kernel<true, 20>(HIP_vector_type<float, 2u> const*, float __vector(4) const*, float const*, unsigned short*, long, long, int, int, int, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts_ns": 4893512224235844,
+        "dur_ns": 4919,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5529,
+        "grid": null,
+        "block": null
+      }
+    ],
+    "area_events": [
+      {
+        "name": "(anonymous namespace)::sparse_attn_v4_split_stage_4w_kernel(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, long, long, long, long, int, int, int, float, HIP_vector_type<float, 2u>*, float __vector(4)*)",
+        "ts_ns": 4893512224226804,
+        "dur_ns": 9039,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5529,
+        "grid": null,
+        "block": null
+      },
+      {
+        "name": "void (anonymous namespace)::sparse_attn_v4_combine_32wg_kernel<true, 20>(HIP_vector_type<float, 2u> const*, float __vector(4) const*, float const*, unsigned short*, long, long, int, int, int, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts_ns": 4893512224235844,
+        "dur_ns": 4919,
+        "pid": 2,
+        "tid": 3,
+        "correlation": 5529,
+        "grid": null,
+        "block": null
+      }
+    ],
+    "area_start_ns": 4893512224226804,
+    "area_end_ns": 4893512224240763,
+    "window_start_ns": 4893512224201804,
+    "window_end_ns": 4893512224361804,
+    "rows": [
+      {
+        "id": 32126,
+        "name": "(anonymous namespace)::sparse_attn_v4_split_stage_4w_kernel(unsigned short const*, unsigned short const*, int const*, int const*, unsigned short const*, int const*, int const*, long, long, long, long, int, int, int, float, HIP_vector_type<float, 2u>*, float __vector(4)*)",
+        "ts": "4893512224226804",
+        "dur": "9039",
+        "track_id": 4
+      },
+      {
+        "id": 32127,
+        "name": "void (anonymous namespace)::sparse_attn_v4_combine_32wg_kernel<true, 20>(HIP_vector_type<float, 2u> const*, float __vector(4) const*, float const*, unsigned short*, long, long, int, int, int, unsigned short const*, unsigned short const*, long const*, long)",
+        "ts": "4893512224235844",
+        "dur": "4919",
+        "track_id": 4
+      }
+    ],
+    "track_uri": "/slice_4",
+    "import_errors": [
+      {
+        "name": "slice_spill_overlapping_complete_event",
+        "value": 25
+      }
+    ],
+    "slice_count": 45802,
+    "native_position_verified": true,
+    "native_navigation_window": {
+      "start": "4893512224201804",
+      "end": "4893512224361804"
+    },
+    "native_area": true,
+    "native_slices": true,
+    "screenshot": "decode-after.png",
+    "service_worker_modal_closed": true,
+    "screenshot_sha256": "72743b367b005b60a0abff0afeaf4fbb6a5bce739299cae74a30bfd1f4064588"
+  }
+]
